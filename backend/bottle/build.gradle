@@ -40,9 +40,15 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // dto validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     // google tts
     implementation platform('com.google.cloud:libraries-bom:26.1.4')
     implementation 'com.google.cloud:google-cloud-texttospeech'
+
+    // firebase
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '8.1.0'
 
     //querydsl
     implementation "com.querydsl:querydsl-jpa:${querydslVer}"
