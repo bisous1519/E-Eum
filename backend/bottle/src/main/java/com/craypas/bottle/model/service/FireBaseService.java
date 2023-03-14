@@ -18,8 +18,6 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.StorageClient;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +29,6 @@ public class FireBaseService {
 
 	@Value("${firebase.bucket-name}")
 	private String bucketName;
-
-	private Storage storage;
-
-	public FireBaseService() {
-		this.storage = StorageOptions.getDefaultInstance().getService();
-	}
 
 	public String uploadFiles(MultipartFile file, String folder, String nameFile) throws IOException {
 		Bucket bucket = StorageClient.getInstance().bucket(bucketName);

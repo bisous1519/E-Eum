@@ -6,12 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e9718c23-0c89-426d-9567-40cd8629d36f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bottle/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bottle/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/node_modules/.package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/controller/BottleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/controller/BottleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/dto/BottleDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/dto/BottleDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/entity/Bottle.java" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/entity/Bottle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/repository/BottleRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/repository/BottleRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/service/BottleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bottle/src/main/java/com/craypas/bottle/model/service/BottleService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,6 +117,7 @@
       <workItem from="1678338179649" duration="538000" />
       <workItem from="1678751836012" duration="312000" />
       <workItem from="1678752211781" duration="1000" />
+      <workItem from="1678775749507" duration="596000" />
     </task>
     <servers />
   </component>

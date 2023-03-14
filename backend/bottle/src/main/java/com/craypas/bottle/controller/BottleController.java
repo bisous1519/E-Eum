@@ -16,7 +16,6 @@ import com.craypas.bottle.model.dto.response.CreatedBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.util.InMemoryMultipartFile;
-import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.texttospeech.v1.AudioConfig;
 import com.google.cloud.texttospeech.v1.AudioEncoding;
@@ -25,7 +24,6 @@ import com.google.cloud.texttospeech.v1.SynthesisInput;
 import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
 import com.google.cloud.texttospeech.v1.TextToSpeechClient;
 import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
-import com.google.firestore.v1.WriteResult;
 import com.google.protobuf.ByteString;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +40,6 @@ public class BottleController {
 
 	private final BottleService bottleService;
 
-	private final Firestore db;
-	
 	@PostMapping("/req")
 	ResponseEntity<?> sendRequestBottle(@RequestBody CreateReqBottleDto reqBottleDto) throws Exception {
 		// 텍스트 감정분석으로 색 결정
