@@ -2,7 +2,7 @@ package com.craypas.bottle.model.dto.request;
 
 import java.text.ParseException;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.craypas.bottle.model.entity.Bottle;
 
@@ -17,13 +17,13 @@ import lombok.ToString;
 @ToString
 public class CreateReqBottleDto {
 
-	@NotEmpty
+	@NotNull
 	private Long writerId;
 
-	@NotEmpty
+	@NotNull
 	private String content;
 
-	@NotEmpty
+	@NotNull
 	private Integer type;
 
 	private Integer color;
