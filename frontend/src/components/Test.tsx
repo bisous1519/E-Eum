@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components/native";
-import { ThemeType } from "../utils/theme";
 
-const Gg = styled.Text<{ theme: ThemeType }>`
-  color: ${({ theme }) => theme.mainColor.dark};
+const Tt = styled.Text`
+  color: ${({ theme }) => theme.mainColor.light};
 `;
 
 export default function Test() {
-  return <Gg>fffffffffff</Gg>;
+  return <Tt>aaaaaaaa</Tt>;
 }
