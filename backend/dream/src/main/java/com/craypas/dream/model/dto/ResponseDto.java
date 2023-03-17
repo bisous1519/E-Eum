@@ -16,7 +16,7 @@ public class ResponseDto {
 		@NotNull
 		private String content;
 		@NotEmpty
-		private LocalDateTime regDate;
+		private LocalDateTime regTime;
 		@NotEmpty
 		private Integer status;
 		@NotEmpty
@@ -26,7 +26,7 @@ public class ResponseDto {
 			this.id = support.getId();
 			this.title = support.getTitle();
 			this.content = support.getContent();
-			this.regDate = support.getRegDate();
+			this.regTime = support.getRegTime();
 			this.status = support.getStatus();
 			this.userId = support.getUserId();
 		}

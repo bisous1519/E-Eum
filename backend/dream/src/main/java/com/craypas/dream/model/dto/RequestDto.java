@@ -24,7 +24,7 @@ public class RequestDto {
 				.title(this.title)
 				.content(this.content)
 				.userId(this.userId)
-				.regDate(LocalDateTime.now())
+				.regTime(LocalDateTime.now())
 				.build();
 		}
 	}

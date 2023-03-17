@@ -28,8 +28,8 @@ public class Support {
 	@Column(name = "content")
 	private String content;
 
-	@Column(name = "reg_date")
-	private LocalDateTime regDate;
+	@Column(name = "reg_time")
+	private LocalDateTime regTime;
 
 	@Column(name = "status")
 	private Integer status;
@@ -38,11 +38,11 @@ public class Support {
 	private Long userId;
 
 	@Builder
-	public Support(Long id, String title, String content, LocalDateTime regDate, Integer status, Long userId) {
+	public Support(Long id, String title, String content, LocalDateTime regTime, Integer status, Long userId) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
-		this.regDate = regDate;
+		this.regTime = regTime;
 		this.status = status;
 		this.userId = userId;
 	}
@@ -50,6 +50,7 @@ public class Support {
 	public void update(String title, String content){
 		this.title = title;
 		this.content = content;
+		this.regTime = LocalDateTime.now();
 	}
 
 	public void done(){

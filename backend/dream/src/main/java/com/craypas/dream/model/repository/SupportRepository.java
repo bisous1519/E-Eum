@@ -11,4 +11,5 @@ import com.craypas.dream.model.entity.Support;
 @Repository
 public interface SupportRepository extends JpaRepository<Support, Long> {
 	List<Support> findAll(Pageable pageable);
+	List<Support> findAllByTitleContaining(String title, Pageable pageable);
 }

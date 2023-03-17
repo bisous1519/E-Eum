@@ -1,8 +1,8 @@
 package com.craypas.dream.model.service;
 
 import java.awt.print.Pageable;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -11,14 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.craypas.dream.model.dto.RequestDto;
 import com.craypas.dream.model.dto.ResponseDto;
 import com.craypas.dream.model.entity.Support;
+import com.craypas.dream.model.entity.SupportUser;
 import com.craypas.dream.model.repository.SupportRepository;
+import com.craypas.dream.model.repository.SupportUserRepository;
 
 @Service
 public class SupportServiceImpl implements SupportService {
 	final private SupportRepository supportRepository;
+	final private SupportUserRepository supportUserRepository;
 
-	public SupportServiceImpl(SupportRepository supportRepository) {
+	public SupportServiceImpl(SupportRepository supportRepository,
+		SupportUserRepository supportUserRepository) {
 		this.supportRepository = supportRepository;
+		this.supportUserRepository = supportUserRepository;
 	}
 
 	// 꿈 후원요청 작성
@@ -53,17 +58,37 @@ public class SupportServiceImpl implements SupportService {
 
 	// 꿈 후원요청 삭제
 	@Override
-	public void deleteRecord(Long sid) {
+	public void deleteSupport(Long sid) {
 		supportRepository.deleteById(sid);
 	}
 
 	// 꿈 후원요청 검색
 	@Override
 	public List<ResponseDto.Read> searchSupport(String keyword, Pageable pageable) {
-		return ;
+		return supportRepository.findAllByTitleContaining(keyword, pageable)
+			.stream()
+			.map(ResponseDto.Read::new)
+			.collect(Collectors.toList());
 	}
 
 	// 꿈 후원하기
+	@Override
+	public void createSupportUser(final Long sid, final Long uid, final Integer point) {
+		Support support = supportRepository.findById(sid).orElseThrow(NullPointerException::new);
+		supportUserRepository.save(SupportUser.builder()
+			.support(support)
+			.writerId(uid)
+			.point(point)
+			.regTime(LocalDateTime.now())
+			.build());
+	}
+
 	// 꿈 후원 취소하기
+	@Override
+	public void deleteSupportUser(Long sid, Long uid) {
+		Support support = supportRepository.findById(sid).orElseThrow(NullPointerException::new);
+		supportUserRepository.deleteBySupportAndWriterId(support, uid);
+	}
+
 	// 사진 업로드(?)
 }

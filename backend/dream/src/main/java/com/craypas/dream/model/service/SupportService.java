@@ -20,12 +20,16 @@ public interface SupportService {
 	ResponseDto.Read updateSupport(final Long sid, final RequestDto.Create requestDto);
 
 	// 꿈 후원요청 삭제
-	void deleteRecord(final Long sid);
+	void deleteSupport(final Long sid);
 
 	// 꿈 후원요청 검색
 	List<ResponseDto.Read> searchSupport(final String keyword, final Pageable pageable);
 
 	// 꿈 후원하기
+	void createSupportUser(final Long sid, final Long uid, final Integer point);
+
 	// 꿈 후원 취소하기
+	void deleteSupportUser(final Long sid, final Long uid);
+
 	// 사진 업로드(?)
 }
