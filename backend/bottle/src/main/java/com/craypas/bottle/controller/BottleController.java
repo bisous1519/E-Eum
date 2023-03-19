@@ -1,8 +1,12 @@
 package com.craypas.bottle.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/bottle")
 public class BottleController {
@@ -36,12 +39,12 @@ public class BottleController {
 	private final GoogleCloudService googleCloudService;
 
 	@PostMapping("/req")
-	ResponseEntity<?> sendRequestBottle(@RequestBody CreateReqBottleDto reqBottleDto) throws Exception {
+	ResponseEntity<?> sendRequestBottle(@Valid @RequestBody CreateReqBottleDto reqBottleDto) throws Exception {
 		String bucketFolder = "", saveFileName = "";
 		try {
 			String content = reqBottleDto.getContent();
 
-			reqBottleDto.setColor(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
+			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);			// content에서 TTS를 통해 오디오 추출
 
 			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성

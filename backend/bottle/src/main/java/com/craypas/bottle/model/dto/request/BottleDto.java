@@ -25,7 +25,7 @@ public class BottleDto {
 	private Long bottieId;
 	private String content;
 	private Integer type;
-	private Integer color;
+	private Integer sentiment;
 	private String regTime;
 	private Integer status;
 
@@ -37,7 +37,7 @@ public class BottleDto {
 			.content(content)
 			.type(type)
 			.content(content)
-			.color(color)
+			.sentiment(sentiment)
 			.regTime(dateConverter(regTime))
 			.status(status).build();
 	}

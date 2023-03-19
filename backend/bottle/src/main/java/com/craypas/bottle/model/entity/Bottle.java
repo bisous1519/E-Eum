@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.craypas.bottle.model.dto.request.BottleDto;
 import com.craypas.bottle.model.dto.response.CreatedBottleDto;
+import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -44,8 +45,8 @@ public class Bottle {
 	@Column(name = "type")
 	private int type;
 
-	@Column(name = "color")
-	private int color;
+	@Column(name = "sentiment")
+	private int sentiment;
 
 	@Column(name = "reg_time")
 	@CreationTimestamp
@@ -63,7 +64,7 @@ public class Bottle {
 			.content(content)
 			.type(type)
 			.content(content)
-			.color(color)
+			.sentiment(sentiment)
 			.regTime(stringConverter(regTime))
 			.status(status).build();
 	}
@@ -75,9 +76,9 @@ public class Bottle {
 			.bottieId(bottieId)
 			.content(content)
 			.type(type)
-			.content(content)
-			.color(color)
+			.sentiment(sentiment)
 			.regTime(stringConverter(regTime))
+			.status(status)
 			.build();
 	}
 

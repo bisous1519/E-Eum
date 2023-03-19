@@ -23,23 +23,23 @@ public class CreatedBottleDto {
 	private long bottieId;
 	private String content;
 	private int type;
-	private int color;
+	private int sentiment;
 	private String ttsPath;
 	private String regTime;
 	private int status;
 
-	public Bottle toEntity() throws ParseException {
-		return Bottle.builder()
-			.id(id)
-			.writerId(writerId)
-			.bottieId(bottieId)
-			.content(content)
-			.type(type)
-			.content(content)
-			.color(color)
-			.regTime(dateConverter(regTime))
-			.status(status).build();
-	}
+	// public Bottle toEntity() throws ParseException {
+	// 	return Bottle.builder()
+	// 		.id(id)
+	// 		.writerId(writerId)
+	// 		.bottieId(bottieId)
+	// 		.content(content)
+	// 		.type(type)
+	// 		.content(content)
+	// 		.sentiment(sentiment)
+	// 		.regTime(dateConverter(regTime))
+	// 		.status(status).build();
+	// }
 
 	public Date dateConverter(String input) throws ParseException {
 		SimpleDateFormat foramatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

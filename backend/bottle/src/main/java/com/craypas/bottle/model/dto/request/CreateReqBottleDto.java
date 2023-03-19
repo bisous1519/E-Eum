@@ -26,7 +26,7 @@ public class CreateReqBottleDto {
 	@NotNull
 	private Integer type;
 
-	private Integer color;
+	private Integer sentiment;
 
 
 	public Bottle toEntity() throws ParseException {
@@ -35,7 +35,7 @@ public class CreateReqBottleDto {
 			.content(content)
 			.type(type)
 			.content(content)
-			.color(color)
+			.sentiment(sentiment)
 			.build();
 	}
 }
