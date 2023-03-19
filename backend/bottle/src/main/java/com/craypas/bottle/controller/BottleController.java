@@ -72,4 +72,16 @@ public class BottleController {
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
+
+	@GetMapping("/{uid}/list")
+	ResponseEntity<?> getAllByWriterId(@PathVariable("uid") Long writerId) {
+		try {
+			return new ResponseEntity<>(bottleService.findAllByWriterId(writerId), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
 }

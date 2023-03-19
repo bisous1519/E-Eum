@@ -82,6 +82,16 @@ public class Bottle {
 			.build();
 	}
 
+	public SummaryBottleDto toSummaryBottleDto() {
+		return SummaryBottleDto.builder()
+			.id(id)
+			.content(content)
+			.type(type)
+			.sentiment(sentiment)
+			.regTime(stringConverter(regTime))
+			.build();
+	}
+
 	public String stringConverter(Date input){
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return formatter.format(input);
