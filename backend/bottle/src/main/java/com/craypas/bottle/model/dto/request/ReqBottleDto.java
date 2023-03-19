@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.craypas.bottle.model.entity.Bottle;
+import com.craypas.bottle.model.entity.ReqBottle;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,21 +19,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class BottleDto {
+public class ReqBottleDto {
 	private Long id;
 	private Long writerId;
-	private Long bottieId;
 	private String content;
 	private Integer type;
 	private Integer sentiment;
 	private String regTime;
 	private Integer status;
 
-	public Bottle toEntity() throws ParseException {
-		return Bottle.builder()
+	public ReqBottle toEntity() throws ParseException {
+		return ReqBottle.builder()
 			.id(id)
 			.writerId(writerId)
-			.bottieId(bottieId)
 			.content(content)
 			.type(type)
 			.content(content)

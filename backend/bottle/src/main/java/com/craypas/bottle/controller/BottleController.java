@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
-import com.craypas.bottle.model.dto.response.CreatedBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -60,7 +59,7 @@ public class BottleController {
 			fireBaseService.uploadFiles(multipartFile, bucketFolder, saveFileName);		// firebase에 파일 저장
 
 			// 해류병 생성
-			CreatedBottleDto createdBottleDto = bottleService.create(reqBottleDto);
+			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto);
 			createdBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
 			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
 		} catch (CustomException e) {

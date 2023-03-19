@@ -4,7 +4,7 @@ import java.text.ParseException;
 
 import javax.validation.constraints.NotNull;
 
-import com.craypas.bottle.model.entity.Bottle;
+import com.craypas.bottle.model.entity.ReqBottle;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +29,8 @@ public class CreateReqBottleDto {
 	private Integer sentiment;
 
 
-	public Bottle toEntity() throws ParseException {
-		return Bottle.builder()
+	public ReqBottle toEntity() throws ParseException {
+		return ReqBottle.builder()
 			.writerId(writerId)
 			.content(content)
 			.type(type)

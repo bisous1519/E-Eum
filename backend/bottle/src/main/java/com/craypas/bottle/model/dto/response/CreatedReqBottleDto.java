@@ -4,8 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.craypas.bottle.model.entity.Bottle;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,10 +15,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreatedBottleDto {
+public class CreatedReqBottleDto {
 	private long id;
 	private long writerId;
-	private long bottieId;
 	private String content;
 	private int type;
 	private int sentiment;
@@ -32,7 +29,6 @@ public class CreatedBottleDto {
 	// 	return Bottle.builder()
 	// 		.id(id)
 	// 		.writerId(writerId)
-	// 		.bottieId(bottieId)
 	// 		.content(content)
 	// 		.type(type)
 	// 		.content(content)
