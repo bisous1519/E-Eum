@@ -1,3 +1,3 @@
-import * as ButtonComp from "./ButtonComp";
+import * as ButtonComp from './ButtonComp';
 
 export default ButtonComp;

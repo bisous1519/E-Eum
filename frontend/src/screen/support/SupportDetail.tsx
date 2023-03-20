@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React from 'react';
+import { Text, View } from 'react-native';
 
 export default function SupportDetail(): JSX.Element {
   return (
@@ -8,4 +8,3 @@ export default function SupportDetail(): JSX.Element {
     </View>
   );
 }
-
