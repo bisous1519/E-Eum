@@ -12,6 +12,7 @@ export default function TabNavigator() {
     <Tab.Navigator
       initialRouteName='BottleStack'
       screenOptions={{ headerShown: false }}
+      tabBar={() => null}
     >
       <Tab.Screen
         name='BottleStack'
