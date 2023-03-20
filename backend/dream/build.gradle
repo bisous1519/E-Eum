@@ -45,7 +45,7 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${querydslVer}"
     implementation "com.querydsl:querydsl-apt:${querydslVer}"
 
-    //Validation
+    // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 }
