@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ieum?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ssafy
+    password: a607607607
+
+firebase:
+  configuration-file: firebase-key/serviceAccountKey.json
+  bucket-name: ardent-bulwark-380505.appspot.com
