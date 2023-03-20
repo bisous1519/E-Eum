@@ -1,44 +1,44 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Notice from "../screen/notice/Notice";
-import BottleStack from "./BottleStack";
-import MypageStack from "./MypageStack";
-import RecordStack from "./RecordStack";
-import SupportStack from "./SupportStack";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Notice from '../screen/notice/Notice';
+import BottleStack from './BottleStack';
+import MypageStack from './MypageStack';
+import RecordStack from './RecordStack';
+import SupportStack from './SupportStack';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   return (
     <Tab.Navigator
-      initialRouteName="BottleStack"
+      initialRouteName='BottleStack'
       screenOptions={{ headerShown: false }}
+      tabBar={() => null}
     >
       <Tab.Screen
-        name="BottleStack"
+        name='BottleStack'
         component={BottleStack}
-        options={{ title: "해류병 목록" }}
+        options={{ title: '해류병 목록' }}
       />
       <Tab.Screen
-        name="RecordStack"
+        name='RecordStack'
         component={RecordStack}
-        options={{ title: "꿈피드" }}
+        options={{ title: '꿈피드' }}
       />
       <Tab.Screen
-        name="SupportStack"
+        name='SupportStack'
         component={SupportStack}
-        options={{ title: "꿈후원 목록" }}
+        options={{ title: '꿈후원 목록' }}
       />
       <Tab.Screen
-        name="MypageStack"
+        name='MypageStack'
         component={MypageStack}
-        options={{ title: "마이페이지" }}
+        options={{ title: '마이페이지' }}
       />
       <Tab.Screen
-        name="Notice"
+        name='Notice'
         component={Notice}
-        options={{ title: "알림" }}
+        options={{ title: '알림' }}
       />
     </Tab.Navigator>
   );
 }
-

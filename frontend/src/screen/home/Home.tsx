@@ -1,20 +1,20 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import ButtonComp from "../../components/common/button/ButtonComp";
-import Test from "../../components/Test";
-import theme from "../../utils/theme";
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import ButtonComp from '../../components/common/button/ButtonComp';
+import Test from '../../components/Test';
+import theme from '../../utils/theme';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background,
     opacity: 0.65,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   m: {
     fontSize: 16,
-    fontFamily: "Yeongdo",
+    fontFamily: 'Yeongdo',
   },
   s: {
     fontSize: 14,

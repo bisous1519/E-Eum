@@ -1,6 +1,6 @@
-import { StyleSheet } from "react-native";
-import styled, { css } from "styled-components/native";
-import theme from "../../../utils/theme";
+import { StyleSheet } from 'react-native';
+import styled, { css } from 'styled-components/native';
+import theme from '../../../utils/theme';
 
 export const buttonStyles = StyleSheet.create({
   buttonBox: {
@@ -12,7 +12,7 @@ export const buttonStyles = StyleSheet.create({
     fontFamily: theme.fontFamily.main,
     fontSize: 25,
     color: theme.textColor.white,
-    textAlign: "center",
+    textAlign: 'center',
   },
   buttonTextActive: {
     color: theme.mainColor.light,

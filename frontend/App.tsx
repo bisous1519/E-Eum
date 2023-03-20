@@ -1,16 +1,17 @@
-import { useEffect, useCallback, useState } from "react";
-import { ThemeProvider } from "styled-components/native";
-import { theme } from "./src/utils/theme";
-import * as SplashScreen from "expo-splash-screen";
-import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import useFonts from "./src/hooks/useFonts";
-import Landing from "./src/screen/landing/Landing";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import TabNavigator from "./src/navigator/TabNavigator";
-import Nav from "./src/components/common/nav/Nav";
-import MainNavigator from "./src/navigator/MainNavigator";
+import { useEffect, useCallback, useState } from 'react';
+import { ThemeProvider } from 'styled-components/native';
+import { theme } from './src/utils/theme';
+import * as SplashScreen from 'expo-splash-screen';
+import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import useFonts from './src/hooks/useFonts';
+import Landing from './src/screen/landing/Landing';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import TabNavigator from './src/navigator/TabNavigator';
+import Nav from './src/components/common/nav/Nav';
+import MainNavigator from './src/navigator/MainNavigator';
+import { SafeAreaView } from 'react-native';
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -44,12 +45,10 @@ export default function App(): JSX.Element {
     return (
       <ThemeProvider theme={theme}>
         <NavigationContainer>
-          <StatusBar style="dark" />
-          {/* <TabNavigator /> */}
+          <StatusBar style='dark' />
           <MainNavigator />
           <Nav />
         </NavigationContainer>
       </ThemeProvider>
     );
 }
-
