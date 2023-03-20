@@ -8,5 +8,5 @@ import com.craypas.dream.model.entity.SupportUser;
 
 @Repository
 public interface SupportUserRepository extends JpaRepository<SupportUser, Long> {
-	SupportUser deleteBySupportAndWriterId(Support support, Long writerId);
+	SupportUser findBySupportAndWriterId(Support support, Long writerId);
 }

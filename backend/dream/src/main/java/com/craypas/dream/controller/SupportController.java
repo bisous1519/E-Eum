@@ -1,10 +1,10 @@
 package com.craypas.dream.controller;
 
-import java.awt.print.Pageable;
+import javax.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,33 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.craypas.dream.model.dto.RequestDto;
 import com.craypas.dream.model.service.SupportService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/support")
 public class SupportController {
 	private final SupportService supportService;
 
-	public SupportController(SupportService supportService) {
-		this.supportService = supportService;
-	}
-
 	// 꿈 후원요청 작성
 	@PostMapping("/req")
-	public ResponseEntity<?> createSupport(@RequestBody final RequestDto.Create requestDto) {
+	public ResponseEntity<?> createSupport(@Valid @RequestBody final RequestDto.Create requestDto) {
 		return new ResponseEntity<>(supportService.createSupport(requestDto), HttpStatus.CREATED);
 	}
 
 	// 꿈 후원요청 단일 조회
 	@GetMapping("/req/{sid}")
 	public ResponseEntity<?> getSupport(@PathVariable final Long sid) {
-		try {
-			return new ResponseEntity<>(supportService.getSupport(sid), HttpStatus.OK);
-		} catch (NullPointerException e) {
-			return new ResponseEntity<>("INVALID INPUT", HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(supportService.getSupport(sid), HttpStatus.OK);
 	}
 
 	// 꿈 후원요청 전체 조회
@@ -54,24 +47,16 @@ public class SupportController {
 	}
 
 	// 꿈 후원요청 수정
-	@PutMapping("/reg/{sid}")
+	@PutMapping("/req/{sid}")
 	public ResponseEntity<?> updateSupport(@PathVariable final Long sid,
-		@RequestBody final RequestDto.Create requestDto) {
-		try {
-			return new ResponseEntity<>(supportService.updateSupport(sid, requestDto), HttpStatus.OK);
-		} catch (NullPointerException e) {
-			return new ResponseEntity<>("INVALID INPUT", HttpStatus.BAD_REQUEST);
-		}
+		@Valid @RequestBody final RequestDto.Create requestDto) {
+		return new ResponseEntity<>(supportService.updateSupport(sid, requestDto), HttpStatus.OK);
 	}
 
 	// 꿈 후원요청 삭제
 	@DeleteMapping("/req/{sid}")
 	public ResponseEntity<?> deleteSupport(@PathVariable final Long sid) {
-		try {
-			supportService.deleteSupport(sid);
-		} catch (NullPointerException e) {
-			return new ResponseEntity<>("INVALID INPUT", HttpStatus.BAD_REQUEST);
-		}
+		supportService.deleteSupport(sid);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 
@@ -85,23 +70,15 @@ public class SupportController {
 	@PostMapping("/res")
 	public ResponseEntity<?> createSupportUser(@RequestParam("sid") final Long sid, @RequestParam("uid") final Long uid,
 		@RequestParam("point") final Integer point) {
-		try {
-			supportService.createSupportUser(sid, uid, point);
-		} catch (NullPointerException e) {
-			return new ResponseEntity<>("INVALID INPUT", HttpStatus.BAD_REQUEST);
-		}
+		supportService.createSupportUser(sid, uid, point);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
 	}
 
 	// 꿈 후원 취소하기
-	@DeleteMapping("/res")
-	public ResponseEntity<?> deleteSupportUser(@RequestParam("sid") final Long sid,
-		@RequestParam("uid") final Long uid) {
-		try {
-			supportService.deleteSupportUser(sid, uid);
-		} catch (NullPointerException e) {
-			return new ResponseEntity<>("INVALID INPUT", HttpStatus.BAD_REQUEST);
-		}
+	@DeleteMapping("/res/{sid}/{uid}")
+	public ResponseEntity<?> deleteSupportUser(@PathVariable("sid") final Long sid,
+		@PathVariable("uid") final Long uid) {
+		supportService.deleteSupportUser(sid, uid);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 

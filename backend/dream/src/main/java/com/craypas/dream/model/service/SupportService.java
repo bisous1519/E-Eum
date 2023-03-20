@@ -1,6 +1,6 @@
 package com.craypas.dream.model.service;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import com.craypas.dream.model.dto.RequestDto;

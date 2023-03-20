@@ -7,19 +7,24 @@ import javax.validation.constraints.NotNull;
 
 import com.craypas.dream.model.entity.Support;
 
+import lombok.Getter;
+import lombok.ToString;
+
 public class ResponseDto {
+	@Getter
+	@ToString
 	public static class Read {
-		@NotEmpty
+		@NotNull
 		private Long id;
 		@NotEmpty
 		private String title;
-		@NotNull
+		@NotEmpty
 		private String content;
-		@NotEmpty
+		@NotNull
 		private LocalDateTime regTime;
-		@NotEmpty
+		@NotNull
 		private Integer status;
-		@NotEmpty
+		@NotNull
 		private Long userId;
 
 		public Read(Support support) {

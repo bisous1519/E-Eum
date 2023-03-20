@@ -3,20 +3,24 @@ package com.craypas.dream.model.dto;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.craypas.dream.model.entity.Support;
-import com.sun.istack.NotNull;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 public class RequestDto {
 	@Getter
+	@NoArgsConstructor
+	@ToString
 	public static class Create {
 		@NotEmpty
 		private String title;
-		@NotNull
-		private String content;
 		@NotEmpty
+		private String content;
+		@NotNull
 		private Long userId;
 
 		public Support toEntity() {
@@ -25,6 +29,7 @@ public class RequestDto {
 				.content(this.content)
 				.userId(this.userId)
 				.regTime(LocalDateTime.now())
+				.status(0)
 				.build();
 		}
 	}

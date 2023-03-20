@@ -50,7 +50,6 @@ public class Support {
 	public void update(String title, String content){
 		this.title = title;
 		this.content = content;
-		this.regTime = LocalDateTime.now();
 	}
 
 	public void done(){
