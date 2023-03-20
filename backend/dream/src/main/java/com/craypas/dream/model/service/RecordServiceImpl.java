@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.craypas.dream.exception.CustomException;
+import com.craypas.dream.exception.ErrorCode;
 import com.craypas.dream.model.dto.record.RequestDto;
 import com.craypas.dream.model.dto.record.ResponseDto;
 import com.craypas.dream.model.entity.Record;
@@ -29,8 +31,8 @@ public class RecordServiceImpl implements RecordService {
 	// 꿈 기록 단일 조회
 	@Override
 	public ResponseDto.Read getRecord(final Long rid) {
-		Record record = recordRepository.findById(rid).orElseThrow(NullPointerException::new);
-		return new ResponseDto.Read(record);
+		return new ResponseDto.Read(
+			recordRepository.findById(rid).orElseThrow(() -> new CustomException(ErrorCode.RECORD_NOT_FOUND)));
 	}
 
 	// 꿈 기록 피드 조회
@@ -46,7 +48,8 @@ public class RecordServiceImpl implements RecordService {
 	@Override
 	@Transactional
 	public ResponseDto.Read updateRecord(final Long rid, final String content) {
-		Record record = recordRepository.findById(rid).orElseThrow(NullPointerException::new);
+		Record record = recordRepository.findById(rid)
+			.orElseThrow(() -> new CustomException(ErrorCode.RECORD_NOT_FOUND));
 		record.update(content);
 		return new ResponseDto.Read(record);
 	}
@@ -54,6 +57,7 @@ public class RecordServiceImpl implements RecordService {
 	// 꿈 기록 삭제
 	@Override
 	public void deleteRecord(final Long rid) {
-		recordRepository.deleteById(rid);
+		recordRepository.delete(
+			recordRepository.findById(rid).orElseThrow(() -> new CustomException(ErrorCode.RECORD_NOT_FOUND)));
 	}
 }
