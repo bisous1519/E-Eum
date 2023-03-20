@@ -11,6 +11,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabNavigator from './src/navigator/TabNavigator';
 import Nav from './src/components/common/nav/Nav';
 import MainNavigator from './src/navigator/MainNavigator';
+<<<<<<< HEAD
+=======
+import { SafeAreaView } from 'react-native';
+>>>>>>> eeb2d11d04de419be57569fd67737805cd0c9694
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -45,7 +49,10 @@ export default function App(): JSX.Element {
       <ThemeProvider theme={theme}>
         <NavigationContainer>
           <StatusBar style='dark' />
+<<<<<<< HEAD
           {/* <TabNavigator /> */}
+=======
+>>>>>>> eeb2d11d04de419be57569fd67737805cd0c9694
           <MainNavigator />
           <Nav />
         </NavigationContainer>

@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components/native";
+import React from 'react';
+import styled from 'styled-components/native';
 
 const Tt = styled.Text`
   color: ${({ theme }) => theme.mainColor.light};
