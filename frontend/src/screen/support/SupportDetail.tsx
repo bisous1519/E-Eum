@@ -1,6 +1,7 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React from 'react';
+import { Text, View } from 'react-native';
 
+// 후원 상세
 export default function SupportDetail(): JSX.Element {
   return (
     <View>
@@ -8,4 +9,3 @@ export default function SupportDetail(): JSX.Element {
     </View>
   );
 }
-
