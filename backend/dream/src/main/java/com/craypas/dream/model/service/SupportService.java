@@ -3,8 +3,8 @@ package com.craypas.dream.model.service;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
-import com.craypas.dream.model.dto.RequestDto;
-import com.craypas.dream.model.dto.ResponseDto;
+import com.craypas.dream.model.dto.support.RequestDto;
+import com.craypas.dream.model.dto.support.ResponseDto;
 
 public interface SupportService {
 	// 꿈 후원요청 작성

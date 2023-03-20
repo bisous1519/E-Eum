@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.craypas.dream.exception.CustomException;
 import com.craypas.dream.exception.ErrorCode;
-import com.craypas.dream.model.dto.RequestDto;
-import com.craypas.dream.model.dto.ResponseDto;
+import com.craypas.dream.model.dto.support.RequestDto;
+import com.craypas.dream.model.dto.support.ResponseDto;
 import com.craypas.dream.model.entity.Support;
 import com.craypas.dream.model.entity.SupportUser;
 import com.craypas.dream.model.repository.SupportRepository;

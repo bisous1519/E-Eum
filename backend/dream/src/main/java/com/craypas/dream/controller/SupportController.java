@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.craypas.dream.model.dto.RequestDto;
+import com.craypas.dream.model.dto.support.RequestDto;
 import com.craypas.dream.model.service.SupportService;
 
 import lombok.RequiredArgsConstructor;

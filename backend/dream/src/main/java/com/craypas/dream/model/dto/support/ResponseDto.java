@@ -1,4 +1,4 @@
-package com.craypas.dream.model.dto;
+package com.craypas.dream.model.dto.support;
 
 import java.time.LocalDateTime;
 
