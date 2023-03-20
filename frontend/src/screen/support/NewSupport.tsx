@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import ButtonComp from '../../components/common/button/ButtonComp';
 import theme from '../../utils/theme';
 
 // 신규 게시물
@@ -29,7 +30,7 @@ export default function NewSupport(): JSX.Element {
         <TextInput
           style={{ height: 100 }}
           placeholder='내용을 입력하세요'
-          onChangeText={(e) => setTitle(e)}
+          onChangeText={(e) => setContext(e)}
         />
       </View>
 
@@ -43,7 +44,7 @@ export default function NewSupport(): JSX.Element {
         </View>
         <TextInput
           placeholder='구매링크를 입력하세요'
-          onChangeText={(e) => setTitle(e)}
+          onChangeText={(e) => setLink(e)}
         />
       </View>
 
@@ -52,7 +53,7 @@ export default function NewSupport(): JSX.Element {
         <Text>목표금액</Text>
         <TextInput
           placeholder='목표금액을 입력하세요'
-          onChangeText={(e) => setTitle(e)}
+          onChangeText={(e) => setGoal(e)}
         />
       </View>
 
@@ -74,6 +75,7 @@ export default function NewSupport(): JSX.Element {
       </View>
 
       {/* 000. 등록버튼 */}
+      <ButtonComp></ButtonComp>
     </ScrollView>
   );
 }
