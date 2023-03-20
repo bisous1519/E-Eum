@@ -25,23 +25,21 @@ public class Record {
 	@Column(name = "content")
 	private String content;
 
-	@Column(name = "reg_date")
-	private LocalDateTime regDate;
+	@Column(name = "reg_time")
+	private LocalDateTime regTime;
 
 	@Column(name = "writer_id")
 	private Long writerId;
 
 	@Builder
-	public Record(Long id, String content, LocalDateTime regDate, Long writerId) {
+	public Record(Long id, String content, LocalDateTime regTime, Long writerId) {
 		this.id = id;
 		this.content = content;
-		this.regDate = regDate;
+		this.regTime = regTime;
 		this.writerId = writerId;
 	}
 
 	public void update(String content) {
 		this.content = content;
-		this.regDate = LocalDateTime.now();
 	}
-
 }
