@@ -1,4 +1,4 @@
-package com.craypas.dream.model.dto;
+package com.craypas.dream.model.dto.record;
 
 import java.time.LocalDateTime;
 
@@ -12,13 +12,13 @@ import lombok.Getter;
 public class ResponseDto {
 	@Getter
 	public static class Read {
-		@NotEmpty
-		private Long id;
 		@NotNull
+		private Long id;
+		@NotEmpty
 		private String content;
-		@NotEmpty
+		@NotNull
 		private LocalDateTime regDate;
-		@NotEmpty
+		@NotNull
 		private Long writerId;
 
 		public Read(Record record) {

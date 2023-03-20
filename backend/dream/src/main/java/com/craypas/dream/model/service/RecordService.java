@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.craypas.dream.model.dto.RequestDto;
-import com.craypas.dream.model.dto.ResponseDto;
+import com.craypas.dream.model.dto.record.RequestDto;
+import com.craypas.dream.model.dto.record.ResponseDto;
 
 public interface RecordService {
 	// 꿈 기록 작성

@@ -1,4 +1,4 @@
-package com.craypas.dream.model.dto;
+package com.craypas.dream.model.dto.record;
 
 import java.time.LocalDateTime;
 
@@ -12,9 +12,9 @@ import lombok.Getter;
 public class RequestDto {
 	@Getter
 	public static class Create {
-		@NotNull
-		private String content;
 		@NotEmpty
+		private String content;
+		@NotNull
 		private Long writerId;
 
 		public Record toEntity() {

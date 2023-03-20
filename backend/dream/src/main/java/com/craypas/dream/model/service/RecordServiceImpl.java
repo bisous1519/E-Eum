@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.craypas.dream.model.dto.RequestDto;
-import com.craypas.dream.model.dto.ResponseDto;
+import com.craypas.dream.model.dto.record.RequestDto;
+import com.craypas.dream.model.dto.record.ResponseDto;
 import com.craypas.dream.model.entity.Record;
 import com.craypas.dream.model.repository.RecordRepository;
 
