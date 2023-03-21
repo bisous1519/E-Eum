@@ -5,7 +5,10 @@ const Stack = createNativeStackNavigator();
 
 const RecordStack = () => {
   return (
-    <Stack.Navigator initialRouteName='Record'>
+    <Stack.Navigator
+      initialRouteName='Record'
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen name='Record' component={Record} />
     </Stack.Navigator>
   );
