@@ -24,6 +24,8 @@ export type ThemeType = {
   fontSize: {
     small: number;
     regular: number;
+    big: number;
+    bigger: number;
   };
   fontWeight: {
     thin: string;
@@ -67,7 +69,9 @@ export const theme: ThemeType = {
   },
   fontSize: {
     small: 14,
-    regular: 16,
+    regular: 18,
+    big: 23,
+    bigger: 28,
   },
   fontWeight: {
     thin: '300',
