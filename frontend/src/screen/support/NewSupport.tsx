@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { RichEditor } from 'react-native-pell-rich-editor';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import theme from '../../utils/theme';
 
@@ -22,18 +23,22 @@ export default function NewSupport(): JSX.Element {
           onChangeText={(e) => setTitle(e)}
         />
       </View>
-
       {/* 2. 내용 */}
       <View style={styles.write}>
         <Text>내용</Text>
         {/* TextInput 말고 에디터 API 갖다 쓰자..! */}
-        <TextInput
+        <RichEditor
+          placeholder='내용을 입력하세요'
+          initialHeight={250}
+          editorStyle={{ backgroundColor: theme.grayColor.lightGray }}
+          onChange={(e) => setContext(e)}
+        />
+        {/* <TextInput
           style={{ height: 100 }}
           placeholder='내용을 입력하세요'
           onChangeText={(e) => setContext(e)}
-        />
+        /> */}
       </View>
-
       {/* 3. 구매링크 */}
       <View style={styles.write}>
         <View style={styles.guideline}>
@@ -47,16 +52,14 @@ export default function NewSupport(): JSX.Element {
           onChangeText={(e) => setLink(e)}
         />
       </View>
-
       {/* 4. 목표금액 */}
       <View style={styles.write}>
         <Text>목표금액</Text>
         <TextInput
           placeholder='목표금액을 입력하세요'
-          onChangeText={(e) => setGoal(e)}
+          // onChange={(e) => setGoal(e)}
         />
       </View>
-
       {/* 5. 사진첨부 */}
       <View style={styles.write}>
         <View style={styles.guideline}>
@@ -67,13 +70,11 @@ export default function NewSupport(): JSX.Element {
         </View>
         {/* 이곳에 image picker를 쓰고 싶은디..? */}
       </View>
-
       {/* 6. 마감기한 */}
       <View style={styles.write}>
         <Text>마감기한</Text>
         {/* 이곳에는 date picker를 쓰고 싶은디..! */}
       </View>
-
       {/* 000. 등록버튼 */}
       <ButtonComp></ButtonComp>
     </ScrollView>
