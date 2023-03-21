@@ -11,16 +11,15 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BottomSheet, {
-  BottomSheetScrollView,
-  WINDOW_HEIGHT,
-} from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import InputComp from '../../components/common/input/InputComp';
 import TextComp from '../../components/common/TextComp';
 import theme from '../../utils/theme';
+import ItemContainer from '../../components/record/ItemContainer';
+import Tag from '../../components/record/Tag';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -38,6 +37,7 @@ const stylesProfile = StyleSheet.create({
   },
   nickName: {
     fontSize: theme.fontSize.big,
+    fontWeight: '600', // theme 사용해서 바꾸기
     marginTop: 20,
   },
   infoWrapper: {
@@ -60,11 +60,11 @@ const stylesProfile = StyleSheet.create({
   },
   infoContent: {
     fontSize: theme.fontSize.regular,
-    marginTop: 10,
   },
   infoCaption: {
     fontSize: theme.fontSize.small,
     color: theme.textColor.light,
+    marginTop: 10,
   },
   intro: {
     fontSize: theme.fontSize.regular,
@@ -72,9 +72,19 @@ const stylesProfile = StyleSheet.create({
   },
 });
 
+const stylesTag = StyleSheet.create({
+  container: {
+    width: DEVICE_WIDTH * 0.8,
+    height: 30,
+    marginTop: 30,
+  },
+  scrollBox: {
+    alignItems: 'center',
+  },
+});
+
 const stylesFeed = StyleSheet.create({
   container: {
-    // backgroundColor: 'orange',
     width: DEVICE_WIDTH,
     height: DEVICE_HEIGHT,
     flex: 1,
@@ -91,7 +101,7 @@ const styles = StyleSheet.create({
     paddingTop: 200,
   },
   contentContainer: {
-    backgroundColor: 'white',
+    width: DEVICE_WIDTH * 0.9,
   },
   itemContainer: {
     padding: 6,
@@ -102,20 +112,15 @@ const styles = StyleSheet.create({
 
 export default function Record(): JSX.Element {
   const [bottomHeight, setBottomHeight] = useState<number>();
-  const [snapPoints, setSnapPoints] = useState<(number | string)[]>();
+  const [snapPoints, setSnapPoints] = useState<(number | string)[]>([
+    550,
+    '100%',
+  ]);
   const bottomRef = useRef<View>(null);
 
   // hooks
   const sheetRef = useRef<BottomSheet>(null);
 
-  // variables
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
   // const snapPoints = useMemo(() => ['50%', bottomHeight!, '100%'], []);
 
   // callbacks
@@ -143,7 +148,6 @@ export default function Record(): JSX.Element {
     if (bottomRef.current) {
       bottomRef.current.measureInWindow((x, y, width, height) => {
         console.log('height', height);
-        console.log('y', y);
         // setBottomHeight(height);
         if (height > 0) {
           setSnapPoints([height, '100%']);
@@ -178,29 +182,46 @@ export default function Record(): JSX.Element {
           #열정 #청춘 나싸피는 열정꾼이다 화이팅임
         </Text>
       </View>
+      {/* 태그 */}
+      <View style={stylesTag.container}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={stylesTag.scrollBox}
+        >
+          <Tag text='전체' />
+          <Tag text='전체전체' />
+          <Tag text='전체' />
+          <Tag text='전체' />
+          <Tag text='전체' />
+          <Tag text='전체' />
+          <Tag text='전체' />
+          <Tag text='전체' />
+        </ScrollView>
+      </View>
 
       {/* fake */}
-      <View style={styles.fake} ref={bottomRef}>
+      {/* <View style={styles.fake} ref={bottomRef}>
         <Text>ff</Text>
-      </View>
+      </View> */}
 
       {/* 피드 */}
       <View style={[stylesFeed.container, styles.container]}>
-        {/* <Button title='Snap To 90%' onPress={() => handleSnapPress(2)} />
-        <Button title='Snap To 50%' onPress={() => handleSnapPress(1)} />
-        <Button title='Snap To 25%' onPress={() => handleSnapPress(0)} />
-        <Button title='Close' onPress={() => handleClosePress()} /> */}
         {snapPoints && (
           <BottomSheet
             ref={sheetRef}
             index={0}
             snapPoints={snapPoints}
             onChange={handleSheetChange}
+            style={{ alignItems: 'center' }}
           >
             <BottomSheetScrollView
               contentContainerStyle={styles.contentContainer}
+              showsVerticalScrollIndicator={false}
             >
               {/* {data.map(renderItem)} */}
+              <ItemContainer />
+              <ItemContainer />
             </BottomSheetScrollView>
           </BottomSheet>
         )}
@@ -208,3 +229,4 @@ export default function Record(): JSX.Element {
     </SafeAreaView>
   );
 }
+
