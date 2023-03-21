@@ -1,5 +1,11 @@
 import React from 'react';
-import { Text, View, StyleSheet, FlatList, TextInput } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import theme from '../../utils/theme';
 
 // 나중에 다 분리하자.. ===================================================
@@ -83,12 +89,14 @@ type ItemProps = {
 
 // 각 카드를 어떻게 보여줄지 설정
 const Item = ({ id, nick, title, goal }: ItemProps) => (
-  <View style={styles.item}>
-    <Text>{nick}</Text>
-    <Text style={styles.title}>{title}</Text>
-    <Text>목표금액</Text>
-    <Text>{goal}원</Text>
-  </View>
+  <TouchableOpacity onPress={() => console.log('까꿍')}>
+    <View style={styles.item}>
+      <Text>{nick}</Text>
+      <Text style={styles.title}>{title}</Text>
+      <Text>목표금액</Text>
+      <Text>{goal}원</Text>
+    </View>
+  </TouchableOpacity>
 );
 // ========================================================================
 

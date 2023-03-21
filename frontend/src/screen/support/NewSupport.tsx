@@ -46,7 +46,6 @@ export default function NewSupport(): JSX.Element {
     hideDatePicker();
   };
 
-  const placeholder = '마감 날짜를 선택해주세요';
   const [text, setText] = useState<string>('');
   // ===========================================================
 
@@ -133,7 +132,10 @@ export default function NewSupport(): JSX.Element {
           </Text>
         </View>
         <View style={styles.img}>
-          <Button title='+' onPress={pickImage} />
+          {/* <Button title='+' onPress={pickImage} /> */}
+          <TouchableOpacity onPress={pickImage} style={styles.addImg}>
+            <Text>+</Text>
+          </TouchableOpacity>
           {/* {addImage && (
               <Image
                 source={{ uri: addImage }}
@@ -148,15 +150,14 @@ export default function NewSupport(): JSX.Element {
         <Text>마감기한</Text>
         {/* 이곳에는 date picker를 쓰고 싶은디..! */}
         <TouchableOpacity onPress={showDatePicker}>
-          <TextInput
+          {/* <TextInput
             pointerEvents='none'
-            placeholder={placeholder}
-            placeholderTextColor={theme.textColor.main}
             style={styles.textInput}
-            underlineColorAndroid={theme.mainColor.main}
+            // underlineColorAndroid={theme.mainColor.main} // 요거 밑줄인데 이미 있어서 뺄게~
             editable={false}
             value={text}
-          />
+          /> */}
+          <Text>📆</Text>
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode='date'
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
   },
   write: {
     color: theme.textColor.light,
-    marginVertical: 10,
+    marginVertical: 12,
     marginHorizontal: 20,
     borderBottomColor: theme.mainColor.light,
     borderBottomWidth: 2,
@@ -186,6 +187,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  addImg: {
+    alignItems: 'center',
+    borderColor: theme.grayColor.darkGray,
+    borderWidth: 1.5,
+    borderStyle: 'dotted',
+    margin: 1,
+    padding: 10,
+  },
   img: {
     flex: 1,
     width: 40,
@@ -193,7 +202,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 16,
-    color: '#000000',
+    color: theme.textColor.main,
     height: 50,
     width: 300,
     padding: 10,
