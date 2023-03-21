@@ -11,7 +11,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabNavigator from './src/navigator/TabNavigator';
 import Nav from './src/components/common/nav/Nav';
 import MainNavigator from './src/navigator/MainNavigator';
-import { SafeAreaView } from 'react-native';
+import 'react-native-gesture-handler';
 
 // SplashScreen.preventAutoHideAsync();
 
