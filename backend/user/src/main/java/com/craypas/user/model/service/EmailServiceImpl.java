@@ -25,11 +25,11 @@ public class EmailServiceImpl implements EmailService {
 		MimeMessage  message = emailSender.createMimeMessage();
 
 		message.addRecipients(RecipientType.TO, to);//보내는 대상
-		message.setSubject("Babble회원가입 이메일 인증");//제목
+		message.setSubject("이음 회원가입 이메일 인증");//제목
 
 		String msgg="";
 		msgg+= "<div style='margin:100px;'>";
-		msgg+= "<h1> 안녕하세요 Babble입니다. </h1>";
+		msgg+= "<h1> 안녕하세요 이음입니다. </h1>";
 		msgg+= "<br>";
 		msgg+= "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
 		msgg+= "<br>";
@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
 		msgg+= ePw+"</strong><div><br/> ";
 		msgg+= "</div>";
 		message.setText(msgg, "utf-8", "html");//내용
-		message.setFrom(new InternetAddress("properties email쓰세용!","Babble"));//보내는 사람
+		message.setFrom(new InternetAddress("${AdminMail.id}","이음"));//보내는 사람
 
 		return message;
 	}
