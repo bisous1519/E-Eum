@@ -14,14 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RestController
 public class AccountController {
-
 	private final EmailService emailService;
 
+	// 이메일 인증
 	@PostMapping("login/mailConfirm")
 	@ResponseBody
-	public String mailConfirm(@RequestParam String email) throws Exception {
+	String mailConfirm(@RequestParam("email") String email) throws Exception {
 		String code = emailService.sendSimpleMessage(email);
-		log.info("인증코드 : " + code);
+		System.out.println("인증코드 : " + code);
 		return code;
 	}
 }
