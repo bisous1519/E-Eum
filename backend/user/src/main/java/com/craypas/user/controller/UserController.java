@@ -27,10 +27,10 @@ public class UserController {
 	}
 
 	// 회원정보 조회
-	@GetMapping("/{uid}")
-	public ResponseEntity<?> getUser(){
-		// return new ResponseEntity<>()
-	}
+	// @GetMapping("/{uid}")
+	// public ResponseEntity<?> getUser(){
+	// 	// return new ResponseEntity<>()
+	// }
 
 	// 회원정보 수정
 	// 회원 탈퇴

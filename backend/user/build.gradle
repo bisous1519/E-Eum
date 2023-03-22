@@ -45,6 +45,8 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${querydslVer}"
     implementation "com.querydsl:querydsl-apt:${querydslVer}"
 
+    //이메일인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

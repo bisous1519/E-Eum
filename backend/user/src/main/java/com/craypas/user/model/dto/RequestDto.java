@@ -7,9 +7,8 @@ import lombok.Getter;
 public class RequestDto {
 	@Getter
 	public static class CreateUser {
-		private String email;
-		private String pin;
 		private String name;
+		private String email;
 		private String nickname;
 		private Integer gender;
 		private String imagePath;
@@ -21,6 +20,6 @@ public class RequestDto {
 
 	@Getter
 	public static class UpdateUser {
-		private String nickname
+		// private String nickname
 	}
 }
