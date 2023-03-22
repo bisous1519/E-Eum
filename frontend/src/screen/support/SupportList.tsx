@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import theme from '../../utils/theme';
 import * as Progress from 'react-native-progress';
+import PlusButton from '../../components/common/PlusButton';
+import useNav from '../../hooks/useNav';
 
 // 예시 프로필
 import sample from '../../assets/images/sample.png';
@@ -124,7 +126,13 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
 // ========================================================================
 
 // 초기 꿈후원 목록 화면
-export default function SupportList({ navigation }: any): JSX.Element {
+export default function SupportList(): JSX.Element {
+  const navigation = useNav();
+
+  const onPressPlusBtn = () => {
+    navigation.push('NewSupport');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.tempContainer}>
@@ -133,12 +141,6 @@ export default function SupportList({ navigation }: any): JSX.Element {
           onPress={() => navigation.push('SupportDetail')}
         >
           게시물 상세
-        </Text>
-        <Text
-          style={{ color: 'red' }}
-          onPress={() => navigation.push('NewSupport')}
-        >
-          신규 게시글
         </Text>
       </View>
       <FlatList
@@ -155,6 +157,7 @@ export default function SupportList({ navigation }: any): JSX.Element {
         keyExtractor={(item) => item.id.toString()}
         key={2}
       />
+      <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </View>
   );
 }

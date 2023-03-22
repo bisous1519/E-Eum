@@ -2,6 +2,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 
+// NOTE: navigate할 component / screen 이름 넣어둬~
 type NavigationPropsType = {
   BottleStack?: undefined;
   RecordStack?: undefined;
@@ -10,6 +11,8 @@ type NavigationPropsType = {
   Notice?: undefined;
   NewRecord?: undefined;
   Signup?: undefined;
+  SupportDetail?: undefined;
+  NewSupport?: undefined;
 };
 
 // type RootStackParamList = {
