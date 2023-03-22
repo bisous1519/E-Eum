@@ -1,4 +1,3 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import {
@@ -10,6 +9,8 @@ import {
   View,
 } from 'react-native';
 import theme from '../../../utils/theme';
+import { shadowStyle } from '../shadowStyle';
+import useNav from '../../../hooks/useNav';
 
 const styles = StyleSheet.create({
   navWrapper: {
@@ -68,16 +69,8 @@ const navItem: navItemType[] = [
   },
 ];
 
-type navigationPropsType = {
-  BottleStack?: undefined;
-  RecordStack?: undefined;
-  SupportStack?: undefined;
-  MypageStack?: undefined;
-  Notice?: undefined;
-};
-
 export default function Nav(): JSX.Element {
-  const navigation = useNavigation<NavigationProp<navigationPropsType>>();
+  const navigation = useNav();
   const [isOpenNav, setIsOpenNav] = useState<boolean>(false);
 
   const onPressNav = (): void => {
@@ -115,7 +108,10 @@ export default function Nav(): JSX.Element {
           />
         </View>
       )}
-      <Pressable style={styles.navButton} onPress={onPressNav}>
+      <Pressable
+        style={[styles.navButton, shadowStyle.shadow]}
+        onPress={onPressNav}
+      >
         <Feather name='menu' style={styles.navButtonIcon} />
       </Pressable>
     </View>
