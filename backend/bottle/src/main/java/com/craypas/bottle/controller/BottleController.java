@@ -44,7 +44,7 @@ public class BottleController {
 			String content = reqBottleDto.getContent();
 
 			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
-			ByteString audioContents = googleCloudService.getAudioContent(content);			// content에서 TTS를 통해 오디오 추출
+			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
 
 			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성
 
@@ -76,6 +76,18 @@ public class BottleController {
 	ResponseEntity<?> getAllByWriterId(@PathVariable("uid") Long writerId) {
 		try {
 			return new ResponseEntity<>(bottleService.findAllByWriterId(writerId), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@GetMapping("/{id}")
+	ResponseEntity<?> getDetailBottle(@PathVariable("id") Long id) {
+		try {
+			return new ResponseEntity<>(bottleService.findDetailReqBottle(id), HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {

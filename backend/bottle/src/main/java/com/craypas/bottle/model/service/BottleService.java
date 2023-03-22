@@ -9,8 +9,10 @@ import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
+import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.craypas.bottle.model.entity.ReqBottle;
+import com.craypas.bottle.model.repository.DetailReqBottleRepository;
 import com.craypas.bottle.model.repository.ReqBottleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class BottleService {
 
 	private final ReqBottleRepository reqBottleRepository;
+	private final DetailReqBottleRepository detailReqBottleRepository;
 
 	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto) throws Exception {
 		if (reqBottleDto.getWriterId() == null || reqBottleDto.getContent() == null || reqBottleDto.getType() == null || reqBottleDto.getSentiment() == null) {
@@ -39,5 +42,9 @@ public class BottleService {
 			summaryBottleDto.add(bottle.toSummaryBottleDto());
 		}
 		return summaryBottleDto;
+	}
+
+	public DetailReqBottleDto findDetailReqBottle(Long id) {
+		return detailReqBottleRepository.findDetailReqBottle(id);
 	}
 }
