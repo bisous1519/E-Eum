@@ -8,8 +8,11 @@ import {
   View,
   Button,
 } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import sample from '../../assets/images/sample.png';
 import theme from '../../utils/theme';
+import * as Progress from 'react-native-progress';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
@@ -21,8 +24,14 @@ export default function SupportDetail(): JSX.Element {
         <View>
           <Text style={styles.contentTitle}>후원 요청 내용</Text>
           <Text style={styles.etc}>인강사이트 개발자 강의 수강권</Text>
-          {/* 버튼 들어가실게요~~ */}
-          <Button title='참고링크'>참고링크</Button>
+          <TouchableOpacity
+            onPress={() => console.log('링크가 까꿍')}
+            activeOpacity={0.6}
+            style={styles.productLink}
+          >
+            {/* 여기 링크로 연결해줘야함 */}
+            <Text style={styles.linkText}>참고링크</Text>
+          </TouchableOpacity>
         </View>
 
         <View>
@@ -37,7 +46,15 @@ export default function SupportDetail(): JSX.Element {
 
         <View>
           <Text style={styles.contentTitle}>달성률</Text>
-          {/* 달성률 막대바 표시하기 */}
+          <View style={styles.goalBar}>
+            <Progress.Bar
+              progress={60 / 100}
+              width={280}
+              height={10}
+              color={theme.mainColor.main}
+            />
+            <Text>60%</Text>
+          </View>
         </View>
 
         <View>
@@ -46,6 +63,19 @@ export default function SupportDetail(): JSX.Element {
         </View>
 
         {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
+        <TouchableOpacity
+          onPress={() => console.log('프로필이 까꿍')}
+          activeOpacity={0.6}
+        >
+          <View style={styles.writerTag}>
+            <Image source={sample} style={styles.writerPicture} />
+            <View>
+              <Text style={styles.writerName}>나싸피임</Text>
+              <Text style={styles.writerIntro}>나는 있잖아요..</Text>
+            </View>
+            <MaterialIcons name='arrow-forward-ios' size={24} color='black' />
+          </View>
+        </TouchableOpacity>
 
         <Text style={styles.etc}>
           안녕하세요 저는 누구누군데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은
@@ -63,20 +93,53 @@ const styles = StyleSheet.create({
   innerContainer: {
     marginVertical: 15,
     marginHorizontal: 20,
-    alignItems: 'flex-start',
   },
   picture: {
     height: 230,
-    resizeMode: 'cover',
+    alignItems: 'stretch',
   },
   title: {
     fontSize: theme.fontSize.regular,
     fontWeight: theme.fontWeight.bold,
   },
+  productLink: {
+    backgroundColor: theme.mainColor.main,
+    borderRadius: 15,
+    padding: 5,
+    width: 100,
+  },
   contentTitle: {
     color: theme.textColor.light,
   },
+  linkText: {
+    fontSize: theme.fontSize.small,
+  },
   etc: {
     fontWeight: theme.fontWeight.regular,
+  },
+  writerTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 340,
+    backgroundColor: theme.mainColor.main,
+    padding: 20,
+    borderRadius: 10,
+  },
+  writerName: {
+    fontWeight: theme.fontWeight.bold,
+  },
+  writerIntro: {
+    color: theme.textColor.light,
+  },
+  writerPicture: {
+    width: 45,
+    height: 45,
+    borderRadius: 30,
+    marginRight: 10,
+  },
+  goalBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

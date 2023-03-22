@@ -98,7 +98,7 @@ type ItemProps = {
 const Item = ({ id, nick, title, goal }: ItemProps) => (
   <TouchableOpacity
     style={styles.item}
-    onPress={() => console.log('까꿍')}
+    onPress={() => console.log('디테일 스크린이 까꿍')}
     activeOpacity={0.6}
   >
     <View>

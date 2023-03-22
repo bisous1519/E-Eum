@@ -168,7 +168,6 @@ export default function NewSupport(): JSX.Element {
         </TouchableOpacity>
       </View>
       {/* 000. 등록버튼 */}
-      <ButtonComp />
     </ScrollView>
   );
 }
