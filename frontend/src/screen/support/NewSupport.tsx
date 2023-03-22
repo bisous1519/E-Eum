@@ -62,7 +62,8 @@ export default function NewSupport(): JSX.Element {
     });
     if (!result.canceled) {
       const prevImage = [...addImage];
-      prevImage.push(result.assets[0].uri); // 흠..일단 확인 ㄱㄱㄱ
+      // 흠..일단은 넣어보겠는데 나중에 확인 ㄱㄱㄱ
+      prevImage.push(result.assets[0].uri);
       setAddImage(prevImage);
     }
   };
@@ -80,7 +81,6 @@ export default function NewSupport(): JSX.Element {
       {/* 2. 내용 */}
       <View style={styles.write}>
         <Text>내용</Text>
-        {/* TextInput 말고 에디터 API 갖다 쓰자..! */}
         <RichEditor
           // ref={richText}
           placeholder='내용을 입력하세요'
@@ -164,6 +164,7 @@ export default function NewSupport(): JSX.Element {
             onConfirm={handleConfirm}
             onCancel={hideDatePicker}
           />
+          <Text>{due}</Text>
         </TouchableOpacity>
       </View>
       {/* 000. 등록버튼 */}
