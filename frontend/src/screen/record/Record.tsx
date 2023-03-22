@@ -1,17 +1,11 @@
-import React, {
-  useCallback,
-  useRef,
-  useMemo,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
-  Dimensions,
   Image,
   StyleSheet,
   Text,
   View,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -22,8 +16,10 @@ import ItemContainer from '../../components/record/ItemContainer';
 import Tag from '../../components/record/Tag';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
+import useDimension from '../../hooks/useDimension';
+import ModalComp from '../../components/common/ModalComp';
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
+const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const stylesContainer = StyleSheet.create({
   container: {
@@ -114,31 +110,27 @@ const styles = StyleSheet.create({
 
 export default function Record(): JSX.Element {
   const navigation = useNav();
+  const bottomRef = useRef<View>(null);
+  const sheetRef = useRef<BottomSheet>(null);
+  const [deleteModalOn, setDeleteModalOn] = useState<boolean>(false);
   const [bottomHeight, setBottomHeight] = useState<number>();
   const [snapPoints, setSnapPoints] = useState<(number | string)[]>([
     550,
     '100%',
   ]);
-  const bottomRef = useRef<View>(null);
-
-  // hooks
-  const sheetRef = useRef<BottomSheet>(null);
 
   // const snapPoints = useMemo(() => ['50%', bottomHeight!, '100%'], []);
 
-  // callbacks
-  const handleSheetChange = useCallback((index: any) => {
-    console.log('handleSheetChange', index);
-  }, []);
-  const handleSnapPress = useCallback((index: any) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    sheetRef.current?.close();
-  }, []);
-
+  const handleSheetChange = () => {
+    console.log('bottomSheet changed');
+  };
   const onPressPlusBtn = () => {
     navigation.push('NewRecord');
+  };
+  const onPressUpdate = () => {};
+  const onPressDelete = () => {
+    setDeleteModalOn((prev) => !prev);
+    console.log('삭제버튼');
   };
 
   // render
@@ -227,6 +219,13 @@ export default function Record(): JSX.Element {
               showsVerticalScrollIndicator={false}
             >
               {/* {data.map(renderItem)} */}
+
+              <Pressable onPress={onPressDelete}>
+                <Text>삭제</Text>
+              </Pressable>
+              <Pressable onPress={onPressUpdate}>
+                <Text>수정</Text>
+              </Pressable>
               <ItemContainer />
               <ItemContainer />
             </BottomSheetScrollView>
@@ -234,6 +233,7 @@ export default function Record(): JSX.Element {
         )}
       </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
+      {deleteModalOn && <ModalComp />}
     </SafeAreaView>
   );
 }

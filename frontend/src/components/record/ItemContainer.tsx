@@ -1,9 +1,7 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import theme from '../../utils/theme';
 import Item from './Item';
-
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
 const stylesFeed = StyleSheet.create({
   dateContainer: {},
@@ -56,4 +54,3 @@ export default function ItemContainer(): JSX.Element {
     </View>
   );
 }
-
