@@ -10,7 +10,7 @@ import logging
 logging.basicConfig(filename='bottle.log', level=logging.DEBUG)
 
 # 웹훅 URL
-url = "https://meeting.ssafy.com/hooks/jn79takmfbbepnodq9ssbhr8iw"
+url = "https://meeting.ssafy.com/hooks/dogefjnqrjf9zy1apf5b64ckxw"
 
 # 에러 로그 패턴을 정의
 error_pattern = "Caused by"
@@ -56,6 +56,6 @@ while True:
                 curl_command.extend([f"{k}: {v}"])
                 curl_command.extend(['-d', json.dumps(data), url])
                 result = subprocess.run(curl_command, capture_output=True, text=True)
-                logging.debug(f'======{time_str}======')
-                logging.debug(result)
+                logging.debug(time_str)
+                logging.debug(result.stdout)
 
