@@ -20,6 +20,8 @@ import TextComp from '../../components/common/TextComp';
 import theme from '../../utils/theme';
 import ItemContainer from '../../components/record/ItemContainer';
 import Tag from '../../components/record/Tag';
+import PlusButton from '../../components/common/PlusButton';
+import useNav from '../../hooks/useNav';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -111,6 +113,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Record(): JSX.Element {
+  const navigation = useNav();
   const [bottomHeight, setBottomHeight] = useState<number>();
   const [snapPoints, setSnapPoints] = useState<(number | string)[]>([
     550,
@@ -133,6 +136,10 @@ export default function Record(): JSX.Element {
   const handleClosePress = useCallback(() => {
     sheetRef.current?.close();
   }, []);
+
+  const onPressPlusBtn = () => {
+    navigation.push('NewRecord');
+  };
 
   // render
   const renderItem = useCallback(
@@ -226,7 +233,7 @@ export default function Record(): JSX.Element {
           </BottomSheet>
         )}
       </View>
+      <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </SafeAreaView>
   );
 }
-
