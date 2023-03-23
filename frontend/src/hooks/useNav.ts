@@ -2,13 +2,13 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 
-type NavigationPropsType = {
+type RootStackParamList = {
   BottleStack?: undefined;
   RecordStack?: undefined;
   SupportStack?: undefined;
   MypageStack?: undefined;
   Notice?: undefined;
-  NewRecord?: undefined;
+  RecordEditor?: { itemId: number } | undefined;
   Signup?: undefined;
 };
 
@@ -24,9 +24,9 @@ type NavigationPropsType = {
 // };
 
 export default function useNav() {
-  const useNav =
-    useNavigation<NativeStackNavigationProp<NavigationPropsType>>();
+  const useNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   //   const useNav =
   //     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return useNav;
 }
+

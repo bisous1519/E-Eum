@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -39,7 +39,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function NewRecord(): JSX.Element {
+type RecordEditorPropsType = {
+  route: {
+    params: { itemId?: number };
+  };
+};
+
+export default function RecordEditor({
+  route,
+}: RecordEditorPropsType): JSX.Element {
   const richText = useRef();
   const navigation = useNav();
   const [context, setContext] = useState<string>('');
@@ -52,6 +60,15 @@ export default function NewRecord(): JSX.Element {
   };
   const onPressSubmit = () => {};
 
+  useEffect(() => {
+    console.log(route.params);
+    if (route.params) {
+      // 수정하러 넘어온 애
+      console.log('수정화면');
+      setContext('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
+    }
+  }, []);
+
   return (
     <SafeAreaView style={styles.containerWrapper}>
       <View style={styles.container}>
@@ -62,6 +79,7 @@ export default function NewRecord(): JSX.Element {
         {/* 에디터 */}
         <View style={styles.editor}>
           <RichEditor
+            initialContentHTML={context}
             placeholder='내용을 입력하세요'
             initialFocus={false}
             useContainer={true}
@@ -97,3 +115,4 @@ export default function NewRecord(): JSX.Element {
     </SafeAreaView>
   );
 }
+

@@ -18,6 +18,7 @@ import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
 import useDimension from '../../hooks/useDimension';
 import ModalComp from '../../components/common/ModalComp';
+import DeleteModal from '../../components/record/DeleteModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -112,7 +113,7 @@ export default function Record(): JSX.Element {
   const navigation = useNav();
   const bottomRef = useRef<View>(null);
   const sheetRef = useRef<BottomSheet>(null);
-  const [deleteModalOn, setDeleteModalOn] = useState<boolean>(false);
+  const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [bottomHeight, setBottomHeight] = useState<number>();
   const [snapPoints, setSnapPoints] = useState<(number | string)[]>([
     550,
@@ -125,12 +126,11 @@ export default function Record(): JSX.Element {
     console.log('bottomSheet changed');
   };
   const onPressPlusBtn = () => {
-    navigation.push('NewRecord');
+    navigation.push('RecordEditor', { itemId: 3 });
   };
   const onPressUpdate = () => {};
-  const onPressDelete = () => {
-    setDeleteModalOn((prev) => !prev);
-    console.log('삭제버튼');
+  const onToggleDelete = () => {
+    setDeleteModal((prev) => !prev);
   };
 
   // render
@@ -220,7 +220,7 @@ export default function Record(): JSX.Element {
             >
               {/* {data.map(renderItem)} */}
 
-              <Pressable onPress={onPressDelete}>
+              <Pressable onPress={onToggleDelete}>
                 <Text>삭제</Text>
               </Pressable>
               <Pressable onPress={onPressUpdate}>
@@ -233,7 +233,8 @@ export default function Record(): JSX.Element {
         )}
       </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
-      {deleteModalOn && <ModalComp />}
+      {deleteModal && <DeleteModal onToggleDelete={onToggleDelete} />}
     </SafeAreaView>
   );
 }
+
