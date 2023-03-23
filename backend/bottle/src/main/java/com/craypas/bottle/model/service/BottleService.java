@@ -29,7 +29,7 @@ public class BottleService {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
 		// 내가 아닌 모든 유저나 자문단 유저 중에, 랜덤 3명 뽑기! 3명보다 적다면 그냥 다 데려와. -> 이거 유저서비스에서 해야함
-		
+
 		return reqBottleRepository.save(reqBottleDto.toEntity()).toCreatedDto();
 	}
 
@@ -45,6 +45,9 @@ public class BottleService {
 	}
 
 	public DetailReqBottleDto findDetailReqBottle(Long id) {
+		if (!reqBottleRepository.findById(id).isPresent()) {
+			throw new CustomException(ErrorCode.BOTTLE_NOT_FOUND);
+		}
 		return detailReqBottleRepository.findDetailReqBottle(id);
 	}
 }
