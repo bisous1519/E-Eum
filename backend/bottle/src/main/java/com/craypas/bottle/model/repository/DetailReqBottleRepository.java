@@ -29,16 +29,16 @@ public class DetailReqBottleRepository {
 			.from(reqBottle)
 			.leftJoin(reqBottle.userBottles, userBottle).on(userBottle.bottleId.eq(reqBottle.id))
 			.leftJoin(userBottle.resBottles, resBottle).on(resBottle.userBottleId.eq(userBottle.id))
-			.where(reqBottle.id.eq(3L))
+			.where(reqBottle.id.eq(id))
 			.transform(groupBy(reqBottle.id).as(new QDetailReqBottleDto(
 				reqBottle.id, reqBottle.content, reqBottle.type, reqBottle.sentiment, reqBottle.regTime, reqBottle.status,
 				list(new QResBottleDto(resBottle.id, resBottle.content, resBottle.regTime, resBottle.status))
 			)));
 
-		List<DetailReqBottleDto> aaa = resultMap.keySet().stream()
-			.map(resultMap::get)
-			.collect(toList());
-		System.out.println(aaa.get(0));
-		return null;
+		DetailReqBottleDto detailReqBottleDto = new DetailReqBottleDto();
+		if (!resultMap.isEmpty()) {
+			detailReqBottleDto = resultMap.values().iterator().next();
+		}
+		return detailReqBottleDto;
 	}
 }

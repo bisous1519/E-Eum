@@ -7,9 +7,9 @@ import java.util.List;
 import com.google.type.DateTime;
 import com.querydsl.core.annotations.QueryProjection;
 
-import lombok.ToString;
+import lombok.Getter;
 
-@ToString
+@Getter
 public class ResBottleDto {
 	private Long id;
 	private Long userNickname;

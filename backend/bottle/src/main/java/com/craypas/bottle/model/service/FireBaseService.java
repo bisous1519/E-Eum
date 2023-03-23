@@ -40,9 +40,10 @@ public class FireBaseService {
 		return "https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/" + folder + "%2F" + fileName + "?alt=media";
 	}
 
-	public void deleteFile(String fileName, String folder) {
+	public void deleteFile(String folder, String fileName) {
 		Storage storage = StorageOptions.getDefaultInstance().getService();
 		BlobId blobId = BlobId.of(bucketName, folder + "/" + fileName);
+		log.info(folder + "/" + fileName);
 		boolean deleted = storage.delete(blobId);
 		if (deleted) {
 			log.info("File was deleted.");
