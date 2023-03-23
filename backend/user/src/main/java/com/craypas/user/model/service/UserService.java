@@ -1,26 +1,26 @@
 package com.craypas.user.model.service;
 
-import com.craypas.user.model.dto.RequestDto;
-import com.craypas.user.model.dto.ResponseDto;
+import com.craypas.user.model.dto.user.RequestDto;
+import com.craypas.user.model.dto.user.ResponseDto;
 
 public interface UserService {
-	// 회원가입
+	// 회원정보 등록
 	ResponseDto.GetUser createUser(final RequestDto.CreateUser requestDto);
 
-	// 핀번호 활성여부 조회
-	Boolean isPinEnabled(final Long uid);
+	// 이메일 중복 확인
+	void isEmailUnique(final String email);
 
-	// 핀번호 체크
-	Boolean checkPin(final Long uid, final String pin);
+	// 이름 이메일 일치 조회
+	Boolean checkNameAndEmail(final String name, final String email);
 
-	// 핀번호 수정
-	void updatePin(final Long uid, final String pin);
+	// 꿈피드 회원정보 조회
+	ResponseDto.GetDreamFeedUser getDreamFeedUser(final Long uid);
 
-	// 회원정보 조회
-	ResponseDto.GetUser getUser(final Long uid);
+	// 회원 정보 수정
+	ResponseDto.GetUser updateUser(final Long uid, final RequestDto.UpdateUser requestDto);
 
-	// 회원정보 수정
-	ResponseDto.GetUser updateUser(final RequestDto.UpdateUser requestDto);
+	// 비밀번호 재설정
+	ResponseDto.GetUser updatePassword(final Long uid, final String password);
 
 	// 회원 탈퇴
 	void removeUser(final Long uid);
