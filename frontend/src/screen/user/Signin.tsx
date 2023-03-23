@@ -173,10 +173,10 @@ export default function Signin(): JSX.Element {
     navigation.push('Signup');
   };
 
-  const [userID, setUserID] = useState('');
-  const [userPW, setUserPW] = useState('');
+  const [userID, setUserID] = useState<string>('');
+  const [userPW, setUserPW] = useState<string>('');
 
-  const [showPW, setShowPW] = useState(false);
+  const [showPW, setShowPW] = useState<boolean>(false);
 
   const handleUserIDChange = (input: string) => {
     setUserID(input);
@@ -215,7 +215,7 @@ export default function Signin(): JSX.Element {
           ])}
         >
           <Image
-            style={StyleSheet.flatten([stylesLogo.logoImg])}
+            style={stylesLogo.logoImg}
             source={require('../../assets/images/logoWithText.png')}
           />
         </View>
@@ -238,7 +238,7 @@ export default function Signin(): JSX.Element {
               onChangeText={handleUserIDChange}
               value={userID}
               placeholder='EMAIL'
-              style={StyleSheet.flatten([stylesSignin.inputBoxID])}
+              style={stylesSignin.inputBoxID}
             ></TextInput>
           </View>
           <View
@@ -255,13 +255,13 @@ export default function Signin(): JSX.Element {
               onChangeText={handleUserPWChange}
               value={userPW}
               placeholder='PW'
-              style={StyleSheet.flatten([stylesSignin.inputBoxPW])}
+              style={stylesSignin.inputBoxPW}
             ></TextInput>
             <Pressable onPress={handleSetShowPW}>
               <MaterialIcons
                 name={showPW ? 'visibility' : 'visibility-off'}
                 size={24}
-                style={StyleSheet.flatten([stylesSignin.showPWIcon])}
+                style={stylesSignin.showPWIcon}
               />
             </Pressable>
           </View>
@@ -272,13 +272,8 @@ export default function Signin(): JSX.Element {
               stylesSignin.box,
             ])}
           >
-            <Pressable
-              onPress={handleSubmit}
-              style={StyleSheet.flatten([stylesSignin.loginButton])}
-            >
-              <Text style={StyleSheet.flatten([stylesSignin.loginButtonText])}>
-                로그인
-              </Text>
+            <Pressable onPress={handleSubmit} style={stylesSignin.loginButton}>
+              <Text style={stylesSignin.loginButtonText}>로그인</Text>
             </Pressable>
           </View>
           <View
@@ -297,7 +292,7 @@ export default function Signin(): JSX.Element {
             >
               <Pressable>
                 <Text
-                  style={StyleSheet.flatten([stylesSignin.dividedEaceText])}
+                  style={stylesSignin.dividedEaceText}
                   onPress={onPressSignup}
                 >
                   회원가입
@@ -311,11 +306,7 @@ export default function Signin(): JSX.Element {
               ])}
             >
               <Pressable>
-                <Text
-                  style={StyleSheet.flatten([stylesSignin.dividedEaceText])}
-                >
-                  비밀번호 찾기
-                </Text>
+                <Text style={stylesSignin.dividedEaceText}>비밀번호 찾기</Text>
               </Pressable>
             </View>
           </View>
@@ -334,15 +325,13 @@ export default function Signin(): JSX.Element {
               stylesSocialSignin.socialButtonFrame,
             ])}
           >
-            <Pressable style={StyleSheet.flatten([stylesTempBorder.Red])}>
+            <Pressable style={stylesTempBorder.Red}>
               <Image
                 source={require('../../assets/images/kakao_login_medium.png')}
               />
             </Pressable>
           </View>
-          <View
-            style={StyleSheet.flatten([stylesSocialSignin.dividedLine])}
-          ></View>
+          <View style={stylesSocialSignin.dividedLine}></View>
           <View
             testID='socialGoogle'
             style={StyleSheet.flatten([
@@ -350,7 +339,7 @@ export default function Signin(): JSX.Element {
               stylesSocialSignin.socialButtonFrame,
             ])}
           >
-            <Pressable style={StyleSheet.flatten([stylesTempBorder.Red])}>
+            <Pressable style={stylesTempBorder.Red}>
               <Image
                 source={require('../../assets/images/kakao_login_medium.png')}
               />
