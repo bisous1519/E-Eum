@@ -1,20 +1,14 @@
-import React, {
-  useCallback,
-  useRef,
-  useMemo,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import {
-  Dimensions,
   Image,
   StyleSheet,
   Text,
   View,
   ScrollView,
+  Pressable,
+  LayoutChangeEvent,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import InputComp from '../../components/common/input/InputComp';
 import TextComp from '../../components/common/TextComp';
 import theme from '../../utils/theme';
@@ -22,8 +16,12 @@ import ItemContainer from '../../components/record/ItemContainer';
 import Tag from '../../components/record/Tag';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
+import useDimension from '../../hooks/useDimension';
+import ModalComp from '../../components/common/ModalComp';
+import DeleteModal from '../../components/record/DeleteModal';
+import MockupDateGroupType from '../../models/record/mockupDateGroupType';
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
+const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const stylesContainer = StyleSheet.create({
   container: {
@@ -79,6 +77,7 @@ const stylesTag = StyleSheet.create({
     width: DEVICE_WIDTH * 0.8,
     height: 30,
     marginTop: 30,
+    position: 'absolute',
   },
   scrollBox: {
     alignItems: 'center',
@@ -112,62 +111,81 @@ const styles = StyleSheet.create({
   },
 });
 
+const mockup: MockupDateGroupType[] = [
+  {
+    regTime: '23.03.11',
+    list: [
+      {
+        regTime: '23.03.11',
+        id: 0,
+        tag: '꿈',
+        content:
+          '구글 개발자 인터뷰를 봤다. 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
+      },
+      {
+        regTime: '23.03.11',
+        id: 1,
+        tag: '꿈',
+        content: '안웅장하다',
+      },
+      {
+        regTime: '23.03.11',
+        id: 2,
+        tag: '꿈',
+        content: '멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
+      },
+    ],
+  },
+  {
+    regTime: '23.03.10',
+    list: [
+      {
+        regTime: '23.03.11',
+        id: 0,
+        tag: '꿈',
+        content: '구글 개발자 인터뷰를 봤다.',
+      },
+      {
+        regTime: '23.03.11',
+        id: 1,
+        tag: '꿈',
+        content: '안웅장하다 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
+      },
+    ],
+  },
+];
+
 export default function Record(): JSX.Element {
   const navigation = useNav();
-  const [bottomHeight, setBottomHeight] = useState<number>();
-  const [snapPoints, setSnapPoints] = useState<(number | string)[]>([
-    550,
-    '100%',
-  ]);
-  const bottomRef = useRef<View>(null);
-
-  // hooks
   const sheetRef = useRef<BottomSheet>(null);
+  const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  const [profileHeight, setProfileHeight] = useState<number>(0);
+  const [tagHeight, setTagHeight] = useState<number>(0);
 
-  // const snapPoints = useMemo(() => ['50%', bottomHeight!, '100%'], []);
-
-  // callbacks
-  const handleSheetChange = useCallback((index: any) => {
-    console.log('handleSheetChange', index);
-  }, []);
-  const handleSnapPress = useCallback((index: any) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
-  const handleClosePress = useCallback(() => {
-    sheetRef.current?.close();
-  }, []);
-
-  const onPressPlusBtn = () => {
-    navigation.push('NewRecord');
+  const onLayoutProfile = (e: LayoutChangeEvent) => {
+    const { height } = e.nativeEvent.layout;
+    setProfileHeight(height);
+  };
+  const onLayoutTag = (e: LayoutChangeEvent) => {
+    const { height } = e.nativeEvent.layout;
+    setTagHeight(height);
   };
 
-  // render
-  const renderItem = useCallback(
-    (item: any) => (
-      <View key={item} style={styles.itemContainer}>
-        <Text>{item}</Text>
-      </View>
-    ),
-    []
-  );
-  useEffect(() => {
-    console.log(1);
-    if (bottomRef.current) {
-      bottomRef.current.measureInWindow((x, y, width, height) => {
-        console.log('height', height);
-        // setBottomHeight(height);
-        if (height > 0) {
-          setSnapPoints([height, '100%']);
-          console.log(2);
-        }
-      });
-    }
-  }, []);
+  const handleSheetChange = (idx: number) => {
+    console.log('bottomSheet changed', idx);
+  };
+  const onPressPlusBtn = () => {
+    navigation.push('RecordEditor', { itemId: 3 });
+  };
+  const onToggleDelete = () => {
+    console.log('삭제!!!!!');
+    setDeleteModal((prev) => !prev);
+  };
 
   return (
-    <SafeAreaView style={stylesContainer.container}>
+    <View style={stylesContainer.container}>
       {/* 프로필 */}
-      <View style={stylesProfile.container}>
+      <View style={stylesProfile.container} onLayout={onLayoutProfile}>
         <Text style={stylesProfile.nickName}>나싸피임</Text>
         <View style={stylesProfile.infoWrapper}>
           <Image
@@ -189,8 +207,48 @@ export default function Record(): JSX.Element {
           #열정 #청춘 나싸피는 열정꾼이다 화이팅임
         </Text>
       </View>
+
+      {/* 피드 */}
+      <View
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
+      >
+        {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? (
+          <BottomSheet
+            ref={sheetRef}
+            index={0}
+            snapPoints={[
+              DEVICE_HEIGHT - (profileHeight + tagHeight + 50),
+              '100%',
+            ]}
+            onChange={handleSheetChange}
+            style={{ alignItems: 'center' }}
+          >
+            <BottomSheetFlatList
+              contentContainerStyle={styles.contentContainer}
+              showsVerticalScrollIndicator={false}
+              data={mockup}
+              renderItem={({ item }) => (
+                <ItemContainer
+                  regTime={item.regTime}
+                  list={item.list}
+                  onToggleDelete={onToggleDelete}
+                />
+              )}
+            />
+          </BottomSheet>
+        ) : (
+          <></>
+        )}
+      </View>
+
       {/* 태그 */}
-      <View style={stylesTag.container}>
+      <View
+        style={StyleSheet.flatten([
+          stylesTag.container,
+          { top: profileHeight },
+        ])}
+        onLayout={onLayoutTag}
+      >
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -203,37 +261,12 @@ export default function Record(): JSX.Element {
           <Tag text='전체' />
           <Tag text='전체' />
           <Tag text='전체' />
-          <Tag text='전체' />
+          <Tag text='+' />
         </ScrollView>
       </View>
-
-      {/* fake */}
-      {/* <View style={styles.fake} ref={bottomRef}>
-        <Text>ff</Text>
-      </View> */}
-
-      {/* 피드 */}
-      <View style={[stylesFeed.container, styles.container]}>
-        {snapPoints && (
-          <BottomSheet
-            ref={sheetRef}
-            index={0}
-            snapPoints={snapPoints}
-            onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}
-          >
-            <BottomSheetScrollView
-              contentContainerStyle={styles.contentContainer}
-              showsVerticalScrollIndicator={false}
-            >
-              {/* {data.map(renderItem)} */}
-              <ItemContainer />
-              <ItemContainer />
-            </BottomSheetScrollView>
-          </BottomSheet>
-        )}
-      </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
-    </SafeAreaView>
+      {deleteModal && <DeleteModal onToggleDelete={onToggleDelete} />}
+    </View>
   );
 }
+

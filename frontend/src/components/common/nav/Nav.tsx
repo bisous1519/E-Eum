@@ -109,7 +109,7 @@ export default function Nav(): JSX.Element {
         </View>
       )}
       <Pressable
-        style={[styles.navButton, shadowStyle.shadow]}
+        style={StyleSheet.flatten([styles.navButton, shadowStyle.shadow])}
         onPress={onPressNav}
       >
         <Feather name='menu' style={styles.navButtonIcon} />
