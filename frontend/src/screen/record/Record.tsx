@@ -212,7 +212,7 @@ export default function Record(): JSX.Element {
       <View
         style={StyleSheet.flatten([stylesFeed.container, styles.container])}
       >
-        {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 && (
+        {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
             index={0}
@@ -236,6 +236,8 @@ export default function Record(): JSX.Element {
               )}
             />
           </BottomSheet>
+        ) : (
+          <></>
         )}
       </View>
 
@@ -267,3 +269,4 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
+

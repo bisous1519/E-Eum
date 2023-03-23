@@ -59,6 +59,7 @@ export default function ItemContainer({
           {list &&
             list.map((item) => (
               <SwipeableItem
+                key={item.id}
                 id={item.id}
                 regTime={item.regTime}
                 tag={item.tag}
@@ -71,3 +72,4 @@ export default function ItemContainer({
     </View>
   );
 }
+

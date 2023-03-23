@@ -31,10 +31,9 @@ export default function Tag({ text }: TagPropsType): JSX.Element {
     console.log('tag 클릭');
   };
   return (
-    <Pressable style={styles.basicBox}>
-      <Text style={styles.text} onPress={onPressTag}>
-        {text}
-      </Text>
+    <Pressable style={styles.basicBox} onPress={onPressTag}>
+      <Text style={styles.text}>{text}</Text>
     </Pressable>
   );
 }
+

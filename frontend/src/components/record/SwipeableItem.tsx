@@ -8,6 +8,7 @@ import {
   ViewComponent,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import useNav from '../../hooks/useNav';
 import MockupItemType from '../../models/record/mockupItemType';
 import theme from '../../utils/theme';
 import DeleteModal from './DeleteModal';
@@ -62,6 +63,7 @@ export default function SwipeableItem({
   content,
   onToggleDelete,
 }: SwipeablePropsType): JSX.Element {
+  const navigation = useNav();
   const swipeableRef = useRef<Swipeable>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
 
@@ -71,6 +73,30 @@ export default function SwipeableItem({
   };
   const onPressUpdate = () => {
     console.log('수정!!!!!');
+    swipeableRef.current?.close();
+  };
+  const onPressDelete = () => {
+    swipeableRef.current?.close();
+    onToggleDelete();
+  };
+  const onPressSupport = () => {
+    swipeableRef.current?.close();
+    navigation.push('RecordEditor');
+  };
+
+  const renderRightActions = (): JSX.Element => {
+    return (
+      <Pressable
+        onPress={onPressSupport}
+        style={StyleSheet.flatten([
+          stylesRenderLeft.rec,
+          stylesRenderLeft.update,
+          { height: contentHeight },
+        ])}
+      >
+        <Text style={stylesRenderLeft.text}>후원</Text>
+      </Pressable>
+    );
   };
 
   const renderLeftActions = (): JSX.Element => {
@@ -87,7 +113,7 @@ export default function SwipeableItem({
           <Text style={stylesRenderLeft.text}>수정</Text>
         </Pressable>
         <Pressable
-          onPress={onToggleDelete}
+          onPress={onPressDelete}
           style={StyleSheet.flatten([
             stylesRenderLeft.rec,
             stylesRenderLeft.delete,
@@ -105,12 +131,15 @@ export default function SwipeableItem({
       friction={1}
       rightThreshold={30}
       overshootRight={false}
+      overshootLeft={false}
       renderLeftActions={renderLeftActions}
+      renderRightActions={renderRightActions}
     >
       <View onLayout={onLayout} style={stylesFeed.content}>
-        <Text style={stylesFeed.tag}># {tag}</Text>
-        <Text style={stylesFeed.text}>{content}</Text>
+        <Text style={stylesFeed.tag}># {tag.toString()}</Text>
+        <Text style={stylesFeed.text}>{content.toString()}</Text>
       </View>
     </Swipeable>
   );
 }
+
