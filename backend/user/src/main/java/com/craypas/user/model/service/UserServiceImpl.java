@@ -13,6 +13,24 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	// 핀번호 활성여부 조회
+	@Override
+	public Boolean isPinEnabled(final Long uid){
+		return null;
+	}
+
+	// 핀번호 체크
+	@Override
+	public Boolean checkPin(final Long uid, final String pin){
+		return null;
+	}
+
+	// 핀번호 수정
+	@Override
+	public void updatePin(final Long uid, final String pin){
+
+	}
+
 	// 회원정보 조회
 	@Override
 	public ResponseDto.GetUser getUser(Long uid) {

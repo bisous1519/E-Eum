@@ -4,8 +4,17 @@ import com.craypas.user.model.dto.RequestDto;
 import com.craypas.user.model.dto.ResponseDto;
 
 public interface UserService {
-	// 회원정보 등록
+	// 회원가입
 	ResponseDto.GetUser createUser(final RequestDto.CreateUser requestDto);
+
+	// 핀번호 활성여부 조회
+	Boolean isPinEnabled(final Long uid);
+
+	// 핀번호 체크
+	Boolean checkPin(final Long uid, final String pin);
+
+	// 핀번호 수정
+	void updatePin(final Long uid, final String pin);
 
 	// 회원정보 조회
 	ResponseDto.GetUser getUser(final Long uid);
