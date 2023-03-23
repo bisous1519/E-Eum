@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import theme from '../../utils/theme';
 
 const styles = StyleSheet.create({
@@ -27,10 +27,14 @@ type TagPropsType = {
 };
 
 export default function Tag({ text }: TagPropsType): JSX.Element {
+  const onPressTag = () => {
+    console.log('tag 클릭');
+  };
   return (
-    <View style={styles.basicBox}>
-      <Text style={styles.text}>{text}</Text>
-    </View>
+    <Pressable style={styles.basicBox}>
+      <Text style={styles.text} onPress={onPressTag}>
+        {text}
+      </Text>
+    </Pressable>
   );
 }
-
