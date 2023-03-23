@@ -11,10 +11,7 @@ export type ThemeType = {
     error: string;
   };
   background: string;
-  layerColor: {
-    color: string;
-    opacity: number;
-  };
+  layerColor: string;
   grayColor: {
     darkGray: string; // 그냥 mainGray
     lightGray: string; // 핀번호 / 경계(line)
@@ -57,10 +54,7 @@ export const theme: ThemeType = {
     white: '#fcfcfc',
   },
   background: '#fcfcfc',
-  layerColor: {
-    color: '#1c1c1c',
-    opacity: 0.65,
-  },
+  layerColor: 'rgba(28, 28, 28, 0.65)',
   grayColor: {
     darkGray: '#808080', // 그냥 mainGray
     lightGray: '#eeeeee', // 핀번호 / 경계(line)
@@ -91,3 +85,4 @@ export const theme: ThemeType = {
 };
 
 export default theme;
+
