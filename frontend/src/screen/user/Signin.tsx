@@ -298,6 +298,7 @@ export default function Signin(): JSX.Element {
               <Pressable>
                 <Text
                   style={StyleSheet.flatten([stylesSignin.dividedEaceText])}
+                  onPress={onPressSignup}
                 >
                   회원가입
                 </Text>
