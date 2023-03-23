@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+// Radio Button
+import { RadioButton } from 'react-native-paper';
+
 // Text Editor
 import {
   actions,
@@ -27,6 +30,10 @@ import theme from '../../utils/theme';
 
 // 신규 게시물
 export default function NewSupport(): JSX.Element {
+  // 체크된 태그를 표시 =========================================
+  const [checked, setChecked] = useState<string>('');
+  const [tag, setTag] = useState<string>('');
+  // ===========================================================
   const [title, setTitle] = useState<string>('');
   const [context, setContext] = useState<string>('');
   const [link, setLink] = useState<string>('');
@@ -70,6 +77,40 @@ export default function NewSupport(): JSX.Element {
 
   return (
     <ScrollView style={styles.container}>
+      {/* 0. 후원 태그(분야) 선택 */}
+      <View style={styles.write}>
+        <View style={styles.guideline}>
+          <Text>태그 지정</Text>
+          <Text style={{ fontSize: 8, marginLeft: 5 }}>
+            * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
+          </Text>
+        </View>
+        {/* 안예쁜데..?;;; 걍 태그 모양으로 넣자..일단 틀만 잡아놓고..;; */}
+        <RadioButton.Group onValueChange={(tag) => setTag(tag)} value={tag}>
+          <RadioButton.Item
+            label='1번 선택지'
+            value='first'
+            color={theme.mainColor.dark}
+          />
+          <RadioButton.Item
+            label='2번 선택지'
+            value='second'
+            color={theme.mainColor.dark}
+          />
+        </RadioButton.Group>
+        {/* <RadioButton
+          value='first'
+          status={checked === 'first' ? 'checked' : 'unchecked'}
+          color={theme.mainColor.dark}
+          onPress={() => setChecked('first')}
+        />
+        <RadioButton
+          value='second'
+          status={checked === 'second' ? 'checked' : 'unchecked'}
+          color={theme.mainColor.dark}
+          onPress={() => setChecked('second')}
+        /> */}
+      </View>
       {/* 1. 제목 */}
       <View style={styles.write}>
         <Text>제목</Text>
