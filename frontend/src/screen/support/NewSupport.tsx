@@ -57,7 +57,7 @@ export default function NewSupport(): JSX.Element {
   // ===========================================================
 
   const [addImage, setAddImage] = useState<string[]>([]);
-  const richText = React.useRef();
+  const richText = React.useRef<RichEditor>(null);
 
   // ImagePicker 사용을 위한 부분
   const pickImage = async () => {
@@ -77,10 +77,18 @@ export default function NewSupport(): JSX.Element {
 
   return (
     <ScrollView style={styles.container}>
+      {/* 1. 제목 */}
+      <View style={styles.write}>
+        <Text>제목</Text>
+        <TextInput
+          placeholder='제목을 입력하세요'
+          onChangeText={(e) => setTitle(e)}
+        />
+      </View>
       {/* 0. 후원 태그(분야) 선택 */}
       <View style={styles.write}>
         <View style={styles.guideline}>
-          <Text>태그 지정</Text>
+          <Text>태그 선택</Text>
           <Text style={{ fontSize: 8, marginLeft: 5 }}>
             * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
           </Text>
@@ -88,12 +96,12 @@ export default function NewSupport(): JSX.Element {
         {/* 안예쁜데..?;;; 걍 태그 모양으로 넣자..일단 틀만 잡아놓고..;; */}
         <RadioButton.Group onValueChange={(tag) => setTag(tag)} value={tag}>
           <RadioButton.Item
-            label='1번 선택지'
+            label='안예쁘네'
             value='first'
             color={theme.mainColor.dark}
           />
           <RadioButton.Item
-            label='2번 선택지'
+            label='태그로바꾼다'
             value='second'
             color={theme.mainColor.dark}
           />
@@ -111,19 +119,11 @@ export default function NewSupport(): JSX.Element {
           onPress={() => setChecked('second')}
         /> */}
       </View>
-      {/* 1. 제목 */}
-      <View style={styles.write}>
-        <Text>제목</Text>
-        <TextInput
-          placeholder='제목을 입력하세요'
-          onChangeText={(e) => setTitle(e)}
-        />
-      </View>
       {/* 2. 내용 */}
       <View style={styles.write}>
         <Text>내용</Text>
         <RichEditor
-          // ref={richText}
+          ref={richText}
           placeholder='내용을 입력하세요'
           initialHeight={250}
           editorStyle={{ backgroundColor: theme.grayColor.lightGray }}

@@ -56,4 +56,3 @@ export default function ItemContainer(): JSX.Element {
     </View>
   );
 }
-

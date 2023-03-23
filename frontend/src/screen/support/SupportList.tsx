@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import theme from '../../utils/theme';
 import * as Progress from 'react-native-progress';
@@ -14,6 +15,8 @@ import useNav from '../../hooks/useNav';
 
 // 예시 프로필
 import sample from '../../assets/images/sample.png';
+
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
 // 나중에 다 분리하자.. ===================================================
 // 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
@@ -179,7 +182,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 8,
+    borderRadius: 15,
     flex: 1,
   },
   // 후원 카드에 표시되는 '제목'
