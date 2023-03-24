@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
+  ScrollView,
 } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import theme from '../../utils/theme';
 import { Feather } from '@expo/vector-icons';
@@ -19,20 +20,23 @@ const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 const stylesTempBorder = StyleSheet.create({
   //일반 보더 확인용
   Red: {
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   Blue: {
-    borderWidth: 1,
-    borderColor: 'blue',
+    // borderWidth: 1,
+    // borderColor: 'blue',
   },
   Yellow: {
-    borderWidth: 1,
-    borderColor: 'yellow',
+    // borderWidth: 1,
+    // borderColor: 'yellow',
   },
 });
 
 const stylesGlobalContainer = StyleSheet.create({
+  scrollContainer: {
+    backgroundColor: theme.background,
+  },
   //가장 큰 페이지
   container: {
     flex: 1,
@@ -40,7 +44,7 @@ const stylesGlobalContainer = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.background,
     padding: 0,
-    margin: 0,
+    marginBottom: 300,
   },
 });
 
@@ -67,13 +71,15 @@ const stylesSignupInput = StyleSheet.create({
     borderBottomColor: theme.mainColor.main,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    paddingBottom: 10,
+    height: 60,
   },
   inputStyle: {
     fontSize: theme.fontSize.regular,
-    borderWidth: 1,
-    borderColor: 'red',
-    height: '100%',
+    // borderWidth: 1,
+    // borderColor: 'red',
+    height: 35,
     flex: 1,
     paddingTop: 2,
     paddingBottom: 2,
@@ -87,8 +93,8 @@ const stylesSignupInput = StyleSheet.create({
   buttonInnerText: {
     textAlign: 'center',
     lineHeight: 30,
-    color: '#474747',
-    fontSize: 12,
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.small,
   },
   timeLeft: {
     color: '#949494',
@@ -99,29 +105,52 @@ const stylesSignupInput = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
   },
-  selectGenderContainer: {
+  noInputTextContainer: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    width: '100%',
+    marginTop: 20,
+    marginBottom: 10,
   },
-  selectGenderBox: {
+  noInputTextBox: {
     flexDirection: 'column',
-    paddingLeft: 30,
+    paddingLeft: 40,
   },
-  selectGenderButton: {
-    width: 15,
-    height: 15,
+  noInputTextTitle: {
+    fontSize: theme.fontSize.regular,
+    color: theme.textColor.light,
+  },
+  noInputTextSelectionButton: {
+    width: 18,
+    height: 18,
     borderRadius: 20,
     // borderWidth: 0.5,
     // borderColor: 'black',
     marginRight: 10,
   },
-  selectGenderSelections: {
+  noInputTextSelections: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 5,
   },
-  selectGenderSelectionsText: {
-    color: 'red',
+  noInputTextSelectionText: {
+    fontSize: theme.fontSize.regular,
     fontFamily: theme.fontFamily.main,
+  },
+  addProfileImageButton: {
+    backgroundColor: theme.grayColor.lightGray,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderRadius: 10,
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  addProfileImageButtonText: {
+    color: theme.textColor.light,
+    fontSize: theme.fontSize.big,
   },
 });
 
@@ -133,6 +162,8 @@ export default function Signup(): JSX.Element {
   const [userVerifPW, setUserVerifPW] = useState<string>('');
   const [userNickName, setUserNickName] = useState<string>('');
   const [userGender, setUserGender] = useState<string>('');
+  const [userProfileImage, setUserProfileImage] = useState<string>('');
+  const [userType, setUserType] = useState<string>('');
 
   const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
   const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
@@ -198,214 +229,320 @@ export default function Signup(): JSX.Element {
     setUserGender(input);
   };
 
+  //프로필 사진 관련
+
+  //회원 구분 관련
+  const handleUserType = (input: string) => {
+    setUserType(input);
+  };
+
   return (
-    <View
-      style={StyleSheet.flatten([
-        stylesTempBorder.Blue,
-        stylesGlobalContainer.container,
-      ])}
-    >
+    <ScrollView style={stylesGlobalContainer.scrollContainer}>
       <View
-        testID='inner'
         style={StyleSheet.flatten([
-          stylesTempBorder.Red,
-          stylesInnerContainer.container,
+          stylesTempBorder.Blue,
+          stylesGlobalContainer.container,
         ])}
       >
         <View
+          testID='inner'
           style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.box,
+            stylesTempBorder.Red,
+            stylesInnerContainer.container,
           ])}
         >
-          <TextInput
-            testID='inputName'
-            onChangeText={handleUserName}
-            value={userName}
-            placeholder='이름 (~8자)'
-            maxLength={8}
-            style={stylesSignupInput.inputStyle}
-          ></TextInput>
-        </View>
-        <View
-          style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.box,
-          ])}
-        >
-          <TextInput
-            testID='inputEmail'
-            onChangeText={handleUserEmail}
-            value={userEmail}
-            placeholder='이메일'
-            style={stylesSignupInput.inputStyle}
-          ></TextInput>
-          <Pressable onPress={handleTimeLeft} style={stylesSignupInput.button}>
-            <Text style={stylesSignupInput.buttonInnerText}>인증</Text>
-          </Pressable>
-        </View>
-        <View
-          style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.box,
-          ])}
-        >
-          <TextInput
-            testID='inputVerifCode'
-            onChangeText={handleVerifCode}
-            value={verifCode}
-            placeholder='코드 입력'
-            style={stylesSignupInput.inputStyle}
-          ></TextInput>
-          <Text style={stylesSignupInput.timeLeft}>{`${Math.floor(timeLeft / 60)
-            .toString()
-            .padStart(2, '0')}:${(timeLeft % 60)
-            .toString()
-            .padStart(2, '0')}`}</Text>
-          <Pressable style={stylesSignupInput.button}>
-            <Text style={stylesSignupInput.buttonInnerText}>확인</Text>
-          </Pressable>
-        </View>
-        <View
-          style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.box,
-          ])}
-        >
-          <TextInput
-            testID='inputPW'
-            onChangeText={handleUserPW}
-            value={userPW}
-            placeholder='비밀번호'
-            secureTextEntry={true}
-            maxLength={16}
-            style={stylesSignupInput.inputStyle}
-          ></TextInput>
-          <View style={stylesSignupInput.checkIcon}>
-            <Feather
-              name='check-circle'
-              size={24}
-              color={
-                checkRegexPW
-                  ? theme.mainColor.main
-                  : userPW === ''
-                  ? theme.textColor.light
-                  : theme.textColor.error
-              }
-            />
-          </View>
-        </View>
-        <View
-          style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.box,
-          ])}
-        >
-          <TextInput
-            testID='inputVerifPW'
-            onChangeText={handleUserVerifPW}
-            value={userVerifPW}
-            placeholder='비밀번호 확인'
-            secureTextEntry={true}
-            maxLength={16}
-            style={stylesSignupInput.inputStyle}
-          ></TextInput>
-          <View style={stylesSignupInput.checkIcon}>
-            <Feather
-              name='check-circle'
-              size={24}
-              color={
-                checkSamePW
-                  ? theme.mainColor.main
-                  : userVerifPW === ''
-                  ? theme.textColor.light
-                  : theme.textColor.error
-              }
-            />
-          </View>
-        </View>
-        <View
-          style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.box,
-          ])}
-        >
-          <TextInput
-            testID='inputNickName'
-            onChangeText={handleUserNickName}
-            value={userNickName}
-            placeholder='닉네임'
-            maxLength={10}
-            style={stylesSignupInput.inputStyle}
-          ></TextInput>
-        </View>
-        <View
-          style={StyleSheet.flatten([
-            stylesTempBorder.Yellow,
-            stylesSignupInput.selectGenderContainer,
-          ])}
-        >
-          <Text>성별</Text>
           <View
             style={StyleSheet.flatten([
-              stylesTempBorder.Blue,
-              stylesSignupInput.selectGenderBox,
+              stylesTempBorder.Yellow,
+              stylesSignupInput.box,
             ])}
           >
-            <View style={stylesSignupInput.selectGenderSelections}>
-              <Pressable
-                onPress={() => handleGender('Female')}
-                style={[
-                  stylesSignupInput.selectGenderButton,
-                  {
-                    backgroundColor:
-                      userGender === 'Female'
-                        ? theme.mainColor.main
-                        : theme.grayColor.lightGray,
-                  },
-                ]}
-              ></Pressable>
-              <Text style={stylesSignupInput.selectGenderSelectionsText}>
-                여성
-              </Text>
-            </View>
-            <View style={stylesSignupInput.selectGenderSelections}>
-              <Pressable
-                onPress={() => handleGender('Male')}
-                style={[
-                  stylesSignupInput.selectGenderButton,
-                  {
-                    backgroundColor:
-                      userGender === 'Male'
-                        ? theme.mainColor.main
-                        : theme.grayColor.lightGray,
-                  },
-                ]}
-              ></Pressable>
-              <Text style={stylesSignupInput.selectGenderSelectionsText}>
-                남성
-              </Text>
-            </View>
-            <View style={stylesSignupInput.selectGenderSelections}>
-              <Pressable
-                onPress={() => handleGender('None')}
-                style={[
-                  stylesSignupInput.selectGenderButton,
-                  {
-                    backgroundColor:
-                      userGender === 'None'
-                        ? theme.mainColor.main
-                        : theme.grayColor.lightGray,
-                  },
-                ]}
-              ></Pressable>
-              <Text style={stylesSignupInput.selectGenderSelectionsText}>
-                선택 안 함
-              </Text>
+            <TextInput
+              testID='inputName'
+              onChangeText={handleUserName}
+              value={userName}
+              placeholder='이름 (~8자)'
+              maxLength={8}
+              style={stylesSignupInput.inputStyle}
+            ></TextInput>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.box,
+            ])}
+          >
+            <TextInput
+              testID='inputEmail'
+              onChangeText={handleUserEmail}
+              value={userEmail}
+              placeholder='이메일'
+              style={stylesSignupInput.inputStyle}
+            ></TextInput>
+            <Pressable
+              onPress={handleTimeLeft}
+              style={stylesSignupInput.button}
+            >
+              <Text style={stylesSignupInput.buttonInnerText}>인증</Text>
+            </Pressable>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.box,
+            ])}
+          >
+            <TextInput
+              testID='inputVerifCode'
+              onChangeText={handleVerifCode}
+              value={verifCode}
+              placeholder='코드 입력'
+              style={stylesSignupInput.inputStyle}
+            ></TextInput>
+            <Text style={stylesSignupInput.timeLeft}>{`${Math.floor(
+              timeLeft / 60
+            )
+              .toString()
+              .padStart(2, '0')}:${(timeLeft % 60)
+              .toString()
+              .padStart(2, '0')}`}</Text>
+            <Pressable style={stylesSignupInput.button}>
+              <Text style={stylesSignupInput.buttonInnerText}>확인</Text>
+            </Pressable>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.box,
+            ])}
+          >
+            <TextInput
+              testID='inputPW'
+              onChangeText={handleUserPW}
+              value={userPW}
+              placeholder='비밀번호'
+              secureTextEntry={true}
+              maxLength={16}
+              style={stylesSignupInput.inputStyle}
+            ></TextInput>
+            <View style={stylesSignupInput.checkIcon}>
+              <Feather
+                name='check-circle'
+                size={24}
+                color={
+                  checkRegexPW
+                    ? theme.mainColor.main
+                    : userPW === ''
+                    ? theme.textColor.light
+                    : theme.textColor.error
+                }
+              />
             </View>
           </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.box,
+            ])}
+          >
+            <TextInput
+              testID='inputVerifPW'
+              onChangeText={handleUserVerifPW}
+              value={userVerifPW}
+              placeholder='비밀번호 확인'
+              secureTextEntry={true}
+              maxLength={16}
+              style={stylesSignupInput.inputStyle}
+            ></TextInput>
+            <View style={stylesSignupInput.checkIcon}>
+              <Feather
+                name='check-circle'
+                size={24}
+                color={
+                  checkSamePW
+                    ? theme.mainColor.main
+                    : userVerifPW === ''
+                    ? theme.textColor.light
+                    : theme.textColor.error
+                }
+              />
+            </View>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.box,
+            ])}
+          >
+            <TextInput
+              testID='inputNickName'
+              onChangeText={handleUserNickName}
+              value={userNickName}
+              placeholder='닉네임'
+              maxLength={10}
+              style={stylesSignupInput.inputStyle}
+            ></TextInput>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.noInputTextContainer,
+            ])}
+          >
+            <Text style={stylesSignupInput.noInputTextTitle}>성별</Text>
+            <View
+              style={StyleSheet.flatten([
+                stylesTempBorder.Blue,
+                stylesSignupInput.noInputTextBox,
+              ])}
+            >
+              <Pressable
+                onPress={() => handleGender('Female')}
+                style={stylesSignupInput.noInputTextSelections}
+              >
+                <View
+                  style={[
+                    stylesSignupInput.noInputTextSelectionButton,
+                    {
+                      backgroundColor:
+                        userGender === 'Female'
+                          ? theme.mainColor.main
+                          : theme.grayColor.lightGray,
+                    },
+                  ]}
+                ></View>
+                <Text style={stylesSignupInput.noInputTextSelectionText}>
+                  여성
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => handleGender('Male')}
+                style={stylesSignupInput.noInputTextSelections}
+              >
+                <View
+                  style={[
+                    stylesSignupInput.noInputTextSelectionButton,
+                    {
+                      backgroundColor:
+                        userGender === 'Male'
+                          ? theme.mainColor.main
+                          : theme.grayColor.lightGray,
+                    },
+                  ]}
+                ></View>
+                <Text style={stylesSignupInput.noInputTextSelectionText}>
+                  남성
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => handleGender('None')}
+                style={stylesSignupInput.noInputTextSelections}
+              >
+                <View
+                  style={[
+                    stylesSignupInput.noInputTextSelectionButton,
+                    {
+                      backgroundColor:
+                        userGender === 'None'
+                          ? theme.mainColor.main
+                          : theme.grayColor.lightGray,
+                    },
+                  ]}
+                ></View>
+                <Text style={stylesSignupInput.noInputTextSelectionText}>
+                  선택 안 함
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.noInputTextContainer,
+            ])}
+          >
+            <Text style={stylesSignupInput.noInputTextTitle}>프로필 사진</Text>
+            <Pressable
+              style={StyleSheet.flatten([
+                stylesTempBorder.Red,
+                stylesSignupInput.addProfileImageButton,
+              ])}
+            >
+              <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
+            </Pressable>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.noInputTextContainer,
+            ])}
+          >
+            <Text style={stylesSignupInput.noInputTextTitle}>회원구분</Text>
+            <View
+              style={StyleSheet.flatten([
+                stylesTempBorder.Blue,
+                stylesSignupInput.noInputTextBox,
+              ])}
+            >
+              <Pressable
+                onPress={() => handleUserType('YoungAdult')}
+                style={stylesSignupInput.noInputTextSelections}
+              >
+                <View
+                  style={[
+                    stylesSignupInput.noInputTextSelectionButton,
+                    {
+                      backgroundColor:
+                        userType === 'YoungAdult'
+                          ? theme.mainColor.main
+                          : theme.grayColor.lightGray,
+                    },
+                  ]}
+                ></View>
+                <Text style={stylesSignupInput.noInputTextSelectionText}>
+                  자립준비청년
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => handleUserType('ETC')}
+                style={stylesSignupInput.noInputTextSelections}
+              >
+                <View
+                  style={[
+                    stylesSignupInput.noInputTextSelectionButton,
+                    {
+                      backgroundColor:
+                        userType === 'ETC'
+                          ? theme.mainColor.main
+                          : theme.grayColor.lightGray,
+                    },
+                  ]}
+                ></View>
+                <Text style={stylesSignupInput.noInputTextSelectionText}>
+                  기타 사용자
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Yellow,
+              stylesSignupInput.noInputTextContainer,
+            ])}
+          >
+            <Text style={stylesSignupInput.noInputTextTitle}>증빙 자료</Text>
+            <Pressable
+              style={StyleSheet.flatten([
+                stylesTempBorder.Red,
+                stylesSignupInput.addProfileImageButton,
+              ])}
+            >
+              <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
+            </Pressable>
+          </View>
         </View>
+        {/* inner container */}
       </View>
-    </View>
+    </ScrollView>
   );
 }

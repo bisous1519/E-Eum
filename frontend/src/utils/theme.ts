@@ -80,7 +80,7 @@ export const theme: ThemeType = {
     bold: '700',
   },
   fontFamily: {
-    main: 'Pretendard',
+    main: 'PretendardRegular',
     title: 'Yeongdo',
   },
   ButtonFontSize: {
