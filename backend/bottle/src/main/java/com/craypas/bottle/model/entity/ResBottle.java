@@ -33,6 +33,9 @@ public class ResBottle {
 	@Column(name = "content")
 	private String content;
 
+	@Column(name = "tts_path")
+	private String ttsPath;
+
 	@Column(name = "sentiment")
 	private int sentiment;
 

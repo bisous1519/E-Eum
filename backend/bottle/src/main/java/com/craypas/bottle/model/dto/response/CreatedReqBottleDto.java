@@ -1,8 +1,5 @@
 package com.craypas.bottle.model.dto.response;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,5 +20,4 @@ public class CreatedReqBottleDto {
 	private String ttsPath;
 	private String regTime;
 	private int status;
-	private List<CreatedUserReqBottleDto> receivers = new ArrayList<>();
 }

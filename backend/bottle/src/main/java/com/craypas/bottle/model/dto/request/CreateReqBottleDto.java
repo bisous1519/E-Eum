@@ -21,6 +21,8 @@ public class CreateReqBottleDto {
 	@NotNull
 	private String content;
 
+	private String ttsPath;
+
 	@NotNull
 	private Integer type;
 
@@ -30,6 +32,7 @@ public class CreateReqBottleDto {
 		return ReqBottle.builder()
 			.writerId(writerId)
 			.content(content)
+			.ttsPath(ttsPath)
 			.type(type)
 			.sentiment(sentiment)
 			.build();

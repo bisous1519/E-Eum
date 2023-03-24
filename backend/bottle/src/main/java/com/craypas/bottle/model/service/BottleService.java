@@ -2,6 +2,7 @@ package com.craypas.bottle.model.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -9,12 +10,14 @@ import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.craypas.bottle.model.entity.ReqBottle;
 import com.craypas.bottle.model.entity.UserReqBottle;
 import com.craypas.bottle.model.repository.DetailReqBottleRepository;
 import com.craypas.bottle.model.repository.ReqBottleRepository;
+import com.craypas.bottle.model.repository.UserReqBottleRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +27,7 @@ public class BottleService {
 
 	private final ReqBottleRepository reqBottleRepository;
 	private final DetailReqBottleRepository detailReqBottleRepository;
+	private final UserReqBottleRepository userReqBottleRepository;
 
 	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto) {
 		if (reqBottleDto.getWriterId() == null || reqBottleDto.getContent() == null || reqBottleDto.getType() == null || reqBottleDto.getSentiment() == null) {
@@ -46,11 +50,9 @@ public class BottleService {
 		if (writerId == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
-		List<SummaryBottleDto> summaryBottleDto = new ArrayList<>();
-		for(ReqBottle bottle : reqBottleRepository.findAllByWriterId(writerId)) {
-			summaryBottleDto.add(bottle.toSummaryBottleDto());
-		}
-		return summaryBottleDto;
+		return reqBottleRepository.findAllByWriterId(writerId).stream()
+			.map(ReqBottle::toSummaryBottleDto)
+			.collect(Collectors.toList());
 	}
 
 	public DetailReqBottleDto findDetailReqBottle(Long id) {
@@ -58,5 +60,11 @@ public class BottleService {
 			throw new CustomException(ErrorCode.BOTTLE_NOT_FOUND);
 		}
 		return detailReqBottleRepository.findDetailReqBottle(id);
+	}
+
+	public List<ReceivedUserReqBottleDto> findAllUserReqBottleByReceiverId(Long receiverId) {
+		return userReqBottleRepository.findAllByReceiverId(receiverId).stream()
+			.map(UserReqBottle::toCreatedDto)
+			.collect(Collectors.toList());
 	}
 }
