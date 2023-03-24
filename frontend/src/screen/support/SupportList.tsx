@@ -6,12 +6,14 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import theme from '../../utils/theme';
 import * as Progress from 'react-native-progress';
+import PlusButton from '../../components/common/PlusButton';
+import useNav from '../../hooks/useNav';
 
-// 예시 프로필
-import sample from '../../assets/images/sample.png';
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
 // 나중에 다 분리하자.. ===================================================
 // 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
@@ -96,12 +98,15 @@ type ItemProps = {
 const Item = ({ id, nick, title, goal }: ItemProps) => (
   <TouchableOpacity
     style={styles.item}
-    onPress={() => console.log('까꿍')}
+    onPress={() => console.log('디테일 스크린이 까꿍')}
     activeOpacity={0.6}
   >
     <View>
       <View style={styles.profile}>
-        <Image source={sample} style={styles.image} />
+        <Image
+          source={require('../../assets/images/sample.png')}
+          style={styles.image}
+        />
         <Text>{nick}</Text>
       </View>
       <Text style={styles.title}>{title}</Text>
@@ -112,7 +117,7 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
       <View style={styles.progress}>
         <Text style={styles.lightTitle}>달성률</Text>
         <Progress.Bar
-          progress={60 / 100}
+          progress={0.65}
           width={null}
           height={5}
           color={theme.mainColor.main}
@@ -124,7 +129,13 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
 // ========================================================================
 
 // 초기 꿈후원 목록 화면
-export default function SupportList({ navigation }: any): JSX.Element {
+export default function SupportList(): JSX.Element {
+  const navigation = useNav();
+
+  const onPressPlusBtn = () => {
+    navigation.push('NewSupport');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.tempContainer}>
@@ -133,12 +144,6 @@ export default function SupportList({ navigation }: any): JSX.Element {
           onPress={() => navigation.push('SupportDetail')}
         >
           게시물 상세
-        </Text>
-        <Text
-          style={{ color: 'red' }}
-          onPress={() => navigation.push('NewSupport')}
-        >
-          신규 게시글
         </Text>
       </View>
       <FlatList
@@ -153,8 +158,9 @@ export default function SupportList({ navigation }: any): JSX.Element {
         )}
         numColumns={2}
         keyExtractor={(item) => item.id.toString()}
-        key={2}
+        // key={2} // 당신..뭔데..?ㅋㅋㅋ
       />
+      <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </View>
   );
 }
@@ -172,17 +178,17 @@ const styles = StyleSheet.create({
   },
   // 개별 후원 카드
   item: {
+    flex: 1,
     backgroundColor: theme.textColor.white,
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
-    borderRadius: 8,
-    flex: 1,
+    borderRadius: 15,
   },
   // 후원 카드에 표시되는 '제목'
   title: {
     height: 50,
-    fontWeight: theme.fontWeight.bold,
+    fontWeight: '700',
   },
   // 목표금액, 달성률 -> 연한 회색 제목
   lightTitle: {

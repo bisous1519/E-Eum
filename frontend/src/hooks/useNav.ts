@@ -10,6 +10,8 @@ type RootStackParamList = {
   Notice?: undefined;
   RecordEditor?: { itemId: number } | undefined;
   Signup?: undefined;
+  SupportDetail?: undefined;
+  NewSupport?: undefined;
   JoinPW?: undefined;
   SetNewPW?: undefined;
   Signin?: undefined;
@@ -32,4 +34,3 @@ export default function useNav() {
   //     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return useNav;
 }
-
