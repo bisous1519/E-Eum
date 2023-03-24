@@ -121,7 +121,7 @@ const stylesSignupInput = StyleSheet.create({
   },
   selectGenderSelectionsText: {
     color: 'red',
-    fontFamily: theme.fontFamily.mainSemiBold,
+    fontFamily: theme.fontFamily.main,
   },
 });
 
