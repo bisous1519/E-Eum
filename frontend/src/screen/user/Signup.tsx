@@ -11,6 +11,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import theme from '../../utils/theme';
 import { Feather } from '@expo/vector-icons';
+import { color } from 'react-native-reanimated';
+import * as Font from 'expo-font';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -68,12 +70,13 @@ const stylesSignupInput = StyleSheet.create({
     alignItems: 'center',
   },
   inputStyle: {
-    fontSize: 15,
-    paddingBottom: 8,
+    fontSize: theme.fontSize.regular,
     borderWidth: 1,
     borderColor: 'red',
     height: '100%',
     flex: 1,
+    paddingTop: 2,
+    paddingBottom: 2,
   },
   button: {
     width: '20%',
@@ -96,6 +99,31 @@ const stylesSignupInput = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
   },
+  selectGenderContainer: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
+  selectGenderBox: {
+    flexDirection: 'column',
+    paddingLeft: 30,
+  },
+  selectGenderButton: {
+    width: 15,
+    height: 15,
+    borderRadius: 20,
+    // borderWidth: 0.5,
+    // borderColor: 'black',
+    marginRight: 10,
+  },
+  selectGenderSelections: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  selectGenderSelectionsText: {
+    fontSize: theme.fontSize.big,
+    // fontWeight: '600'
+    fontVariantSettings: `Bold`,
+  },
 });
 
 export default function Signup(): JSX.Element {
@@ -105,8 +133,10 @@ export default function Signup(): JSX.Element {
   const [userPW, setUserPW] = useState<string>('');
   const [userVerifPW, setUserVerifPW] = useState<string>('');
   const [userNickName, setUserNickName] = useState<string>('');
+  const [userGender, setUserGender] = useState<string>('');
 
-  const [checkPW, setCheckPW] = useState<boolean>(false);
+  const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
+  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
 
   const [timeLeft, setTimeLeft] = useState<number>(5);
   const [timerOn, setTimerOn] = useState<boolean>(false);
@@ -125,9 +155,10 @@ export default function Signup(): JSX.Element {
     setTimerOn(true);
   };
 
+  //이메일 인증 관련
   useEffect(() => {
     let interval: any;
-    console.log('잉');
+    console.log('카운트다운');
     if (timerOn && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
@@ -139,21 +170,33 @@ export default function Signup(): JSX.Element {
     return () => clearInterval(interval);
   }, [timerOn, timeLeft]);
 
+  // 비밀번호 관련
+  const PWRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/;
   const handleUserPW = (input: string) => {
     setUserPW(input);
     setUserVerifPW('');
-    setCheckPW(false);
+    if (!PWRegex.test(input)) setCheckRegexPW(false);
+    else setCheckRegexPW(true);
+    setCheckSamePW(false);
   };
+
   const handleUserVerifPW = (input: string) => {
-    handleUserVerifPW(input);
+    setUserVerifPW(input);
   };
 
   useEffect(() => {
-    setCheckPW(userPW !== '' && userPW === userVerifPW);
+    console.log('비밀번호 같은지 체크');
+    setCheckSamePW(userPW !== '' && userPW === userVerifPW);
   }, [userVerifPW]);
 
+  // 닉네임 관련
   const handleUserNickName = (input: string) => {
     setUserNickName(input);
+  };
+
+  // 성별 관련
+  const handleGender = (input: string) => {
+    setUserGender(input);
   };
 
   return (
@@ -180,7 +223,8 @@ export default function Signup(): JSX.Element {
             testID='inputName'
             onChangeText={handleUserName}
             value={userName}
-            placeholder='이름'
+            placeholder='이름 (~8자)'
+            maxLength={8}
             style={stylesSignupInput.inputStyle}
           ></TextInput>
         </View>
@@ -209,6 +253,8 @@ export default function Signup(): JSX.Element {
         >
           <TextInput
             testID='inputVerifCode'
+            onChangeText={handleVerifCode}
+            value={verifCode}
             placeholder='코드 입력'
             style={stylesSignupInput.inputStyle}
           ></TextInput>
@@ -229,11 +275,25 @@ export default function Signup(): JSX.Element {
         >
           <TextInput
             testID='inputPW'
+            onChangeText={handleUserPW}
+            value={userPW}
             placeholder='비밀번호'
+            secureTextEntry={true}
+            maxLength={16}
             style={stylesSignupInput.inputStyle}
           ></TextInput>
           <View style={stylesSignupInput.checkIcon}>
-            <Feather name='check-circle' size={24} color='black' />
+            <Feather
+              name='check-circle'
+              size={24}
+              color={
+                checkRegexPW
+                  ? theme.mainColor.main
+                  : userPW === ''
+                  ? theme.textColor.light
+                  : theme.textColor.error
+              }
+            />
           </View>
         </View>
         <View
@@ -244,11 +304,25 @@ export default function Signup(): JSX.Element {
         >
           <TextInput
             testID='inputVerifPW'
+            onChangeText={handleUserVerifPW}
+            value={userVerifPW}
             placeholder='비밀번호 확인'
+            secureTextEntry={true}
+            maxLength={16}
             style={stylesSignupInput.inputStyle}
           ></TextInput>
           <View style={stylesSignupInput.checkIcon}>
-            <Feather name='check-circle' size={24} color='black' />
+            <Feather
+              name='check-circle'
+              size={24}
+              color={
+                checkSamePW
+                  ? theme.mainColor.main
+                  : userVerifPW === ''
+                  ? theme.textColor.light
+                  : theme.textColor.error
+              }
+            />
           </View>
         </View>
         <View
@@ -259,9 +333,78 @@ export default function Signup(): JSX.Element {
         >
           <TextInput
             testID='inputNickName'
+            onChangeText={handleUserNickName}
+            value={userNickName}
             placeholder='닉네임'
+            maxLength={10}
             style={stylesSignupInput.inputStyle}
           ></TextInput>
+        </View>
+        <View
+          style={StyleSheet.flatten([
+            stylesTempBorder.Yellow,
+            stylesSignupInput.selectGenderContainer,
+          ])}
+        >
+          <Text>성별</Text>
+          <View
+            style={StyleSheet.flatten([
+              stylesTempBorder.Blue,
+              stylesSignupInput.selectGenderBox,
+            ])}
+          >
+            <View style={stylesSignupInput.selectGenderSelections}>
+              <Pressable
+                onPress={() => handleGender('Female')}
+                style={[
+                  stylesSignupInput.selectGenderButton,
+                  {
+                    backgroundColor:
+                      userGender === 'Female'
+                        ? theme.mainColor.main
+                        : theme.grayColor.lightGray,
+                  },
+                ]}
+              ></Pressable>
+              <Text style={stylesSignupInput.selectGenderSelectionsText}>
+                여성
+              </Text>
+            </View>
+            <View style={stylesSignupInput.selectGenderSelections}>
+              <Pressable
+                onPress={() => handleGender('Male')}
+                style={[
+                  stylesSignupInput.selectGenderButton,
+                  {
+                    backgroundColor:
+                      userGender === 'Male'
+                        ? theme.mainColor.main
+                        : theme.grayColor.lightGray,
+                  },
+                ]}
+              ></Pressable>
+              <Text style={stylesSignupInput.selectGenderSelectionsText}>
+                남성
+              </Text>
+            </View>
+            <View style={stylesSignupInput.selectGenderSelections}>
+              <Pressable
+                onPress={() => handleGender('None')}
+                style={[
+                  stylesSignupInput.selectGenderButton,
+                  {
+                    backgroundColor:
+                      userGender === 'None'
+                        ? theme.mainColor.main
+                        : theme.grayColor.lightGray,
+                  },
+                ]}
+              ></Pressable>
+              <Text style={stylesSignupInput.selectGenderSelectionsText}>
+                선택 안 함
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     </View>

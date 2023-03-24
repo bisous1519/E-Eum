@@ -105,6 +105,7 @@ const stylesSignin = StyleSheet.create({
   inputBoxPW: {
     fontSize: 15,
     paddingBottom: 8,
+    width: '80%',
   },
   boxPW: {
     borderBottomColor: theme.mainColor.main,
@@ -116,6 +117,17 @@ const stylesSignin = StyleSheet.create({
     color: 'gray',
     marginRight: 10,
     marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    paddingLeft: 10,
+    paddingright: 10,
+  },
+  showPWPressable: {
+    width: '20%',
+    // borderColor: 'blue',
+    // borderWidth: 1,
+    height: '100%',
+    flexDirection: 'column',
   },
   loginButton: {
     marginTop: 10,
@@ -251,17 +263,20 @@ export default function Signin(): JSX.Element {
           >
             <TextInput
               testID='inputPW'
-              secureTextEntry={showPW ? false : true}
               onChangeText={handleUserPWChange}
               value={userPW}
               placeholder='PW'
-              style={stylesSignin.inputBoxPW}
+              secureTextEntry={showPW ? false : true}
+              style={[stylesSignin.inputBoxPW, stylesTempBorder.Red]}
             ></TextInput>
-            <Pressable onPress={handleSetShowPW}>
+            <Pressable
+              onPress={handleSetShowPW}
+              style={stylesSignin.showPWPressable}
+            >
               <MaterialIcons
                 name={showPW ? 'visibility' : 'visibility-off'}
                 size={24}
-                style={stylesSignin.showPWIcon}
+                style={[stylesSignin.showPWIcon, stylesTempBorder.Red]}
               />
             </Pressable>
           </View>
