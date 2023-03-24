@@ -1,7 +1,5 @@
 package com.craypas.bottle.model.dto.request;
 
-import java.text.ParseException;
-
 import javax.validation.constraints.NotNull;
 
 import com.craypas.bottle.model.entity.ReqBottle;
@@ -28,13 +26,11 @@ public class CreateReqBottleDto {
 
 	private Integer sentiment;
 
-
-	public ReqBottle toEntity() throws ParseException {
+	public ReqBottle toEntity() {
 		return ReqBottle.builder()
 			.writerId(writerId)
 			.content(content)
 			.type(type)
-			.content(content)
 			.sentiment(sentiment)
 			.build();
 	}

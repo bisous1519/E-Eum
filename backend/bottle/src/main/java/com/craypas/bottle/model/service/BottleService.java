@@ -12,6 +12,7 @@ import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.craypas.bottle.model.entity.ReqBottle;
+import com.craypas.bottle.model.entity.UserReqBottle;
 import com.craypas.bottle.model.repository.DetailReqBottleRepository;
 import com.craypas.bottle.model.repository.ReqBottleRepository;
 
@@ -24,13 +25,21 @@ public class BottleService {
 	private final ReqBottleRepository reqBottleRepository;
 	private final DetailReqBottleRepository detailReqBottleRepository;
 
-	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto) throws Exception {
+	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto) {
 		if (reqBottleDto.getWriterId() == null || reqBottleDto.getContent() == null || reqBottleDto.getType() == null || reqBottleDto.getSentiment() == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
-		// 내가 아닌 모든 유저나 자문단 유저 중에, 랜덤 3명 뽑기! 3명보다 적다면 그냥 다 데려와. -> 이거 유저서비스에서 해야함
 
-		return reqBottleRepository.save(reqBottleDto.toEntity()).toCreatedDto();
+		ReqBottle reqBottle = reqBottleDto.toEntity();
+
+		// 내가 아닌 모든 유저나 자문단 유저 중에, 랜덤 3명 뽑기! 3명보다 적다면 그냥 다 데려와. -> 이거 유저서비스에서 해야함
+		List<UserReqBottle> userReqBottles = new ArrayList<>();
+		for (Long receiverId : new long[] {7, 8, 9}) {
+			userReqBottles.add(UserReqBottle.builder().receiverId(receiverId).reqBottle(reqBottle).build());
+		}
+		reqBottle.updateUserReqBottles(userReqBottles);
+
+		return reqBottleRepository.save(reqBottle).toCreatedDto();
 	}
 
 	public List<SummaryBottleDto> findAllByWriterId(Long writerId) {
