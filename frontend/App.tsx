@@ -12,6 +12,7 @@ import TabNavigator from './src/navigator/TabNavigator';
 import Nav from './src/components/common/nav/Nav';
 import MainNavigator from './src/navigator/MainNavigator';
 import 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // SplashScreen.preventAutoHideAsync();
 
@@ -44,11 +45,13 @@ export default function App(): JSX.Element {
   else
     return (
       <ThemeProvider theme={theme}>
-        <NavigationContainer>
+        <SafeAreaView style={{ flex: 1 }}>
           <StatusBar style='dark' />
-          <MainNavigator />
-          <Nav />
-        </NavigationContainer>
+          <NavigationContainer>
+            <MainNavigator />
+            <Nav />
+          </NavigationContainer>
+        </SafeAreaView>
       </ThemeProvider>
     );
 }

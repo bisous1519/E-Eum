@@ -1,8 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import NewRecord from '../screen/record/NewRecord';
+import RecordEditor from '../screen/record/RecordEditor';
 import Record from '../screen/record/Record';
 
-const Stack = createNativeStackNavigator();
+type RootStackParamList = {
+  Record: undefined;
+  RecordEditor: { itemId: number };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RecordStack = () => {
   return (
@@ -11,9 +16,10 @@ const RecordStack = () => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name='Record' component={Record} />
-      <Stack.Screen name='NewRecord' component={NewRecord} />
+      <Stack.Screen name='RecordEditor' component={RecordEditor} />
     </Stack.Navigator>
   );
 };
 
 export default RecordStack;
+

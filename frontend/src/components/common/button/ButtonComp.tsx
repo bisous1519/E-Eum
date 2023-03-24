@@ -1,21 +1,31 @@
 import React from 'react';
-import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import styled, { css } from 'styled-components/native';
 import theme from '../../../utils/theme';
-import { ButtonCompBox, ButtonCompText, buttonStyles } from './styles';
+
+const PressableBox = styled.Pressable<{ small: boolean }>`
+  background: ${({ theme }) => theme.mainColor.main};
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  ${({ small }) =>
+    small
+      ? css`
+          width: 100px;
+          padding: 12px;
+        `
+      : css`
+          width: 100%;
+          padding: 18px;
+        `}
+`;
+
+const TextBox = styled.Text`
+  color: ${({ theme }) => theme.textColor.white};
+  font-size: ${({ theme }) => theme.fontSize.regular};
+`;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.mainColor.main,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 30,
-    width: '90%',
-  },
-  text: {
-    color: theme.textColor.white,
-    fontSize: theme.fontSize.regular,
-  },
   pressedText: {
     color: theme.grayColor.lightGray,
   },
@@ -24,18 +34,20 @@ const styles = StyleSheet.create({
 type ButtonCompPropsType = {
   text: string;
   onPressBtn: () => void;
+  small?: boolean;
 };
 
-export default function ButtonComp({ text, onPressBtn }: ButtonCompPropsType) {
+// NOTE: props로 small={true} 주면 작은버튼, 안주면 큰버튼
+export default function ButtonComp({
+  text,
+  onPressBtn,
+  small = false,
+}: ButtonCompPropsType) {
   return (
-    <Pressable style={styles.container} onPress={onPressBtn}>
+    <PressableBox small={small} onPress={onPressBtn}>
       {({ pressed }) => (
-        <Text
-          style={!pressed ? styles.text : [styles.text, styles.pressedText]}
-        >
-          {text}
-        </Text>
+        <TextBox style={pressed && styles.pressedText}>{text}</TextBox>
       )}
-    </Pressable>
+    </PressableBox>
   );
 }
