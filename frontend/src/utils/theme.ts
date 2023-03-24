@@ -34,8 +34,8 @@ export type ThemeType = {
     bold: string;
   };
   fontFamily: {
-    main: string;
     title: string;
+    main: string;
   };
   ButtonFontSize: {
     small: number;

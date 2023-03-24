@@ -120,9 +120,8 @@ const stylesSignupInput = StyleSheet.create({
     alignItems: 'center',
   },
   selectGenderSelectionsText: {
-    fontSize: theme.fontSize.big,
-    // fontWeight: '600'
-    fontVariantSettings: `Bold`,
+    color: 'red',
+    fontFamily: theme.fontFamily.mainSemiBold,
   },
 });
 
