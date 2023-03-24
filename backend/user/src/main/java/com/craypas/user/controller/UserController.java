@@ -28,7 +28,7 @@ public class UserController {
 	private final EmailService emailService;
 
 	// 회원정보 등록
-	@PostMapping("/join")
+	@PostMapping
 	public ResponseEntity<?> createUser(@RequestBody final RequestDto.CreateUser requestDto) {
 		return new ResponseEntity<>(userService.createUser(requestDto), HttpStatus.CREATED);
 	}
