@@ -1,9 +1,10 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import theme from '../../utils/theme';
-import Item from './Item';
-
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
+import SwipeableItem from './SwipeableItem';
+import MockupDateGroupType from '../../models/record/mockupDateGroupType';
+import MockupItemType from '../../models/record/mockupItemType';
 
 const stylesFeed = StyleSheet.create({
   dateContainer: {},
@@ -33,24 +34,39 @@ const stylesFeed = StyleSheet.create({
   },
 });
 
-export default function ItemContainer(): JSX.Element {
+type ItemContainerPropsType = {
+  regTime: string;
+  list: MockupItemType[];
+  onToggleDelete: () => void;
+};
+
+export default function ItemContainer({
+  regTime,
+  list,
+  onToggleDelete,
+}: ItemContainerPropsType): JSX.Element {
   return (
     <View style={stylesFeed.dateContainer}>
       <View style={stylesFeed.dateHeader}>
         <View style={stylesFeed.dot}></View>
-        <Text style={stylesFeed.date}>23.03.11</Text>
+        <Text style={stylesFeed.date}>{regTime}</Text>
       </View>
       <View style={stylesFeed.contentWrapper}>
-        <View style={[stylesFeed.dot, stylesFeed.fakedot]}></View>
+        <View
+          style={StyleSheet.flatten([stylesFeed.dot, stylesFeed.fakedot])}
+        ></View>
         <View style={stylesFeed.contents}>
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
+          {list &&
+            list.map((item) => (
+              <SwipeableItem
+                key={item.id}
+                id={item.id}
+                regTime={item.regTime}
+                tag={item.tag}
+                content={item.content}
+                onToggleDelete={onToggleDelete}
+              />
+            ))}
         </View>
       </View>
     </View>

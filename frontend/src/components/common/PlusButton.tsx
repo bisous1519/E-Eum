@@ -30,7 +30,7 @@ export default function PlusButton({
 }: PlusButtonPropsType): JSX.Element {
   return (
     <Pressable
-      style={[styles.container, shadowStyle.shadow]}
+      style={StyleSheet.flatten([styles.container, shadowStyle.shadow])}
       onPress={onPressPlusBtn}
     >
       <AntDesign name='plus' size={24} style={styles.icon} />
