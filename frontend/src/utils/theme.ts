@@ -31,8 +31,8 @@ export type ThemeType = {
     bold: string;
   };
   fontFamily: {
-    main: string;
     title: string;
+    main: string;
     mainMedium: string;
     mainSemiBold: string;
     mainThin: string;
@@ -82,7 +82,7 @@ export const theme: ThemeType = {
     bold: '700',
   },
   fontFamily: {
-    main: 'Pretendard',
+    main: 'PretendardRegular',
     title: 'Yeongdo',
     mainMedium: 'PretendardMedium',
     mainSemiBold: 'PretendardSemiBold',

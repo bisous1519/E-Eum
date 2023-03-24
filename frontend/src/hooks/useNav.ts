@@ -10,6 +10,9 @@ type RootStackParamList = {
   Notice?: undefined;
   RecordEditor?: { itemId: number } | undefined;
   Signup?: undefined;
+  JoinPW?: undefined;
+  SetNewPW?: undefined;
+  Signin?: undefined;
 };
 
 // type RootStackParamList = {

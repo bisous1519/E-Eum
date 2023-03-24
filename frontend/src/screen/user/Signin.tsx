@@ -7,6 +7,8 @@ import {
   Text,
   View,
   TouchableOpacity,
+  ScrollView,
+  // TextInput,
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,6 +37,9 @@ const stylesTempBorder = StyleSheet.create({
 });
 
 const stylesGlobalContainer = StyleSheet.create({
+  scrollContainer: {
+    backgroundColor: theme.background,
+  },
   //가장 큰 페이지
   container: {
     flex: 1,
@@ -42,7 +47,6 @@ const stylesGlobalContainer = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.background,
     padding: 0,
-    margin: 0,
   },
 });
 
@@ -105,6 +109,7 @@ const stylesSignin = StyleSheet.create({
   inputBoxPW: {
     fontSize: 15,
     paddingBottom: 8,
+    width: '80%',
   },
   boxPW: {
     borderBottomColor: theme.mainColor.main,
@@ -116,6 +121,17 @@ const stylesSignin = StyleSheet.create({
     color: 'gray',
     marginRight: 10,
     marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    paddingLeft: 10,
+    paddingright: 10,
+  },
+  showPWPressable: {
+    width: '20%',
+    // borderColor: 'blue',
+    // borderWidth: 1,
+    height: '100%',
+    flexDirection: 'column',
   },
   loginButton: {
     marginTop: 10,
@@ -172,11 +188,14 @@ export default function Signin(): JSX.Element {
   const onPressSignup = () => {
     navigation.push('Signup');
   };
+  const onPressJoinPW = () => {
+    navigation.push('JoinPW');
+  };
 
-  const [userID, setUserID] = useState('');
-  const [userPW, setUserPW] = useState('');
+  const [userID, setUserID] = useState<string>('');
+  const [userPW, setUserPW] = useState<string>('');
 
-  const [showPW, setShowPW] = useState(false);
+  const [showPW, setShowPW] = useState<boolean>(false);
 
   const handleUserIDChange = (input: string) => {
     setUserID(input);
@@ -194,170 +213,164 @@ export default function Signin(): JSX.Element {
   };
 
   return (
-    <View
-      style={StyleSheet.flatten([
-        stylesTempBorder.Blue,
-        stylesGlobalContainer.container,
-      ])}
-    >
+    <ScrollView style={stylesGlobalContainer.scrollContainer}>
       <View
-        testID='inner'
         style={StyleSheet.flatten([
-          stylesTempBorder.Red,
-          stylesInnerContainer.container,
+          stylesTempBorder.Blue,
+          stylesGlobalContainer.container,
         ])}
       >
         <View
-          testID='innerFirst'
-          /* 첫번째 */ style={StyleSheet.flatten([
-            stylesTempBorder.Blue,
-            stylesLogo.container,
-          ])}
-        >
-          <Image
-            style={StyleSheet.flatten([stylesLogo.logoImg])}
-            source={require('../../assets/images/logoWithText.png')}
-          />
-        </View>
-        <View
-          testID='innerSecond'
-          /* 두번쨰 */ style={StyleSheet.flatten([
-            stylesTempBorder.Blue,
-            stylesSignin.container,
-          ])}
-        >
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignin.box,
-              stylesSignin.alignLeft,
-            ])}
-          >
-            <TextInput
-              testID='inputID'
-              onChangeText={handleUserIDChange}
-              value={userID}
-              placeholder='EMAIL'
-              style={StyleSheet.flatten([stylesSignin.inputBoxID])}
-            ></TextInput>
-          </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignin.box,
-              stylesSignin.alignLeft,
-              stylesSignin.boxPW,
-            ])}
-          >
-            <TextInput
-              testID='inputPW'
-              secureTextEntry={showPW ? false : true}
-              onChangeText={handleUserPWChange}
-              value={userPW}
-              placeholder='PW'
-              style={StyleSheet.flatten([stylesSignin.inputBoxPW])}
-            ></TextInput>
-            <Pressable onPress={handleSetShowPW}>
-              <MaterialIcons
-                name={showPW ? 'visibility' : 'visibility-off'}
-                size={24}
-                style={StyleSheet.flatten([stylesSignin.showPWIcon])}
-              />
-            </Pressable>
-          </View>
-          <View
-            testID='loginButton'
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignin.box,
-            ])}
-          >
-            <Pressable
-              onPress={handleSubmit}
-              style={StyleSheet.flatten([stylesSignin.loginButton])}
-            >
-              <Text style={StyleSheet.flatten([stylesSignin.loginButtonText])}>
-                로그인
-              </Text>
-            </Pressable>
-          </View>
-          <View
-            testID='SignupOrJoinPW'
-            style={StyleSheet.flatten([
-              stylesTempBorder.Red,
-              stylesSignin.box,
-              stylesSignin.dividedTwo,
-            ])}
-          >
-            <View
-              style={StyleSheet.flatten([
-                stylesTempBorder.Blue,
-                stylesSignin.dividedEach,
-              ])}
-            >
-              <Pressable>
-                <Text
-                  style={StyleSheet.flatten([stylesSignin.dividedEaceText])}
-                  onPress={onPressSignup}
-                >
-                  회원가입
-                </Text>
-              </Pressable>
-            </View>
-            <View
-              style={StyleSheet.flatten([
-                stylesTempBorder.Blue,
-                stylesSignin.dividedEach,
-              ])}
-            >
-              <Pressable>
-                <Text
-                  style={StyleSheet.flatten([stylesSignin.dividedEaceText])}
-                >
-                  비밀번호 찾기
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-        <View
-          testID='innerThird'
-          /* 세번째 */ style={StyleSheet.flatten([
+          testID='inner'
+          style={StyleSheet.flatten([
             stylesTempBorder.Red,
-            stylesSocialSignin.container,
+            stylesInnerContainer.container,
           ])}
         >
           <View
-            testID='socialKakao'
-            style={StyleSheet.flatten([
+            testID='innerFirst'
+            /* 첫번째 */ style={StyleSheet.flatten([
               stylesTempBorder.Blue,
-              stylesSocialSignin.socialButtonFrame,
+              stylesLogo.container,
             ])}
           >
-            <Pressable style={StyleSheet.flatten([stylesTempBorder.Red])}>
-              <Image
-                source={require('../../assets/images/kakao_login_medium.png')}
-              />
-            </Pressable>
+            <Image
+              style={stylesLogo.logoImg}
+              source={require('../../assets/images/logoWithText.png')}
+            />
           </View>
           <View
-            style={StyleSheet.flatten([stylesSocialSignin.dividedLine])}
-          ></View>
-          <View
-            testID='socialGoogle'
-            style={StyleSheet.flatten([
+            testID='innerSecond'
+            /* 두번쨰 */ style={StyleSheet.flatten([
               stylesTempBorder.Blue,
-              stylesSocialSignin.socialButtonFrame,
+              stylesSignin.container,
             ])}
           >
-            <Pressable style={StyleSheet.flatten([stylesTempBorder.Red])}>
-              <Image
-                source={require('../../assets/images/kakao_login_medium.png')}
-              />
-            </Pressable>
+            <View
+              style={StyleSheet.flatten([
+                stylesTempBorder.Yellow,
+                stylesSignin.box,
+                stylesSignin.alignLeft,
+              ])}
+            >
+              <TextInput
+                testID='inputID'
+                onChangeText={handleUserIDChange}
+                value={userID}
+                placeholder='EMAIL'
+                style={stylesSignin.inputBoxID}
+              ></TextInput>
+            </View>
+            <View
+              style={StyleSheet.flatten([
+                stylesTempBorder.Yellow,
+                stylesSignin.box,
+                stylesSignin.alignLeft,
+                stylesSignin.boxPW,
+              ])}
+            >
+              <TextInput
+                testID='inputPW'
+                onChangeText={handleUserPWChange}
+                value={userPW}
+                placeholder='PW'
+                secureTextEntry={showPW ? false : true}
+                style={[stylesSignin.inputBoxPW, stylesTempBorder.Red]}
+              ></TextInput>
+              <Pressable
+                onPress={handleSetShowPW}
+                style={stylesSignin.showPWPressable}
+              >
+                <MaterialIcons
+                  name={showPW ? 'visibility' : 'visibility-off'}
+                  size={24}
+                  style={[stylesSignin.showPWIcon, stylesTempBorder.Red]}
+                />
+              </Pressable>
+            </View>
+            <View
+              testID='loginButton'
+              style={StyleSheet.flatten([
+                stylesTempBorder.Yellow,
+                stylesSignin.box,
+              ])}
+            >
+              <Pressable
+                onPress={handleSubmit}
+                style={stylesSignin.loginButton}
+              >
+                <Text style={stylesSignin.loginButtonText}>로그인</Text>
+              </Pressable>
+            </View>
+            <View
+              testID='SignupOrJoinPW'
+              style={StyleSheet.flatten([
+                stylesTempBorder.Red,
+                stylesSignin.box,
+                stylesSignin.dividedTwo,
+              ])}
+            >
+              <View
+                style={StyleSheet.flatten([
+                  stylesTempBorder.Blue,
+                  stylesSignin.dividedEach,
+                ])}
+              >
+                <Pressable onPress={onPressSignup}>
+                  <Text style={stylesSignin.dividedEaceText}>회원가입</Text>
+                </Pressable>
+              </View>
+              <View
+                style={StyleSheet.flatten([
+                  stylesTempBorder.Blue,
+                  stylesSignin.dividedEach,
+                ])}
+              >
+                <Pressable onPress={onPressJoinPW}>
+                  <Text style={stylesSignin.dividedEaceText}>
+                    비밀번호 찾기
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+          <View
+            testID='innerThird'
+            /* 세번째 */ style={StyleSheet.flatten([
+              stylesTempBorder.Red,
+              stylesSocialSignin.container,
+            ])}
+          >
+            <View
+              testID='socialKakao'
+              style={StyleSheet.flatten([
+                stylesTempBorder.Blue,
+                stylesSocialSignin.socialButtonFrame,
+              ])}
+            >
+              <Pressable style={stylesTempBorder.Red}>
+                <Image
+                  source={require('../../assets/images/kakao_login_medium.png')}
+                />
+              </Pressable>
+            </View>
+            <View style={stylesSocialSignin.dividedLine}></View>
+            <View
+              testID='socialGoogle'
+              style={StyleSheet.flatten([
+                stylesTempBorder.Blue,
+                stylesSocialSignin.socialButtonFrame,
+              ])}
+            >
+              <Pressable style={stylesTempBorder.Red}>
+                <Image
+                  source={require('../../assets/images/kakao_login_medium.png')}
+                />
+              </Pressable>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
