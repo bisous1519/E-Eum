@@ -188,6 +188,9 @@ export default function Signin(): JSX.Element {
   const onPressSignup = () => {
     navigation.push('Signup');
   };
+  const onPressJoinPW = () => {
+    navigation.push('JoinPW');
+  };
 
   const [userID, setUserID] = useState<string>('');
   const [userPW, setUserPW] = useState<string>('');
@@ -313,13 +316,8 @@ export default function Signin(): JSX.Element {
                   stylesSignin.dividedEach,
                 ])}
               >
-                <Pressable>
-                  <Text
-                    style={stylesSignin.dividedEaceText}
-                    onPress={onPressSignup}
-                  >
-                    회원가입
-                  </Text>
+                <Pressable onPress={onPressSignup}>
+                  <Text style={stylesSignin.dividedEaceText}>회원가입</Text>
                 </Pressable>
               </View>
               <View
@@ -328,7 +326,7 @@ export default function Signin(): JSX.Element {
                   stylesSignin.dividedEach,
                 ])}
               >
-                <Pressable>
+                <Pressable onPress={onPressJoinPW}>
                   <Text style={stylesSignin.dividedEaceText}>
                     비밀번호 찾기
                   </Text>

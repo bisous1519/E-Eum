@@ -2,7 +2,7 @@ import * as Font from 'expo-font';
 
 export default async function useFonts() {
   await Font.loadAsync({
-    // Pretendard: require('../assets/fonts/PretendardVariable.ttf'),
+    Pretendard: require('../assets/fonts/PretendardVariable.ttf'),
     PretendardRegular: require('../assets/fonts/Pretendard-Regular.otf'),
     PretendardMedium: require('../assets/fonts/Pretendard-Medium.otf'),
     PretendardSemiBold: require('../assets/fonts/Pretendard-SemiBold.otf'),

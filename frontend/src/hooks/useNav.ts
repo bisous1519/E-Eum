@@ -10,6 +10,9 @@ type NavigationPropsType = {
   Notice?: undefined;
   NewRecord?: undefined;
   Signup?: undefined;
+  JoinPW?: undefined;
+  SetNewPW?: undefined;
+  Signin?: undefined;
 };
 
 // type RootStackParamList = {
