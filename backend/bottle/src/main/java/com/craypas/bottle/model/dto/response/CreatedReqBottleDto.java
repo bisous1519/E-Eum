@@ -23,5 +23,4 @@ public class CreatedReqBottleDto {
 	private String ttsPath;
 	private String regTime;
 	private int status;
-	private List<CreatedUserReqBottleDto> receivers = new ArrayList<>();
 }
