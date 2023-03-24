@@ -2,7 +2,6 @@ package com.craypas.dream.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.craypas.dream.model.dto.record.RequestDto;
@@ -41,14 +41,15 @@ public class RecordController {
 
 	@GetMapping("/user/{uid}")
 	// 꿈 기록 피드 조회
-	public ResponseEntity<?> getRecordList(@PathVariable final Long uid, final Pageable pageable) {
-		return new ResponseEntity<>(recordService.getRecordList(uid, pageable), HttpStatus.OK);
+	public ResponseEntity<?> getRecordList(@PathVariable final Long uid,
+		@RequestParam(required = false) final Long tid) {
+		return new ResponseEntity<>(recordService.getRecordList(uid, tid), HttpStatus.OK);
 	}
 
 	@PutMapping("/{rid}")
 	// 꿈 기록 수정
-	public ResponseEntity<?> updateRecord(@PathVariable final Long rid, @RequestBody final String content) {
-		return new ResponseEntity<>(recordService.updateRecord(rid, content), HttpStatus.OK);
+	public ResponseEntity<?> updateRecord(@PathVariable final Long rid, @RequestBody final RequestDto.Create requestDto) {
+		return new ResponseEntity<>(recordService.updateRecord(rid, requestDto), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{rid}")

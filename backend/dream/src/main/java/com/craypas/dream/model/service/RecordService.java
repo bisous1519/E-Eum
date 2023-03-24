@@ -1,9 +1,5 @@
 package com.craypas.dream.model.service;
 
-import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-
 import com.craypas.dream.model.dto.record.RequestDto;
 import com.craypas.dream.model.dto.record.ResponseDto;
 
@@ -15,10 +11,10 @@ public interface RecordService {
 	ResponseDto.Read getRecord(final Long rid);
 
 	// 꿈 기록 피드 조회
-	List<ResponseDto.Read> getRecordList(final Long uid, final Pageable pageable);
+	ResponseDto.Feed getRecordList(final Long uid, final Long tid);
 
 	// 꿈 기록 수정
-	ResponseDto.Read updateRecord(final Long rid, final String content);
+	ResponseDto.Read updateRecord(final Long rid, final RequestDto.Create requestDto);
 
 	// 꿈 기록 삭제
 	void deleteRecord(final Long rid);
