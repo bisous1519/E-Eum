@@ -38,7 +38,7 @@ public class GoogleCloudService {
 				float magnitude = sentiment.getMagnitude();
 				float score = sentiment.getScore();
 				log.info(score + " " + magnitude);
-				if (0 <= score && magnitude <= 0.5) 		return 0;	// 중립
+				if (0 <= score && score < 0.5) 				return 0;	// 중립
 				else if (0 <= score && magnitude > 0.5)		return 1;	// 긍정
 				else 										return -1;	// 부정
 			}
