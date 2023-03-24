@@ -5,6 +5,7 @@ import static com.craypas.bottle.model.entity.QResBottle.*;
 import static com.craypas.bottle.model.entity.QUserReqBottle.*;
 import static com.querydsl.core.group.GroupBy.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,9 @@ public class DetailReqBottleRepository {
 		DetailReqBottleDto detailReqBottleDto = new DetailReqBottleDto();
 		if (!resultMap.isEmpty()) {
 			detailReqBottleDto = resultMap.values().iterator().next();
+			if(detailReqBottleDto.getResBottles().get(0).getId() == 0L) {
+				detailReqBottleDto.getResBottles().clear();
+			}
 		}
 		return detailReqBottleDto;
 	}
