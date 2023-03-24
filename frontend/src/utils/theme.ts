@@ -11,10 +11,7 @@ export type ThemeType = {
     error: string;
   };
   background: string;
-  layerColor: {
-    color: string;
-    opacity: number;
-  };
+  layerColor: string;
   grayColor: {
     darkGray: string; // 그냥 mainGray
     lightGray: string; // 핀번호 / 경계(line)
@@ -36,6 +33,14 @@ export type ThemeType = {
   fontFamily: {
     title: string;
     main: string;
+    mainMedium: string;
+    mainSemiBold: string;
+    mainThin: string;
+    mainBlack: string;
+    mainBold: string;
+    mainExtraBold: string;
+    mainExtraLight: string;
+    mainLight: string;
   };
   ButtonFontSize: {
     small: number;
@@ -57,10 +62,7 @@ export const theme: ThemeType = {
     white: '#fcfcfc',
   },
   background: '#fcfcfc',
-  layerColor: {
-    color: '#1c1c1c',
-    opacity: 0.65,
-  },
+  layerColor: 'rgba(28, 28, 28, 0.65)',
   grayColor: {
     darkGray: '#808080', // 그냥 mainGray
     lightGray: '#eeeeee', // 핀번호 / 경계(line)
@@ -82,6 +84,14 @@ export const theme: ThemeType = {
   fontFamily: {
     main: 'PretendardRegular',
     title: 'Yeongdo',
+    mainMedium: 'PretendardMedium',
+    mainSemiBold: 'PretendardSemiBold',
+    mainThin: 'PretendardThin',
+    mainBlack: 'PretendardBlack',
+    mainBold: 'PretendardBold',
+    mainExtraBold: 'PretendardExtraBold',
+    mainExtraLight: 'PretendardExtraLight',
+    mainLight: 'PretendardLight',
   },
   ButtonFontSize: {
     small: 12,
