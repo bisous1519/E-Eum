@@ -9,8 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
-	INVALID_INPUT(HttpStatus.BAD_REQUEST, "INVALID INPUT"),
-	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
+	INVALID_INPUT(HttpStatus.BAD_REQUEST, "유효하지 않은 입력입니다."),
+	BOTTLE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해류병이 존재하지 않습니다."),
+	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러");
 
 	private HttpStatus httpStatus;
 	private String message;

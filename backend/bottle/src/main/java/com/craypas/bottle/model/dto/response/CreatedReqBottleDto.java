@@ -1,8 +1,7 @@
 package com.craypas.bottle.model.dto.response;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,21 +23,5 @@ public class CreatedReqBottleDto {
 	private String ttsPath;
 	private String regTime;
 	private int status;
-
-	// public Bottle toEntity() throws ParseException {
-	// 	return Bottle.builder()
-	// 		.id(id)
-	// 		.writerId(writerId)
-	// 		.content(content)
-	// 		.type(type)
-	// 		.content(content)
-	// 		.sentiment(sentiment)
-	// 		.regTime(dateConverter(regTime))
-	// 		.status(status).build();
-	// }
-
-	public Date dateConverter(String input) throws ParseException {
-		SimpleDateFormat foramatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return foramatter.parse(input);
-	}
+	private List<CreatedUserReqBottleDto> receivers = new ArrayList<>();
 }

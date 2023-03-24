@@ -23,11 +23,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class GoogleCloudService {
 
-
 	// 텍스트 감정분석으로 색 결정
 	public int getSentimant(String content) {
+		String realContent = content.replaceAll("[!;~^]", "");
+		log.info(realContent);
+
 		try (LanguageServiceClient language = LanguageServiceClient.create()) {
-			Document doc = Document.newBuilder().setContent(content).setType(Document.Type.PLAIN_TEXT).build();
+			Document doc = Document.newBuilder().setContent(realContent).setType(Document.Type.PLAIN_TEXT).build();
 			AnalyzeSentimentResponse response = language.analyzeSentiment(doc);
 			Sentiment sentiment = response.getDocumentSentiment();
 			if (sentiment == null) {
@@ -35,11 +37,10 @@ public class GoogleCloudService {
 			} else {
 				float magnitude = sentiment.getMagnitude();
 				float score = sentiment.getScore();
-				System.out.println(score + " "+magnitude);
-				if (0.5 <= score) 			return 1;	// 긍정
-				else if (0 <= score)		return 2;	// 안정
-				else if (-0.5 < score)		return 3;	// 피곤, 침울
-				else 						return 4;	// 부정
+				log.info(score + " " + magnitude);
+				if (0 <= score && magnitude <= 0.5) 		return 0;	// 중립
+				else if (0 <= score && magnitude > 0.5)		return 1;	// 긍정
+				else 										return -1;	// 부정
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);

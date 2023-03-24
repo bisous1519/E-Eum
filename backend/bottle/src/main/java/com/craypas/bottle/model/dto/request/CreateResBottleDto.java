@@ -1,10 +1,8 @@
 package com.craypas.bottle.model.dto.request;
 
-import java.text.ParseException;
-
 import javax.validation.constraints.NotEmpty;
 
-import com.craypas.bottle.model.entity.ReqBottle;
+import com.craypas.bottle.model.entity.ResBottle;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,24 +16,16 @@ import lombok.ToString;
 public class CreateResBottleDto {
 
 	@NotEmpty
-	private Long writerId;
-
-	private Long bottieId;
+	private Long userBottleId;
 
 	@NotEmpty
 	private String content;
 
-	@NotEmpty
-	private Integer type;
-
 	private Integer sentiment;
 
-
-	public ReqBottle toEntity() throws ParseException {
-		return ReqBottle.builder()
-			.writerId(writerId)
-			.content(content)
-			.type(type)
+	public ResBottle toEntity() {
+		return ResBottle.builder()
+			.userReqBottleId(userBottleId)
 			.content(content)
 			.sentiment(sentiment)
 			.build();

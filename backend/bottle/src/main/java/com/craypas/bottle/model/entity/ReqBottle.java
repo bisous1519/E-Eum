@@ -1,19 +1,27 @@
 package com.craypas.bottle.model.entity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.request.ReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -53,19 +61,15 @@ public class ReqBottle {
 	@Column(name = "status")
 	private int status;
 
-	public ReqBottleDto toDto() {
-		return ReqBottleDto.builder()
-			.id(id)
-			.writerId(writerId)
-			.content(content)
-			.type(type)
-			.content(content)
-			.sentiment(sentiment)
-			.regTime(stringConverter(regTime))
-			.status(status).build();
-	}
+	@OneToMany(mappedBy = "reqBottle", cascade = CascadeType.ALL)
+	private List<UserReqBottle> userReqBottles = new ArrayList<>();
 
 	public CreatedReqBottleDto toCreatedDto() {
+		List<CreatedUserReqBottleDto> userReqBottleDtos = new ArrayList<>();
+		if(!userReqBottles.isEmpty()) {
+			userReqBottleDtos = userReqBottles.stream()
+				.map(UserReqBottle::toCreatedDto).collect(Collectors.toList());
+		}
 		return CreatedReqBottleDto.builder()
 			.id(id)
 			.writerId(writerId)
@@ -74,6 +78,7 @@ public class ReqBottle {
 			.sentiment(sentiment)
 			.regTime(stringConverter(regTime))
 			.status(status)
+			.receivers(userReqBottleDtos)
 			.build();
 	}
 
@@ -85,6 +90,10 @@ public class ReqBottle {
 			.sentiment(sentiment)
 			.regTime(stringConverter(regTime))
 			.build();
+	}
+
+	public void updateUserReqBottles(List<UserReqBottle> userReqBottles) {
+		this.userReqBottles = userReqBottles;
 	}
 
 	public String stringConverter(Date input){
