@@ -12,6 +12,9 @@ type RootStackParamList = {
   Signup?: undefined;
   SupportDetail?: undefined;
   NewSupport?: undefined;
+  JoinPW?: undefined;
+  SetNewPW?: undefined;
+  Signin?: undefined;
 };
 
 // type RootStackParamList = {
