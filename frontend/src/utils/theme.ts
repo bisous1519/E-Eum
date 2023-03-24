@@ -33,6 +33,14 @@ export type ThemeType = {
   fontFamily: {
     main: string;
     title: string;
+    mainMedium: string;
+    mainSemiBold: string;
+    mainThin: string;
+    mainBlack: string;
+    mainBold: string;
+    mainExtraBold: string;
+    mainExtraLight: string;
+    mainLight: string;
   };
   ButtonFontSize: {
     small: number;
@@ -76,6 +84,14 @@ export const theme: ThemeType = {
   fontFamily: {
     main: 'Pretendard',
     title: 'Yeongdo',
+    mainMedium: 'PretendardMedium',
+    mainSemiBold: 'PretendardSemiBold',
+    mainThin: 'PretendardThin',
+    mainBlack: 'PretendardBlack',
+    mainBold: 'PretendardBold',
+    mainExtraBold: 'PretendardExtraBold',
+    mainExtraLight: 'PretendardExtraLight',
+    mainLight: 'PretendardLight',
   },
   ButtonFontSize: {
     small: 12,
@@ -85,4 +101,3 @@ export const theme: ThemeType = {
 };
 
 export default theme;
-
