@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.craypas.bottle.model.dto.response.CreatedUserReqBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +42,7 @@ public class UserReqBottle {
 	@JoinColumn(name = "user_req_bottle_id")
 	private List<ResBottle> resBottles;
 
-	public CreatedUserReqBottleDto toCreatedDto() {
-		return CreatedUserReqBottleDto.builder().receiverId(receiverId).build();
+	public ReceivedUserReqBottleDto toCreatedDto() {
+		return ReceivedUserReqBottleDto.builder().id(id).reqBottle(reqBottle.toCreatedDto()).build();
 	}
 }

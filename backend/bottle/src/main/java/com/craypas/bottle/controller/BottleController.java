@@ -17,6 +17,7 @@ import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -43,7 +44,10 @@ public class BottleController {
 		String bucketFolder = "", saveFileName = "";
 		try {
 			String content = reqBottleDto.getContent();
-
+			
+			// 유해 탐지 ai 서버 요청
+			// 유해 탐지 분산 서버 요청
+			
 			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
 
@@ -59,9 +63,11 @@ public class BottleController {
 			bucketFolder = "tts-mp3";
 			fireBaseService.uploadFiles(multipartFile, bucketFolder, saveFileName);		// firebase에 파일 저장
 
+			// tts path 저장
+			reqBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
+
 			// 해류병 생성
 			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto);
-			createdBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
 			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
 		} catch (CustomException e) {
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
@@ -91,6 +97,16 @@ public class BottleController {
 			return new ResponseEntity<>(bottleService.findDetailReqBottle(id), HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@GetMapping("/receiver/{uid}/list")
+	ResponseEntity<?> getReceivedBottles(@PathVariable("uid") Long receiverId) {
+		try {
+			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverId(receiverId), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
