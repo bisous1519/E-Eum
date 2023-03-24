@@ -29,25 +29,25 @@ const styles = StyleSheet.create({
   },
 });
 
-type DeleteModalPropsType = {
+type SupportModalPropsType = {
   onToggleDelete: () => void;
 };
 
-export default function DeleteModal({
+export default function SupportModal({
   onToggleDelete,
-}: DeleteModalPropsType): JSX.Element {
+}: SupportModalPropsType): JSX.Element {
   const onPressDelete = () => {
     onToggleDelete();
-    console.log('삭제 api');
+    console.log('후원 api');
   };
   return (
     <ModalComp onCloseModal={onToggleDelete}>
       <View style={styles.wrapper}>
-        <Text style={styles.title}>꿈 기록 삭제</Text>
+        <Text style={styles.title}>후원금액</Text>
         <Text style={styles.content}>정말 삭제하시겠습니까?</Text>
       </View>
       <Pressable style={styles.confirm} onPress={onPressDelete}>
-        <Text style={styles.confirmText}>확인</Text>
+        <Text style={styles.confirmText}>후원하기</Text>
       </Pressable>
     </ModalComp>
   );

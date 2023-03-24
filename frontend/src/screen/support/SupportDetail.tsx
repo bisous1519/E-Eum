@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -11,8 +11,6 @@ import {
   Pressable,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-// 여기저기 쓸 이미지 파일
-import sample from '../../assets/images/sample.png';
 import theme from '../../utils/theme';
 // Progress Bar
 import * as Progress from 'react-native-progress';
@@ -27,6 +25,9 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
+// 후원금 잔액 부족 모달 - DeleteModal로 테스트 =============
+import DeleteModal from '../../components/record/DeleteModal';
+// ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -44,6 +45,9 @@ export default function SupportDetail(): JSX.Element {
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetchanges', index);
   }, []);
+
+  // 잔액 없음 모달창 close 확인 변수
+  const [deleteModal, setDeleteModal] = useState<boolean>(false);
   // ============================================================================
 
   const onPressSupportBtn = () => {
@@ -53,7 +57,11 @@ export default function SupportDetail(): JSX.Element {
   return (
     <BottomSheetModalProvider>
       <ScrollView style={styles.container}>
-        <Image style={styles.picture} source={sample} resizeMode='cover' />
+        <Image
+          style={styles.picture}
+          source={require('../../assets/images/sample.png')}
+          resizeMode='cover'
+        />
         <View style={styles.innerContainer}>
           <Text style={styles.title}>개발자가 되고 싶어요</Text>
           <View style={styles.group}>
@@ -103,7 +111,10 @@ export default function SupportDetail(): JSX.Element {
               activeOpacity={0.6}
             >
               <View style={styles.writerTag}>
-                <Image source={sample} style={styles.writerPicture} />
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.writerPicture}
+                />
                 <View>
                   <Text style={styles.writerName}>홍싸피</Text>
                   <Text style={styles.writerIntro}>나는 있잖아요..</Text>
@@ -134,8 +145,8 @@ export default function SupportDetail(): JSX.Element {
           </View>
         </View>
       </ScrollView>
-      <SupportButton onPressSupportBtn={onPressSupportBtn} />
-      {/* <SupportButton onPressSupportBtn={handlePresentModalPress} />
+      {/* <SupportButton onPressSupportBtn={onPressSupportBtn} /> */}
+      <SupportButton onPressSupportBtn={handlePresentModalPress} />
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={1}
@@ -145,7 +156,7 @@ export default function SupportDetail(): JSX.Element {
         <View>
           <Text>우와웅🎉</Text>
         </View>
-      </BottomSheetModal> */}
+      </BottomSheetModal>
     </BottomSheetModalProvider>
   );
 }
@@ -170,7 +181,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
   },
   title: {
-    fontWeight: theme.fontWeight.bold,
+    fontWeight: '700',
   },
   productLink: {
     backgroundColor: theme.mainColor.main,
@@ -188,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.small,
   },
   content: {
-    fontWeight: theme.fontWeight.regular,
+    fontWeight: '400',
   },
   writerTag: {
     flexDirection: 'row',
@@ -198,7 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   writerName: {
-    fontWeight: theme.fontWeight.bold,
+    fontWeight: '700',
   },
   writerIntro: {
     color: theme.textColor.light,

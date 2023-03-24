@@ -13,9 +13,6 @@ import * as Progress from 'react-native-progress';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
 
-// 예시 프로필
-import sample from '../../assets/images/sample.png';
-
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
 // 나중에 다 분리하자.. ===================================================
@@ -106,7 +103,10 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
   >
     <View>
       <View style={styles.profile}>
-        <Image source={sample} style={styles.image} />
+        <Image
+          source={require('../../assets/images/sample.png')}
+          style={styles.image}
+        />
         <Text>{nick}</Text>
       </View>
       <Text style={styles.title}>{title}</Text>
@@ -117,7 +117,7 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
       <View style={styles.progress}>
         <Text style={styles.lightTitle}>달성률</Text>
         <Progress.Bar
-          progress={60 / 100}
+          progress={0.65}
           width={null}
           height={5}
           color={theme.mainColor.main}
@@ -158,7 +158,7 @@ export default function SupportList(): JSX.Element {
         )}
         numColumns={2}
         keyExtractor={(item) => item.id.toString()}
-        key={2}
+        // key={2} // 당신..뭔데..?ㅋㅋㅋ
       />
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </View>
@@ -178,17 +178,17 @@ const styles = StyleSheet.create({
   },
   // 개별 후원 카드
   item: {
+    flex: 1,
     backgroundColor: theme.textColor.white,
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 10,
     borderRadius: 15,
-    flex: 1,
   },
   // 후원 카드에 표시되는 '제목'
   title: {
     height: 50,
-    fontWeight: theme.fontWeight.bold,
+    fontWeight: '700',
   },
   // 목표금액, 달성률 -> 연한 회색 제목
   lightTitle: {
