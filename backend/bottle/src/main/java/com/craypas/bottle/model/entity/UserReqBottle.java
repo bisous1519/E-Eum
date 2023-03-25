@@ -1,6 +1,7 @@
 package com.craypas.bottle.model.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserResBottleDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +44,13 @@ public class UserReqBottle {
 	@JoinColumn(name = "user_req_bottle_id")
 	private List<ResBottle> resBottles;
 
-	public ReceivedUserReqBottleDto toCreatedDto() {
-		return ReceivedUserReqBottleDto.builder().id(id).reqBottle(reqBottle.toCreatedDto()).build();
+	public ReceivedUserReqBottleDto toCreatedReqDto() {
+		return ReceivedUserReqBottleDto.builder().user_req_bottle_id(id).reqBottle(reqBottle.toCreatedDto()).build();
+	}
+
+	public ReceivedUserResBottleDto toCreatedResDto() {
+		return ReceivedUserResBottleDto.builder().user_req_bottle_id(id).resBottles(
+			resBottles.stream().map(ResBottle::toCreated).collect(Collectors.toList())
+		).build();
 	}
 }

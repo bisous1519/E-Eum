@@ -7,7 +7,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 
 @Getter
-public class ResBottleDto {
+public class CheckedResBottleDto {
 	private Long id;
 	private Long userNickname;
 	private List<UserBadgeDto> userBadges;
@@ -16,7 +16,7 @@ public class ResBottleDto {
 	private Integer status;
 
 	@QueryProjection
-	public ResBottleDto(long id, String content, String regTime, int status) {
+	public CheckedResBottleDto(long id, String content, String regTime, int status) {
 		this.id = id;
 		this.content = content;
 		this.regTime = regTime;

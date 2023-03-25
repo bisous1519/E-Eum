@@ -1,5 +1,6 @@
 package com.craypas.bottle.model.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -46,4 +48,21 @@ public class ResBottle {
 
 	@Column(name = "status")
 	private int status;
+
+	public CreatedResBottleDto toCreated() {
+		return CreatedResBottleDto.builder()
+			.id(id)
+			.userReqBottleId(userReqBottleId)
+			.content(content)
+			.sentiment(sentiment)
+			.ttsPath(ttsPath)
+			.regTime(stringConverter(regTime))
+			.status(status)
+			.build();
+	}
+
+	public String stringConverter(Date input){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return formatter.format(input);
+	}
 }

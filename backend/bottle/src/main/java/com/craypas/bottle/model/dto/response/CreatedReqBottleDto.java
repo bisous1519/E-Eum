@@ -15,7 +15,6 @@ public class CreatedReqBottleDto {
 	private long id;
 	private long writerId;
 	private String content;
-	private int type;
 	private int sentiment;
 	private String ttsPath;
 	private String regTime;

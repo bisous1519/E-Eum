@@ -1,5 +1,9 @@
 package com.craypas.bottle.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,8 @@ import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -104,7 +110,12 @@ public class BottleController {
 	@GetMapping("/receiver/{uid}/list")
 	ResponseEntity<?> getReceivedBottles(@PathVariable("uid") Long receiverId) {
 		try {
-			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverId(receiverId), HttpStatus.OK);
+			List<ReceivedUserReqBottleDto> userReqBottleDtos = bottleService.findAllUserReqBottleByReceiverId(receiverId);
+			List<CreatedResBottleDto> resBottleDtos = bottleService.findAllResBottleByReqWriterId(receiverId);
+			Map<String, List> receivedBottles = new HashMap<>();
+			receivedBottles.put("reqBottles", userReqBottleDtos);
+			receivedBottles.put("resBottles", resBottleDtos);
+			return new ResponseEntity<>(receivedBottles, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
