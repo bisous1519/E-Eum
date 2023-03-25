@@ -46,7 +46,7 @@ public class BottleService {
 		return reqBottleRepository.save(reqBottle).toCreatedDto();
 	}
 
-	public List<SummaryBottleDto> findAllByWriterId(Long writerId) {
+	public List<SummaryBottleDto> findAllReqBottleByWriterId(Long writerId) {
 		if (writerId == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
