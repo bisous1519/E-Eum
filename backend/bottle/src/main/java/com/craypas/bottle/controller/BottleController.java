@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
+import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
@@ -118,6 +119,47 @@ public class BottleController {
 			return new ResponseEntity<>(receivedBottles, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/{userReqBottleId}/res")
+	ResponseEntity<?> sendResBottle(@PathVariable("userReqBottleId") long userReqBottleId, @Valid @RequestBody CreateResBottleDto resBottleDto) {
+		String bucketFolder = "", saveFileName = "";
+		try {
+			String content = resBottleDto.getContent();
+
+			// 유해 탐지 ai 서버 요청
+			// 유해 탐지 분산 서버 요청
+
+			resBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
+			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
+
+			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성
+
+			MultipartFile multipartFile = new InMemoryMultipartFile(		// 오디오를 MultipartFile로 변환
+				saveFileName,
+				saveFileName+".mp3",
+				"audio/mp3",
+				audioContents.toByteArray()
+			);
+
+			bucketFolder = "tts-mp3";
+			fireBaseService.uploadFiles(multipartFile, bucketFolder, saveFileName);		// firebase에 파일 저장
+
+			// userReqBottleId & tts path 저장
+			resBottleDto.setUserReqBottleId(userReqBottleId);
+			resBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
+
+			// 해류병 생성
+			CreatedResBottleDto createdBottleDto = bottleService.sendResBottles(resBottleDto);
+			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
+		} catch (CustomException e) {
+			fireBaseService.deleteFile(bucketFolder, saveFileName);
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fireBaseService.deleteFile(bucketFolder, saveFileName);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}

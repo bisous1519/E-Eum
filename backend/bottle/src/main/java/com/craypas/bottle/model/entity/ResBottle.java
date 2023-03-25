@@ -49,7 +49,7 @@ public class ResBottle {
 	@Column(name = "status")
 	private int status;
 
-	public CreatedResBottleDto toCreated() {
+	public CreatedResBottleDto toCreatedDto() {
 		return CreatedResBottleDto.builder()
 			.id(id)
 			.userReqBottleId(userReqBottleId)

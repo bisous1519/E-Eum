@@ -50,7 +50,7 @@ public class UserReqBottle {
 
 	public ReceivedUserResBottleDto toCreatedResDto() {
 		return ReceivedUserResBottleDto.builder().user_req_bottle_id(id).resBottles(
-			resBottles.stream().map(ResBottle::toCreated).collect(Collectors.toList())
+			resBottles.stream().map(ResBottle::toCreatedDto).collect(Collectors.toList())
 		).build();
 	}
 }

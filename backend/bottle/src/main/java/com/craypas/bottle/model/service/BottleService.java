@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
+import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
@@ -18,6 +19,7 @@ import com.craypas.bottle.model.entity.ReqBottle;
 import com.craypas.bottle.model.entity.UserReqBottle;
 import com.craypas.bottle.model.repository.QBottleRepository;
 import com.craypas.bottle.model.repository.ReqBottleRepository;
+import com.craypas.bottle.model.repository.ResBottleRepository;
 import com.craypas.bottle.model.repository.UserReqBottleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class BottleService {
 
 	private final ReqBottleRepository reqBottleRepository;
+	private final ResBottleRepository resBottleRepository;
 	private final QBottleRepository qBottleRepository;
 	private final UserReqBottleRepository userReqBottleRepository;
 
@@ -73,10 +76,13 @@ public class BottleService {
 		return qBottleRepository.findAllResBottleByReqWriterId(reqWriterId);
 	}
 
-	// public CreatedResBottleDto sendResBottles(CreateResBottleDto resBottleDto) {
-	// 	if (resBottleDto.getContent() == null) {
-	// 		throw new CustomException(ErrorCode.INVALID_INPUT);
-	// 	}
-	// 	return resBottleRepository.save(resBottleDto.toEntity()).toCreatedDto();
-	// }
+	public CreatedResBottleDto sendResBottles(CreateResBottleDto resBottleDto) {
+		if (!userReqBottleRepository.findById(resBottleDto.getUserReqBottleId()).isPresent()) {
+			throw new CustomException(ErrorCode.USER_REQ_BOTTLE_NOT_FOUND);
+		}
+		if (resBottleDto.getContent() == null) {
+			throw new CustomException(ErrorCode.INVALID_INPUT);
+		}
+		return resBottleRepository.save(resBottleDto.toEntity()).toCreatedDto();
+	}
 }
