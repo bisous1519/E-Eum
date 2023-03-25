@@ -15,9 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
-import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
-import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -79,10 +77,10 @@ public class BottleController {
 		}
 	}
 
-	@GetMapping("/{uid}/list")
-	ResponseEntity<?> getAllByWriterId(@PathVariable("uid") Long writerId) {
+	@GetMapping("/sender/{uid}/list")
+	ResponseEntity<?> getAllReqBottleByWriterId(@PathVariable("uid") Long writerId) {
 		try {
-			return new ResponseEntity<>(bottleService.findAllByWriterId(writerId), HttpStatus.OK);
+			return new ResponseEntity<>(bottleService.findAllReqBottleByWriterId(writerId), HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
@@ -91,7 +89,7 @@ public class BottleController {
 		}
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/req/{id}/res-list")
 	ResponseEntity<?> getDetailBottle(@PathVariable("id") Long id) {
 		try {
 			return new ResponseEntity<>(bottleService.findDetailReqBottle(id), HttpStatus.OK);
