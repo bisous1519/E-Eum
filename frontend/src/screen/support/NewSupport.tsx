@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 
 // Text Editor
@@ -23,6 +24,9 @@ import dayjs from 'dayjs';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Ionicons } from '@expo/vector-icons';
 
+// 배송지 주소
+import Postcode from '@actbase/react-daum-postcode';
+
 import ButtonComp from '../../components/common/button/ButtonComp';
 import theme from '../../utils/theme';
 import useDimension from '../../hooks/useDimension';
@@ -34,6 +38,14 @@ const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  mainTitleContainer: {
+    marginTop: DEVICE_HEIGHT * 0.05,
+    alignItems: 'center',
+  },
+  mainTitle: {
+    fontSize: theme.fontSize.big,
+    fontWeight: '600',
   },
   innerContainer: {
     marginBottom: 70,
@@ -79,11 +91,26 @@ const styles = StyleSheet.create({
     width: 300,
     padding: 10,
   },
+  goalBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   dueDate: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 });
+
+const dateFormat = (date: any) => {
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+
+  month = month >= 10 ? month : '0' + month;
+  day = day >= 10 ? day : '0' + day;
+
+  return date.getFullYear() + '-' + month + '-' + day;
+};
 
 // 신규 게시물
 export default function NewSupport(): JSX.Element {
@@ -96,7 +123,7 @@ export default function NewSupport(): JSX.Element {
   const [link, setLink] = useState<string>('');
   const [goal, setGoal] = useState<number>(0);
   // 모집 기한 ==================================================
-  const [due, setDue] = useState<string>(new Date().toString());
+  const [due, setDue] = useState<string>(dateFormat(new Date()));
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
   const showDatePicker = () => {
@@ -107,6 +134,7 @@ export default function NewSupport(): JSX.Element {
   };
   const handleConfirm = (date: any) => {
     console.log('날짜가 선택되었습니다: ', date);
+    setDue(dateFormat(date));
     hideDatePicker();
   };
 
@@ -138,6 +166,9 @@ export default function NewSupport(): JSX.Element {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.mainTitleContainer}>
+        <Text style={styles.mainTitle}>작성하기</Text>
+      </View>
       <View style={styles.innerContainer}>
         {/* 1. 제목 */}
         <View style={styles.write}>
@@ -155,7 +186,6 @@ export default function NewSupport(): JSX.Element {
               * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
             </Text>
           </View>
-          {/* 안예쁜데..?;;; 걍 태그 모양으로 넣자..일단 틀만 잡아놓고..;; */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Tag text='학업' />
             <Tag text='여행' />
@@ -204,10 +234,14 @@ export default function NewSupport(): JSX.Element {
         {/* 4. 목표금액 */}
         <View style={styles.write}>
           <Text style={styles.title}>목표금액</Text>
-          <TextInput
-            placeholder='목표금액을 입력하세요'
-            // onChange={(e) => setGoal(e)}
-          />
+          <View style={styles.goalBox}>
+            <TextInput
+              keyboardType='numeric'
+              placeholder='목표금액을 입력하세요'
+              // onChange={(e) => setGoal(e)}
+            />
+            <Text>원</Text>
+          </View>
         </View>
         {/* 5. 사진첨부 */}
         <View style={styles.write}>
@@ -218,23 +252,21 @@ export default function NewSupport(): JSX.Element {
             </Text>
           </View>
           <View style={styles.img}>
-            <TouchableOpacity onPress={pickImage} style={styles.addImg}>
+            <Pressable onPress={pickImage} style={styles.addImg}>
               <Text>+</Text>
-            </TouchableOpacity>
+            </Pressable>
             {/* {addImage && (
               <Image
                 source={{ uri: addImage }}
                 style={{ width: 200, height: 200 }}
               />
             )} */}
-            {/* 이곳에 image picker를 쓰고 싶은디..? */}
           </View>
         </View>
         {/* 6. 마감기한 */}
         <View style={styles.write}>
           <Text style={styles.title}>마감기한</Text>
-          {/* 이곳에는 date picker를 쓰고 싶은디..! */}
-          <TouchableOpacity onPress={showDatePicker} style={styles.dueDate}>
+          <Pressable onPress={showDatePicker} style={styles.dueDate}>
             <Ionicons
               name='calendar'
               size={20}
@@ -244,11 +276,13 @@ export default function NewSupport(): JSX.Element {
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               mode='date'
+              confirmTextIOS='날짜 선택'
+              cancelTextIOS='취소'
               onConfirm={handleConfirm}
               onCancel={hideDatePicker}
             />
             <Text>{due}</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
         {/* 7. 배송지 입력 */}
         <View style={styles.write}>
@@ -258,9 +292,15 @@ export default function NewSupport(): JSX.Element {
               * 물품을 배송받을 배송지를 입력해주세요
             </Text>
           </View>
-          <TextInput
-            placeholder='구매링크를 입력하세요'
+          {/* <TextInput
+            placeholder='배송지를 입력하세요'
             onChangeText={(e) => setLink(e)}
+          /> */}
+          <Postcode
+            style={{ width: '100%', height: '100%' }}
+            jsOptions={{ animation: true }}
+            onSelected={(data) => alert(JSON.stringify(data))}
+            onError={(data) => console.log(data)}
           />
         </View>
       </View>
