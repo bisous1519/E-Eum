@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
 import com.craypas.bottle.model.dto.request.CreateLikeDto;
+import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
@@ -27,7 +28,6 @@ import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
-import com.craypas.bottle.model.service.LikeService;
 import com.craypas.bottle.util.InMemoryMultipartFile;
 import com.google.protobuf.ByteString;
 
@@ -45,8 +45,6 @@ public class BottleController {
 	private final FireBaseService fireBaseService;
 
 	private final GoogleCloudService googleCloudService;
-
-	private final LikeService likeService;
 
 
 	@PostMapping("/req")
@@ -173,7 +171,20 @@ public class BottleController {
 	public ResponseEntity<?> createLike(@PathVariable("id") Long resId, @Valid @RequestBody CreateLikeDto likeDto) {
 		try {
 			likeDto.setResBottleId(resId);
-			return new ResponseEntity<>(likeService.create(likeDto), HttpStatus.OK);
+			return new ResponseEntity<>(bottleService.createLike(likeDto), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/report")
+	public ResponseEntity<?> reportBottle(@Valid @RequestBody CreateReportDto reportDto) {
+		try {
+			reportDto.setStatus(0);
+			return new ResponseEntity<>(bottleService.reportBottle(reportDto), HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {

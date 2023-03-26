@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
+import com.craypas.bottle.model.dto.request.CreateLikeDto;
+import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedLikeDto;
+import com.craypas.bottle.model.dto.response.CreatedReportDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
@@ -17,7 +21,9 @@ import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.craypas.bottle.model.entity.ReqBottle;
 import com.craypas.bottle.model.entity.UserReqBottle;
+import com.craypas.bottle.model.repository.LikeRepository;
 import com.craypas.bottle.model.repository.QBottleRepository;
+import com.craypas.bottle.model.repository.ReportRepository;
 import com.craypas.bottle.model.repository.ReqBottleRepository;
 import com.craypas.bottle.model.repository.ResBottleRepository;
 import com.craypas.bottle.model.repository.UserReqBottleRepository;
@@ -32,6 +38,9 @@ public class BottleService {
 	private final ResBottleRepository resBottleRepository;
 	private final QBottleRepository qBottleRepository;
 	private final UserReqBottleRepository userReqBottleRepository;
+	private final LikeRepository likeRepository;
+	private final ReportRepository reportRepository;
+
 
 	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto) {
 		if (reqBottleDto.getWriterId() == null || reqBottleDto.getContent() == null || reqBottleDto.getType() == null || reqBottleDto.getSentiment() == null) {
@@ -78,11 +87,33 @@ public class BottleService {
 
 	public CreatedResBottleDto sendResBottles(CreateResBottleDto resBottleDto) {
 		if (!userReqBottleRepository.findById(resBottleDto.getUserReqBottleId()).isPresent()) {
-			throw new CustomException(ErrorCode.USER_REQ_BOTTLE_NOT_FOUND);
+			throw new CustomException(ErrorCode.REQ_BOTTLE_NOT_FOUND);
 		}
 		if (resBottleDto.getContent() == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
 		return resBottleRepository.save(resBottleDto.toEntity()).toCreatedDto();
+	}
+
+	public CreatedLikeDto createLike(CreateLikeDto likeDto) {
+		if(!resBottleRepository.findById(likeDto.getResBottleId()).isPresent()) {
+			throw new CustomException(ErrorCode.RES_BOTTLE_NOT_FOUND);
+		}
+		return likeRepository.save(likeDto.toEntity()).toCreatedDto();
+	}
+
+	public CreatedReportDto reportBottle(CreateReportDto reportDto) {
+		Integer type = reportDto.getType();
+		Long targetId = reportDto.getTargetId();
+		if(type == null || targetId == null || reportDto.getContent() == null) {
+			throw new CustomException(ErrorCode.INVALID_INPUT);
+		}
+		if(type == 0 && !reqBottleRepository.findById(targetId).isPresent()) {
+			throw new CustomException(ErrorCode.REQ_BOTTLE_NOT_FOUND);
+		}
+		else if(type == 1 && !resBottleRepository.findById(targetId).isPresent()) {
+			throw new CustomException(ErrorCode.RES_BOTTLE_NOT_FOUND);
+		}
+		return reportRepository.save(reportDto.toEntity()).toCreatedDto();
 	}
 }

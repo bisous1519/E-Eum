@@ -1,16 +1,10 @@
 package com.craypas.bottle.model.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import org.checkerframework.checker.units.qual.C;
 
 import com.craypas.bottle.model.dto.response.CreatedLikeDto;
 
@@ -36,9 +30,6 @@ public class Like {
 
 	@Column(name = "res_bottle_id")
 	private long resBottleId;
-	// @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	// @JoinColumn(name = "res_bottle_id")
-	// private ResBottle resBottle;
 
 	public CreatedLikeDto toCreatedDto() {
 		return CreatedLikeDto.builder().id(id).userId(userId).resBottleId(resBottleId).build();
