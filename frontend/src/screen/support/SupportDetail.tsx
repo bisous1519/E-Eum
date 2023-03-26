@@ -57,14 +57,14 @@ const styles = StyleSheet.create({
   productLink: {
     backgroundColor: theme.mainColor.main,
     borderRadius: 15,
-    paddingVertical: 3,
-    paddingHorizontal: 20,
+    paddingVertical: DEVICE_HEIGHT * 0.007,
     width: DEVICE_WIDTH * 0.25,
     alignItems: 'center',
     marginTop: 3,
   },
   contentTitle: {
     color: theme.textColor.light,
+    marginBottom: DEVICE_HEIGHT * 0.01,
   },
   linkText: {
     fontSize: theme.fontSize.small,
@@ -84,17 +84,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  leftText: {
+    marginLeft: DEVICE_WIDTH * 0.015,
+  },
   writerName: {
     fontWeight: '700',
   },
   writerIntro: {
     color: theme.textColor.light,
   },
-  writerPicture: {
+  profilePicture: {
     width: 45,
     height: 45,
     borderRadius: 30,
-    marginRight: 10,
+    marginHorizontal: DEVICE_WIDTH * 0.01,
   },
   goalBar: {
     flexDirection: 'row',
@@ -121,6 +124,10 @@ export default function SupportDetail(): JSX.Element {
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetchanges', index);
   }, []);
+
+  const handleSupporterClick = () => {
+    console.log('후원자 프로필로 푸슝');
+  };
 
   // 잔액 없음 모달창 close 확인 변수
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
@@ -178,6 +185,87 @@ export default function SupportDetail(): JSX.Element {
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원자</Text>
             {/* 후원자 프로필 사진 모아서 보여주기 */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {/* 지금은 그냥 이미지 나열이지만 실제로는 리스트를 만들거야 */}
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+              <Pressable onPress={handleSupporterClick}>
+                <Image
+                  source={require('../../assets/images/sample.png')}
+                  style={styles.profilePicture}
+                />
+              </Pressable>
+            </ScrollView>
           </View>
 
           {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
@@ -190,9 +278,9 @@ export default function SupportDetail(): JSX.Element {
                 <View style={styles.leftProfile}>
                   <Image
                     source={require('../../assets/images/sample.png')}
-                    style={styles.writerPicture}
+                    style={styles.profilePicture}
                   />
-                  <View>
+                  <View style={styles.leftText}>
                     <Text style={styles.writerName}>홍싸피</Text>
                     <Text style={styles.writerIntro}>나는 있잖아요..</Text>
                   </View>
