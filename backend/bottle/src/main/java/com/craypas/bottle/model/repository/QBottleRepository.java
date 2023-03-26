@@ -5,11 +5,13 @@ import static com.craypas.bottle.model.entity.QResBottle.*;
 import static com.craypas.bottle.model.entity.QUserReqBottle.*;
 import static com.querydsl.core.group.GroupBy.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.QCheckedResBottleDto;
@@ -38,12 +40,15 @@ public class QBottleRepository {
 			)));
 
 		DetailReqBottleDto detailReqBottleDto = new DetailReqBottleDto();
+		List<CheckedResBottleDto> resBottles = new ArrayList<>();
 		if (!resultMap.isEmpty()) {
 			detailReqBottleDto = resultMap.values().iterator().next();
-			if(detailReqBottleDto.getResBottles().get(0).getId() == 0L) {
-				detailReqBottleDto.getResBottles().clear();
+			for(CheckedResBottleDto resBottleDto : detailReqBottleDto.getResBottles()) {
+				if(resBottleDto.getId() == 0L)	continue;
+				resBottles.add(resBottleDto);
 			}
 		}
+		detailReqBottleDto.setResBottles(resBottles);
 		return detailReqBottleDto;
 	}
 
