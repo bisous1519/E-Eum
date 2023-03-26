@@ -130,7 +130,7 @@ export default function SupportDetail(): JSX.Element {
 
           <View style={styles.group}>
             <Text style={styles.mainContent}>
-              {`안녕하세요 저는 누구누군데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
+              {`안녕하세요 저는 나싸핀데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
             
             
 줄바꿈 테스트임...

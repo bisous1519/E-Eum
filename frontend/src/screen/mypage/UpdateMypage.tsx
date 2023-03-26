@@ -97,64 +97,11 @@ const styles = StyleSheet.create({
 });
 // =====================================
 
-// 이것도...나중에 분리해야 하는 badge임.. ==============
-type BadgeProps = {
-  id: number;
-  num: number;
-};
-
-const Badge = ({ id, num }: BadgeProps) => (
-  <TouchableOpacity
-    style={styles.uniBadge}
-    onPress={() => console.log('뱃지 디테일이 까꿍')}
-    activeOpacity={0.6}
-  >
-    <View>
-      <Text>{num}</Text>
-    </View>
-  </TouchableOpacity>
-);
-
-// 뱃지 목록 임의로 만들게용...
-// image_path가 string으로 들어올거임
-const badgeData = [
-  {
-    id: 1,
-    num: 1,
-  },
-  {
-    id: 2,
-    num: 2,
-  },
-  {
-    id: 3,
-    num: 3,
-  },
-  {
-    id: 4,
-    num: 4,
-  },
-  {
-    id: 5,
-    num: 5,
-  },
-  {
-    id: 6,
-    num: 6,
-  },
-  {
-    id: 7,
-    num: 7,
-  },
-];
-
-// ======================================================
-
-export default function Mypage(): JSX.Element {
+export default function UpdateMypage(): JSX.Element {
   const navigation = useNav();
 
   const onPressBtn = () => {
-    navigation.push('UpdateMypage');
+    navigation.push('Mypage');
   };
 
   return (
@@ -182,18 +129,7 @@ export default function Mypage(): JSX.Element {
           </Pressable>
         </View>
       </View>
-      <FlatList
-        ListHeaderComponent={
-          <Text style={styles.userIntro}>저는 하루에 세 번 헤헤</Text>
-        }
-        contentContainerStyle={styles.badgeContainer}
-        data={badgeData}
-        renderItem={({ item }) => (
-          <Badge style={styles.uniBadge} id={item.id} num={item.num} />
-        )}
-        numColumns={3}
-        keyExtractor={(item) => item.id.toString()}
-      />
+      <Text style={styles.userIntro}>저는 하루에 세 번 헤헤</Text>
       <ModifyButton onPressModifyBtn={onPressBtn} />
     </View>
   );
