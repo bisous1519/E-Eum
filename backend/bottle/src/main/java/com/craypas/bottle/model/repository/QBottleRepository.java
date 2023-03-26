@@ -12,6 +12,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.QCheckedResBottleDto;
@@ -53,7 +54,7 @@ public class QBottleRepository {
 	}
 
 	public List<CreatedResBottleDto> findAllResBottleByReqWriterId(long id) {
-		return jpaQueryFactory
+		List<CreatedResBottleDto> result = jpaQueryFactory
 			.select(new QCreatedResBottleDto(resBottle.id, userReqBottle.id, resBottle.content, resBottle.sentiment, resBottle.ttsPath
 				, Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime)
 				, resBottle.status))
@@ -62,5 +63,12 @@ public class QBottleRepository {
 			.leftJoin(userReqBottle.resBottles, resBottle).on(resBottle.userReqBottleId.eq(userReqBottle.id))
 			.where(reqBottle.writerId.eq(id))
 			.fetch();
+
+		List<CreatedResBottleDto> resBottleDtos = new ArrayList<>();
+		for(CreatedResBottleDto resBottleDto : result){
+			if(resBottleDto.getId() == 0L)	continue;
+			resBottleDtos.add(resBottleDto);
+		}
+		return resBottleDtos;
 	}
 }

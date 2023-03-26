@@ -19,7 +19,7 @@ public class LikeService {
 
 	public CreatedLikeDto create(CreateLikeDto likeDto) {
 		if(!resBottleRepository.findById(likeDto.getResBottleId()).isPresent()) {
-			new CustomException(ErrorCode.RES_BOTTLE_NOT_FOUND);
+			throw new CustomException(ErrorCode.RES_BOTTLE_NOT_FOUND);
 		}
 		return likeRepository.save(likeDto.toEntity()).toCreatedDto();
 	}
