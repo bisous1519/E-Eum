@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
+import com.craypas.bottle.model.dto.request.CreateLikeDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
@@ -26,6 +27,7 @@ import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
+import com.craypas.bottle.model.service.LikeService;
 import com.craypas.bottle.util.InMemoryMultipartFile;
 import com.google.protobuf.ByteString;
 
@@ -43,6 +45,9 @@ public class BottleController {
 	private final FireBaseService fireBaseService;
 
 	private final GoogleCloudService googleCloudService;
+
+	private final LikeService likeService;
+
 
 	@PostMapping("/req")
 	ResponseEntity<?> sendReqBottle(@Valid @RequestBody CreateReqBottleDto reqBottleDto) {
@@ -78,7 +83,7 @@ public class BottleController {
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
@@ -91,7 +96,7 @@ public class BottleController {
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
@@ -103,7 +108,7 @@ public class BottleController {
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
@@ -118,7 +123,7 @@ public class BottleController {
 			receivedBottles.put("resBottles", resBottleDtos);
 			return new ResponseEntity<>(receivedBottles, HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
@@ -158,8 +163,21 @@ public class BottleController {
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/res/{id}/like")
+	public ResponseEntity<?> createLike(@PathVariable("id") Long resId, @Valid @RequestBody CreateLikeDto likeDto) {
+		try {
+			likeDto.setResBottleId(resId);
+			return new ResponseEntity<>(likeService.create(likeDto), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
