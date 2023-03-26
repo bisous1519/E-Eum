@@ -1,5 +1,8 @@
 package com.craypas.bottle.model.dto.response;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,15 +11,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class CreatedReqBottleDto {
-	private long id;
-	private long writerId;
+public class CreatedReportDto {
+	private Long id;
+	private Integer type;
+	private long targetId;
 	private String content;
-	private int sentiment;
-	private String ttsPath;
 	private String regTime;
-	private int status;
+	// 0 : 신고 요청 상태, 1 : 신고 승인 상태
+	private Integer status;
 }

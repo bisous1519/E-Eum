@@ -1,7 +1,6 @@
 package com.craypas.bottle.model.dto.request;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import com.craypas.bottle.model.entity.ResBottle;
 
@@ -16,7 +15,6 @@ import lombok.ToString;
 @ToString
 public class CreateResBottleDto {
 
-	@NotNull
 	private Long userReqBottleId;
 
 	@NotEmpty

@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,7 +68,6 @@ public class ReqBottle {
 			.writerId(writerId)
 			.content(content)
 			.ttsPath(ttsPath)
-			.type(type)
 			.sentiment(sentiment)
 			.regTime(stringConverter(regTime))
 			.status(status)

@@ -1,5 +1,9 @@
 package com.craypas.bottle.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -14,8 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
+import com.craypas.bottle.model.dto.request.CreateLikeDto;
+import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
+import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -36,6 +45,7 @@ public class BottleController {
 	private final FireBaseService fireBaseService;
 
 	private final GoogleCloudService googleCloudService;
+
 
 	@PostMapping("/req")
 	ResponseEntity<?> sendReqBottle(@Valid @RequestBody CreateReqBottleDto reqBottleDto) {
@@ -71,7 +81,7 @@ public class BottleController {
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
@@ -84,7 +94,7 @@ public class BottleController {
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
@@ -96,7 +106,7 @@ public class BottleController {
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
@@ -104,9 +114,81 @@ public class BottleController {
 	@GetMapping("/receiver/{uid}/list")
 	ResponseEntity<?> getReceivedBottles(@PathVariable("uid") Long receiverId) {
 		try {
-			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverId(receiverId), HttpStatus.OK);
+			List<ReceivedUserReqBottleDto> userReqBottleDtos = bottleService.findAllUserReqBottleByReceiverId(receiverId);
+			List<CreatedResBottleDto> resBottleDtos = bottleService.findAllResBottleByReqWriterId(receiverId);
+			Map<String, List> receivedBottles = new HashMap<>();
+			receivedBottles.put("reqBottles", userReqBottleDtos);
+			receivedBottles.put("resBottles", resBottleDtos);
+			return new ResponseEntity<>(receivedBottles, HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/{userReqBottleId}/res")
+	ResponseEntity<?> sendResBottle(@PathVariable("userReqBottleId") long userReqBottleId, @Valid @RequestBody CreateResBottleDto resBottleDto) {
+		String bucketFolder = "", saveFileName = "";
+		try {
+			String content = resBottleDto.getContent();
+
+			// 유해 탐지 ai 서버 요청
+			// 유해 탐지 분산 서버 요청
+
+			resBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
+			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
+
+			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성
+
+			MultipartFile multipartFile = new InMemoryMultipartFile(		// 오디오를 MultipartFile로 변환
+				saveFileName,
+				saveFileName+".mp3",
+				"audio/mp3",
+				audioContents.toByteArray()
+			);
+
+			bucketFolder = "tts-mp3";
+			fireBaseService.uploadFiles(multipartFile, bucketFolder, saveFileName);		// firebase에 파일 저장
+
+			// userReqBottleId & tts path 저장
+			resBottleDto.setUserReqBottleId(userReqBottleId);
+			resBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
+
+			// 해류병 생성
+			CreatedResBottleDto createdBottleDto = bottleService.sendResBottles(resBottleDto);
+			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
+		} catch (CustomException e) {
+			fireBaseService.deleteFile(bucketFolder, saveFileName);
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
+			fireBaseService.deleteFile(bucketFolder, saveFileName);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/res/{id}/like")
+	public ResponseEntity<?> createLike(@PathVariable("id") Long resId, @Valid @RequestBody CreateLikeDto likeDto) {
+		try {
+			likeDto.setResBottleId(resId);
+			return new ResponseEntity<>(bottleService.createLike(likeDto), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/report")
+	public ResponseEntity<?> reportBottle(@Valid @RequestBody CreateReportDto reportDto) {
+		try {
+			reportDto.setStatus(0);
+			return new ResponseEntity<>(bottleService.reportBottle(reportDto), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}

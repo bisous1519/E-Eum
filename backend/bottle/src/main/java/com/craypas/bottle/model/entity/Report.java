@@ -11,7 +11,7 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedReportDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -20,42 +20,40 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "res_bottle")
-public class ResBottle {
+@AllArgsConstructor
+@Builder
+@Entity(name = "report")
+public class Report {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(name = "user_req_bottle_id")
-	private long userReqBottleId;
+	// 1 : req_bottle, 2 : res_bottle, 3 : support, 4: record
+	@Column(name = "type")
+	private int type;
+
+	@Column(name = "target_id")
+	private long targetId;
 
 	@Column(name = "content")
 	private String content;
-
-	@Column(name = "tts_path")
-	private String ttsPath;
-
-	@Column(name = "sentiment")
-	private int sentiment;
 
 	@Column(name = "reg_time")
 	@CreationTimestamp
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date regTime;
 
+	// 0 : 신고 요청 상태, 1 : 신고 승인 상태
 	@Column(name = "status")
 	private int status;
 
-	public CreatedResBottleDto toCreatedDto() {
-		return CreatedResBottleDto.builder()
+	public CreatedReportDto toCreatedDto() {
+		return CreatedReportDto.builder()
 			.id(id)
-			.userReqBottleId(userReqBottleId)
+			.type(type)
+			.targetId(targetId)
 			.content(content)
-			.sentiment(sentiment)
-			.ttsPath(ttsPath)
 			.regTime(stringConverter(regTime))
 			.status(status)
 			.build();

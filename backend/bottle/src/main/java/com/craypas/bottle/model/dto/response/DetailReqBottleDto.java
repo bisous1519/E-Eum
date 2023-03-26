@@ -6,9 +6,11 @@ import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @ToString
 public class DetailReqBottleDto {
@@ -18,10 +20,10 @@ public class DetailReqBottleDto {
 	private Integer sentiment;
 	private String regTime;
 	private Integer status;
-	private List<ResBottleDto> resBottles;
+	private List<CheckedResBottleDto> resBottles;
 
 	@QueryProjection
-	public DetailReqBottleDto(long id, String content, int type, int sentiment, String regTime, int status, List<ResBottleDto> resBottles) {
+	public DetailReqBottleDto(long id, String content, int type, int sentiment, String regTime, int status, List<CheckedResBottleDto> resBottles) {
 		this.id = id;
 		this.content = content;
 		this.type = type;
