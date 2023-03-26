@@ -37,17 +37,19 @@ const styles = StyleSheet.create({
   },
   // 후원 카드에 표시되는 '제목'
   title: {
-    height: 50,
+    // height: 50,
     fontWeight: '700',
+    marginVertical: DEVICE_HEIGHT * 0.015,
   },
   // 목표금액, 달성률 -> 연한 회색 제목
   lightTitle: {
     color: theme.textColor.light,
+    marginVertical: DEVICE_HEIGHT * 0.005,
   },
   // 프로필 사진
   image: {
-    width: 45,
-    height: 45,
+    width: DEVICE_WIDTH * 0.11,
+    height: DEVICE_WIDTH * 0.11,
     borderRadius: 30,
     marginRight: 8,
   },
@@ -59,7 +61,9 @@ const styles = StyleSheet.create({
   // 목표금액: 제목 및 금액
   goal: {},
   // 달성률: 제목 및 그래프
-  progress: {},
+  progress: {
+    marginVertical: DEVICE_HEIGHT * 0.015,
+  },
 });
 
 // 나중에 다 분리하자.. ===================================================
@@ -148,7 +152,7 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
     onPress={() => console.log('디테일 스크린이 까꿍')}
     activeOpacity={0.6}
   >
-    <View>
+    <View style={styles.container}>
       <View style={styles.profile}>
         <Image
           source={require('../../assets/images/sample.png')}

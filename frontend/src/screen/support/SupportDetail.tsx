@@ -31,6 +31,82 @@ import DeleteModal from '../../components/record/DeleteModal';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  innerContainer: {
+    width: DEVICE_WIDTH * 0.9,
+    marginVertical: 15,
+    marginHorizontal: 20,
+    fontSize: theme.fontSize.regular,
+    marginBottom: 70,
+  },
+  group: {
+    marginVertical: DEVICE_HEIGHT * 0.01,
+  },
+  picture: {
+    height: DEVICE_HEIGHT * 0.3,
+    width: DEVICE_WIDTH,
+    alignItems: 'stretch',
+  },
+  title: {
+    fontSize: theme.fontSize.big,
+    fontWeight: '700',
+  },
+  productLink: {
+    backgroundColor: theme.mainColor.main,
+    borderRadius: 15,
+    paddingVertical: 3,
+    paddingHorizontal: 20,
+    width: DEVICE_WIDTH * 0.25,
+    alignItems: 'center',
+    marginTop: 3,
+  },
+  contentTitle: {
+    color: theme.textColor.light,
+  },
+  linkText: {
+    fontSize: theme.fontSize.small,
+  },
+  content: {
+    fontWeight: '400',
+  },
+  writerTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.mainColor.main,
+    padding: 20,
+    borderRadius: 10,
+    justifyContent: 'space-between',
+  },
+  leftProfile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  writerName: {
+    fontWeight: '700',
+  },
+  writerIntro: {
+    color: theme.textColor.light,
+  },
+  writerPicture: {
+    width: 45,
+    height: 45,
+    borderRadius: 30,
+    marginRight: 10,
+  },
+  goalBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 5,
+  },
+  mainContent: {
+    marginHorizontal: 10,
+  },
+});
+
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
   const link = () => {
@@ -111,18 +187,20 @@ export default function SupportDetail(): JSX.Element {
               activeOpacity={0.6}
             >
               <View style={styles.writerTag}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.writerPicture}
-                />
-                <View>
-                  <Text style={styles.writerName}>홍싸피</Text>
-                  <Text style={styles.writerIntro}>나는 있잖아요..</Text>
+                <View style={styles.leftProfile}>
+                  <Image
+                    source={require('../../assets/images/sample.png')}
+                    style={styles.writerPicture}
+                  />
+                  <View>
+                    <Text style={styles.writerName}>홍싸피</Text>
+                    <Text style={styles.writerIntro}>나는 있잖아요..</Text>
+                  </View>
                 </View>
                 <MaterialIcons
                   name='arrow-forward-ios'
-                  size={24}
-                  color='black'
+                  size={15}
+                  color={theme.grayColor.darkGray}
                 />
               </View>
             </TouchableOpacity>
@@ -160,73 +238,3 @@ export default function SupportDetail(): JSX.Element {
     </BottomSheetModalProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  innerContainer: {
-    width: DEVICE_WIDTH * 0.9,
-    marginVertical: 15,
-    marginHorizontal: 20,
-    fontSize: theme.fontSize.regular,
-    marginBottom: 70,
-  },
-  group: {
-    marginVertical: DEVICE_HEIGHT * 0.01,
-  },
-  picture: {
-    height: DEVICE_HEIGHT * 0.25,
-    width: DEVICE_WIDTH,
-    alignItems: 'stretch',
-  },
-  title: {
-    fontWeight: '700',
-  },
-  productLink: {
-    backgroundColor: theme.mainColor.main,
-    borderRadius: 15,
-    paddingVertical: 3,
-    paddingHorizontal: 20,
-    width: DEVICE_WIDTH * 0.25,
-    alignItems: 'center',
-    marginTop: 3,
-  },
-  contentTitle: {
-    color: theme.textColor.light,
-  },
-  linkText: {
-    fontSize: theme.fontSize.small,
-  },
-  content: {
-    fontWeight: '400',
-  },
-  writerTag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.mainColor.main,
-    padding: 20,
-    borderRadius: 10,
-  },
-  writerName: {
-    fontWeight: '700',
-  },
-  writerIntro: {
-    color: theme.textColor.light,
-  },
-  writerPicture: {
-    width: 45,
-    height: 45,
-    borderRadius: 30,
-    marginRight: 10,
-  },
-  goalBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 5,
-  },
-  mainContent: {
-    marginHorizontal: 10,
-  },
-});

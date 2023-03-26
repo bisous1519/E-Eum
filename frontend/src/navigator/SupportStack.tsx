@@ -14,7 +14,11 @@ const SupportStack = () => {
         component={SupportDetail}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name='NewSupport' component={NewSupport} />
+      <Stack.Screen
+        name='NewSupport'
+        component={NewSupport}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

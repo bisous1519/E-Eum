@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 import { shadowStyle } from '../common/shadowStyle';
@@ -15,24 +15,24 @@ const styles = StyleSheet.create({
     backgroundColor: theme.mainColor.main,
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: DEVICE_WIDTH * 0.3,
     borderRadius: 45,
   },
 });
 
-type SupportButtonPropsType = {
-  onPressSupportBtn: () => void;
+type SubmitButtonPropsType = {
+  onPressSubmitBtn: () => void;
 };
 
-export default function SupportButton({
-  onPressSupportBtn,
-}: SupportButtonPropsType): JSX.Element {
+export default function SubmitButton({
+  onPressSubmitBtn,
+}: SubmitButtonPropsType): JSX.Element {
   return (
     <Pressable
       style={StyleSheet.flatten([styles.container, shadowStyle.shadow])}
-      onPress={onPressSupportBtn}
+      onPress={onPressSubmitBtn}
     >
-      <Text style={{ color: theme.textColor.white }}>후원하기</Text>
+      <Text style={{ color: theme.textColor.white }}>등록하기</Text>
     </Pressable>
   );
 }
