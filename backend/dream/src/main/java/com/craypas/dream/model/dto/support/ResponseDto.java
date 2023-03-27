@@ -62,4 +62,28 @@ public class ResponseDto {
 			this.content = support.getContent();
 		}
 	}
+
+	@Getter
+	@Setter
+	@ToString
+	public static class Preview {
+		private Long uid;
+		private String userNickname;
+		private String userImagePath;
+		private Long sid;
+		private String title;
+		private Integer targetAmount;
+		private Integer achievementRate;
+
+		@Builder
+		public Preview(Support support) {
+			this.uid = support.getUserId();
+			// this.userNickname = userNickname;
+			// this.userImagePath = userImagePath;
+			this.sid = support.getId();
+			this.title = support.getTitle();
+			this.targetAmount = support.getTargetAmount();
+			this.achievementRate = (100 * support.getCurrentAmount()) / support.getTargetAmount();
+		}
+	}
 }

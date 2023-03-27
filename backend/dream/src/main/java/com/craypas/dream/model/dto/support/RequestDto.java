@@ -14,6 +14,7 @@ import com.craypas.dream.model.entity.Tag;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 public class RequestDto {
@@ -62,5 +63,14 @@ public class RequestDto {
 				.imagePath(imagePath)
 				.build();
 		}
+	}
+
+	@Getter
+	@Setter
+	@ToString
+	public static class UserPreview {
+		private Long uid;
+		private String nickname;
+		private String imagePath;
 	}
 }

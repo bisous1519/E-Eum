@@ -3,6 +3,8 @@ package com.craypas.dream.model.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -138,11 +140,58 @@ public class SupportServiceImpl implements SupportService {
 
 	// 꿈 후원요청 전체 조회
 	@Override
-	public List<ResponseDto.Read> getSupportList(final Pageable pageable) {
-		return supportRepository.findAll(pageable)
-			.stream()
-			.map(ResponseDto.Read::new)
-			.collect(Collectors.toList());
+	public List<ResponseDto.Preview> getSupportList(final Integer sortType) {
+		// 최신순 / 마감임박순 / 달성높은순 / 달성낮은순으로 정렬하여 support list를 가져온다
+		List<Support> supportList = supportRepository.findAllByStatus(0);
+		switch (sortType){
+			// 1. 최신순
+			case 1: Collections.sort(supportList, ((o1, o2) -> o1.getRegTime().isBefore(o2.getRegTime())? 1 : -1));
+				break;
+			// 2. 마감 임박 순
+			case 2: Collections.sort(supportList, ((o1, o2) -> o1.getDeadline().isAfter(o2.getDeadline())? 1 : -1));
+				break;
+			// 3. 달성률 높은 순
+			case 3: Collections.sort(supportList, ((o1, o2) -> o1.getCurrentAmount() * o2.getTargetAmount() < o2.getCurrentAmount() * o1.getTargetAmount()? 1 : -1));
+				break;
+			// 4. 달성률 낮은 순
+			case 4: Collections.sort(supportList, ((o1, o2) -> o1.getCurrentAmount() * o2.getTargetAmount() > o2.getCurrentAmount() * o1.getTargetAmount()? 1 : -1));
+				break;
+		}
+
+		// 2. 각 support를 순회하며 적절한 dto를 만들고 리스트에 추가한다
+		List<ResponseDto.Preview> previewList = new ArrayList<>(supportList.size());
+		for(Support support : supportList) {
+			previewList.add(new ResponseDto.Preview(support));
+		}
+
+		// 3. uid 리스트를 만들어 회원 정보를 요청해 가져온다.
+		// Header set
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		// Body set
+		List<Long> uidList = new ArrayList<>(supportList.size());
+		for(Support support : supportList) {
+			uidList.add(support.getUserId());
+		}
+		RestTemplate restTemplate = new RestTemplate();
+		ObjectMapper mapper = new ObjectMapper();
+		String url = PROJECT_USER_SUPPORT_URL + "/preview";
+		// Message
+		HttpEntity<?> requestMessage = new HttpEntity<>(uidList, httpHeaders);
+		// Request
+		ResponseEntity<String> result = restTemplate.postForEntity(url, requestMessage,
+			String.class);
+		try {
+			List<LinkedHashMap<String, String>> list = mapper.readValue(result.getBody(), List.class);
+			for(int i = 0; i < supportList.size(); i++){
+				previewList.get(i).setUserNickname(list.get(i).get("nickname"));
+				previewList.get(i).setUserImagePath(list.get(i).get("imagePath"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return previewList;
 	}
 
 	// 꿈 후원요청 수정

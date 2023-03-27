@@ -42,8 +42,8 @@ public class SupportController {
 
 	// 꿈 후원요청 전체 조회
 	@GetMapping("/req")
-	public ResponseEntity<?> getSupportList(final Pageable pageable) {
-		return new ResponseEntity<>(supportService.getSupportList(pageable), HttpStatus.OK);
+	public ResponseEntity<?> getSupportList(final Integer sortType) {
+		return new ResponseEntity<>(supportService.getSupportList(sortType), HttpStatus.OK);
 	}
 
 	// 꿈 후원요청 수정
