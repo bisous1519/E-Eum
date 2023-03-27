@@ -115,7 +115,7 @@ export default function SupportDetail(): JSX.Element {
   const link = () => {
     Linking.openURL('https://www.naver.com/');
   };
-  // 후원금액 입력 모달을 띄우기 위해 필요 ======================================
+  // 후원금액 입력 화면을 띄우기 위해 필요 ======================================
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['65%'], []);
   const handlePresentModalPress = useCallback(() => {
@@ -138,165 +138,164 @@ export default function SupportDetail(): JSX.Element {
   };
 
   return (
-    <BottomSheetModalProvider>
-      <ScrollView style={styles.container}>
-        <Image
-          style={styles.picture}
-          source={require('../../assets/images/sample.png')}
-          resizeMode='cover'
-        />
-        <View style={styles.innerContainer}>
-          <Text style={styles.title}>개발자가 되고 싶어요</Text>
-          <View style={styles.group}>
-            <Text style={styles.contentTitle}>후원 요청 내용</Text>
-            <Text style={styles.content}>인강사이트 개발자 강의 수강권</Text>
-            <TouchableOpacity
-              onPress={() => link()}
-              activeOpacity={0.6}
-              style={styles.productLink}
-            >
-              <Text style={styles.linkText}>참고링크</Text>
-            </TouchableOpacity>
-          </View>
+    <ScrollView style={styles.container}>
+      <Image
+        style={styles.picture}
+        source={require('../../assets/images/sample.png')}
+        resizeMode='cover'
+      />
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}>개발자가 되고 싶어요</Text>
+        <View style={styles.group}>
+          <Text style={styles.contentTitle}>후원 요청 내용</Text>
+          <Text style={styles.content}>인강사이트 개발자 강의 수강권</Text>
+          <TouchableOpacity
+            onPress={() => link()}
+            activeOpacity={0.6}
+            style={styles.productLink}
+          >
+            <Text style={styles.linkText}>참고링크</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.group}>
-            <Text style={styles.contentTitle}>후원 요청 기간</Text>
-            <Text style={styles.content}>2023.03.20 ~ 2023.04.01</Text>
-          </View>
+        <View style={styles.group}>
+          <Text style={styles.contentTitle}>후원 요청 기간</Text>
+          <Text style={styles.content}>2023.03.20 ~ 2023.04.01</Text>
+        </View>
 
-          <View style={styles.group}>
-            <Text style={styles.contentTitle}>목표 금액</Text>
-            <Text style={styles.content}>110,000원</Text>
-          </View>
+        <View style={styles.group}>
+          <Text style={styles.contentTitle}>목표 금액</Text>
+          <Text style={styles.content}>110,000원</Text>
+        </View>
 
-          <View style={styles.group}>
-            <Text style={styles.contentTitle}>달성률</Text>
-            <View style={styles.goalBar}>
-              <Progress.Bar
-                progress={60 / 100}
-                width={DEVICE_WIDTH * 0.8}
-                height={DEVICE_HEIGHT * 0.025}
-                color={theme.mainColor.main}
+        <View style={styles.group}>
+          <Text style={styles.contentTitle}>달성률</Text>
+          <View style={styles.goalBar}>
+            <Progress.Bar
+              progress={60 / 100}
+              width={DEVICE_WIDTH * 0.8}
+              height={DEVICE_HEIGHT * 0.025}
+              color={theme.mainColor.main}
+            />
+            <Text>60%</Text>
+          </View>
+        </View>
+
+        <View style={styles.group}>
+          <Text style={styles.contentTitle}>후원자</Text>
+          {/* 후원자 프로필 사진 모아서 보여주기 */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {/* 지금은 그냥 이미지 나열이지만 실제로는 리스트를 만들거야 */}
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
               />
-              <Text>60%</Text>
-            </View>
-          </View>
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+            <Pressable onPress={handleSupporterClick}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profilePicture}
+              />
+            </Pressable>
+          </ScrollView>
+        </View>
 
-          <View style={styles.group}>
-            <Text style={styles.contentTitle}>후원자</Text>
-            {/* 후원자 프로필 사진 모아서 보여주기 */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {/* 지금은 그냥 이미지 나열이지만 실제로는 리스트를 만들거야 */}
-              <Pressable onPress={handleSupporterClick}>
+        {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
+        <View style={styles.group}>
+          <TouchableOpacity
+            onPress={() => console.log('프로필이 까꿍')}
+            activeOpacity={0.6}
+          >
+            <View style={styles.writerTag}>
+              <View style={styles.leftProfile}>
                 <Image
                   source={require('../../assets/images/sample.png')}
                   style={styles.profilePicture}
                 />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-            </ScrollView>
-          </View>
-
-          {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
-          <View style={styles.group}>
-            <TouchableOpacity
-              onPress={() => console.log('프로필이 까꿍')}
-              activeOpacity={0.6}
-            >
-              <View style={styles.writerTag}>
-                <View style={styles.leftProfile}>
-                  <Image
-                    source={require('../../assets/images/sample.png')}
-                    style={styles.profilePicture}
-                  />
-                  <View style={styles.leftText}>
-                    <Text style={styles.writerName}>홍싸피</Text>
-                    <Text style={styles.writerIntro}>나는 있잖아요..</Text>
-                  </View>
+                <View style={styles.leftText}>
+                  <Text style={styles.writerName}>홍싸피</Text>
+                  <Text style={styles.writerIntro}>나는 있잖아요..</Text>
                 </View>
-                <MaterialIcons
-                  name='arrow-forward-ios'
-                  size={15}
-                  color={theme.grayColor.darkGray}
-                />
               </View>
-            </TouchableOpacity>
-          </View>
+              <MaterialIcons
+                name='arrow-forward-ios'
+                size={15}
+                color={theme.grayColor.darkGray}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.group}>
-            <Text style={styles.mainContent}>
-              {`안녕하세요 저는 나싸핀데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
+        <View style={styles.group}>
+          <Text style={styles.mainContent}>
+            {`안녕하세요 저는 나싸핀데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
             
             
 줄바꿈 테스트임...
@@ -307,22 +306,10 @@ export default function SupportDetail(): JSX.Element {
 이부분은 스크롤 테스트임...으아아아
 안녕하세요 저는 누구누군데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
 안녕하세요 저는 누구누군데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??`}
-            </Text>
-          </View>
+          </Text>
         </View>
-      </ScrollView>
-      {/* <SupportButton onPressSupportBtn={onPressSupportBtn} /> */}
-      <SupportButton onPressSupportBtn={handlePresentModalPress} />
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={1}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-      >
-        <View>
-          <Text>우와웅🎉</Text>
-        </View>
-      </BottomSheetModal>
-    </BottomSheetModalProvider>
+      </View>
+      <SupportButton onPressSupportBtn={onPressSupportBtn} />
+    </ScrollView>
   );
 }
