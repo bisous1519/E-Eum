@@ -10,12 +10,13 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 import { Feather } from '@expo/vector-icons';
 import { color } from 'react-native-reanimated';
 import * as Font from 'expo-font';
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
+const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const stylesTempBorder = StyleSheet.create({
   //일반 보더 확인용
