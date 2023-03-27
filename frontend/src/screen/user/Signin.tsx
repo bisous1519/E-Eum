@@ -58,7 +58,7 @@ const stylesInnerContainer = StyleSheet.create({
     alignItems: 'center',
     margin: 0,
     padding: 0,
-    width: DEVICE_WIDTH * 0.9,
+    width: DEVICE_WIDTH * 0.8,
   },
 });
 
@@ -92,7 +92,6 @@ const stylesSignin = StyleSheet.create({
   box: {
     width: '100%',
     // marginBottom: 10,
-    // marginTop: 20,
   },
   dividedTwo: {
     width: '80%',
@@ -208,7 +207,7 @@ export default function Signin(): JSX.Element {
                 text={userPW}
                 onChangeText={onChangeUserPW}
                 pw={true}
-              ></InputComp>
+              />
             </View>
             <View
               testID='loginButton'
