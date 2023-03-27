@@ -15,6 +15,8 @@ import theme from '../../utils/theme';
 import { Feather } from '@expo/vector-icons';
 import { color } from 'react-native-reanimated';
 import * as Font from 'expo-font';
+import InputComp from '../../components/common/input/InputComp';
+import useInputText from '../../hooks/useInputText';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -46,6 +48,7 @@ const stylesGlobalContainer = StyleSheet.create({
     backgroundColor: theme.background,
     padding: 0,
     marginBottom: 300,
+    marginTop: 20,
   },
 });
 
@@ -57,8 +60,8 @@ const stylesInnerContainer = StyleSheet.create({
     flexDirection: 'column',
     // justifyContent: 'center',
     alignItems: 'center',
-    margin: 0,
-    padding: 0,
+    // margin: 0,
+    // padding: 0,
     width: DEVICE_WIDTH * 0.9,
   },
 });
@@ -66,45 +69,15 @@ const stylesInnerContainer = StyleSheet.create({
 const stylesSignupInput = StyleSheet.create({
   box: {
     width: '100%',
-    marginBottom: 10,
-    marginTop: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: theme.mainColor.main,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingBottom: 10,
-    height: 60,
-  },
-  inputStyle: {
-    fontSize: theme.fontSize.regular,
-    // borderWidth: 1,
-    // borderColor: 'red',
-    height: 35,
-    flex: 1,
-    paddingTop: 2,
-    paddingBottom: 2,
-  },
-  button: {
-    width: '20%',
-    backgroundColor: theme.mainColor.light,
-    height: 30,
-    borderRadius: 50,
-  },
-  buttonInnerText: {
-    textAlign: 'center',
-    lineHeight: 30,
-    color: theme.textColor.main,
-    fontSize: theme.fontSize.small,
-  },
-  timeLeft: {
-    color: '#949494',
-    marginRight: 10,
-    marginLeft: 10,
-  },
-  checkIcon: {
-    marginRight: 10,
-    marginLeft: 10,
+    // marginBottom: 10,
+    // marginTop: 20,
+    // borderBottomWidth: 2,
+    // borderBottomColor: theme.mainColor.main,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'flex-end',
+    // paddingBottom: 10,
+    // height: 60,
   },
   noInputTextContainer: {
     flexDirection: 'column',
@@ -156,37 +129,21 @@ const stylesSignupInput = StyleSheet.create({
 });
 
 export default function Signup(): JSX.Element {
-  const [userName, setUserName] = useState<string>('');
-  const [userEmail, setUserEmail] = useState<string>('');
-  const [verifCode, setVerifCode] = useState<string>('');
-  const [userPW, setUserPW] = useState<string>('');
-  const [userVerifPW, setUserVerifPW] = useState<string>('');
-  const [userNickName, setUserNickName] = useState<string>('');
-  const [userGender, setUserGender] = useState<string>('');
-  const [userProfileImage, setUserProfileImage] = useState<string>('');
-  const [userType, setUserType] = useState<string>('');
+  //이름
+  const { text: userName, onChangeText: onChangeUserName } = useInputText();
 
-  const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
-  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
-
-  const [timeLeft, setTimeLeft] = useState<number>(5);
+  //이메일 인증
+  const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
+  const requestVerifCode = () => {
+    console.log('인증 버튼 눌림');
+  };
+  const { text: verifCode, onChangeText: onChangeVerifCode } = useInputText();
   const [timerOn, setTimerOn] = useState<boolean>(false);
-
-  const handleUserName = (input: string) => {
-    setUserName(input);
-  };
-  const handleUserEmail = (input: string) => {
-    setUserEmail(input);
-  };
-  const handleVerifCode = (input: string) => {
-    setVerifCode(input);
-  };
-
-  const handleTimeLeft = () => {
+  const [timeLeft, setTimeLeft] = useState<number>(5);
+  const checkVerifCode = () => {
+    console.log('인증 확인 버튼 눌림');
     setTimerOn(true);
   };
-
-  //이메일 인증 관련
   useEffect(() => {
     let interval: any;
     console.log('카운트다운');
@@ -201,29 +158,39 @@ export default function Signup(): JSX.Element {
     return () => clearInterval(interval);
   }, [timerOn, timeLeft]);
 
-  // 비밀번호 관련
+  //비밀번호
+  const { text: userPW, onChangeText: onChangeUserText } = useInputText();
   const PWRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/;
-  const handleUserPW = (input: string) => {
-    setUserPW(input);
-    setUserVerifPW('');
-    if (!PWRegex.test(input)) setCheckRegexPW(false);
-    else setCheckRegexPW(true);
-    setCheckSamePW(false);
-  };
-
-  const handleUserVerifPW = (input: string) => {
-    setUserVerifPW(input);
-  };
-
+  const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
   useEffect(() => {
-    console.log('비밀번호 같은지 체크');
-    setCheckSamePW(userPW !== '' && userPW === userVerifPW);
+    if (userPW !== '') {
+      if (!PWRegex.test(userPW)) setCheckRegexPW(false);
+      else setCheckRegexPW(true);
+      setCheckSamePW(false);
+    }
+  }, [userPW]);
+  const { text: userVerifPW, onChangeText: onChangeUserVerifPW } =
+    useInputText();
+  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
+  useEffect(() => {
+    if (userPW === userVerifPW) setCheckSamePW(true);
+    else setCheckSamePW(false);
   }, [userVerifPW]);
 
-  // 닉네임 관련
-  const handleUserNickName = (input: string) => {
-    setUserNickName(input);
-  };
+  //닉네임
+  const { text: userNickName, onChangeText: onChangeUserNickName } =
+    useInputText();
+  const [checkNickNameLength, setCheckNickNameLength] =
+    useState<boolean>(false);
+  useEffect(() => {
+    if (userNickName.length >= 3 && userNickName.length <= 10)
+      setCheckNickNameLength(true);
+    else setCheckNickNameLength(false);
+  }, [userNickName]);
+
+  const [userGender, setUserGender] = useState<string>('');
+  const [userProfileImage, setUserProfileImage] = useState<string>('');
+  const [userType, setUserType] = useState<string>('');
 
   // 성별 관련
   const handleGender = (input: string) => {
@@ -258,14 +225,11 @@ export default function Signup(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputName'
-              onChangeText={handleUserName}
-              value={userName}
-              placeholder='이름 (~8자)'
-              maxLength={8}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
+            <InputComp
+              name={'이름'}
+              text={userName}
+              onChangeText={onChangeUserName}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -273,19 +237,14 @@ export default function Signup(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputEmail'
-              onChangeText={handleUserEmail}
-              value={userEmail}
-              placeholder='이메일'
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <Pressable
-              onPress={handleTimeLeft}
-              style={stylesSignupInput.button}
-            >
-              <Text style={stylesSignupInput.buttonInnerText}>인증</Text>
-            </Pressable>
+            <InputComp
+              name={'이메일'}
+              text={userEmail}
+              onChangeText={onChangeUserEmail}
+              btn={true}
+              btnText={'인증'}
+              onPressBtn={requestVerifCode}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -293,23 +252,22 @@ export default function Signup(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputVerifCode'
-              onChangeText={handleVerifCode}
-              value={verifCode}
-              placeholder='코드 입력'
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <Text style={stylesSignupInput.timeLeft}>{`${Math.floor(
-              timeLeft / 60
-            )
-              .toString()
-              .padStart(2, '0')}:${(timeLeft % 60)
-              .toString()
-              .padStart(2, '0')}`}</Text>
-            <Pressable style={stylesSignupInput.button}>
-              <Text style={stylesSignupInput.buttonInnerText}>확인</Text>
-            </Pressable>
+            <InputComp
+              name={'인증 코드'}
+              text={verifCode}
+              onChangeText={onChangeVerifCode}
+              btn={true}
+              btnText={
+                timerOn
+                  ? `${Math.floor(timeLeft / 60)
+                      .toString()
+                      .padStart(2, '0')}:${(timeLeft % 60)
+                      .toString()
+                      .padStart(2, '0')}`
+                  : '확인'
+              }
+              onPressBtn={checkVerifCode}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -317,28 +275,15 @@ export default function Signup(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputPW'
-              onChangeText={handleUserPW}
-              value={userPW}
-              placeholder='비밀번호'
-              secureTextEntry={true}
-              maxLength={16}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <View style={stylesSignupInput.checkIcon}>
-              <Feather
-                name='check-circle'
-                size={24}
-                color={
-                  checkRegexPW
-                    ? theme.mainColor.main
-                    : userPW === ''
-                    ? theme.textColor.light
-                    : theme.textColor.error
-                }
-              />
-            </View>
+            <InputComp
+              name={'비밀번호'}
+              text={userPW}
+              onChangeText={onChangeUserText}
+              pw={true}
+              check={true}
+              isValid={checkRegexPW}
+              errorMsg={'영문자, 특수문자, 숫자 포함 8~16자'}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -346,28 +291,15 @@ export default function Signup(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputVerifPW'
-              onChangeText={handleUserVerifPW}
-              value={userVerifPW}
-              placeholder='비밀번호 확인'
-              secureTextEntry={true}
-              maxLength={16}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <View style={stylesSignupInput.checkIcon}>
-              <Feather
-                name='check-circle'
-                size={24}
-                color={
-                  checkSamePW
-                    ? theme.mainColor.main
-                    : userVerifPW === ''
-                    ? theme.textColor.light
-                    : theme.textColor.error
-                }
-              />
-            </View>
+            <InputComp
+              name={'비밀번호 확인'}
+              text={userVerifPW}
+              onChangeText={onChangeUserVerifPW}
+              pw={true}
+              check={true}
+              isValid={checkSamePW}
+              errorMsg={'비밀번호가 다릅니다'}
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -375,14 +307,14 @@ export default function Signup(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputNickName'
-              onChangeText={handleUserNickName}
-              value={userNickName}
-              placeholder='닉네임'
-              maxLength={10}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
+            <InputComp
+              name={'닉네임 (3~10자)'}
+              text={userNickName}
+              onChangeText={onChangeUserNickName}
+              check={true}
+              isValid={checkNickNameLength}
+              errorMsg={'3~10자'}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([

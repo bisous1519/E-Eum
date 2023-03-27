@@ -8,6 +8,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import ButtonComp from '../../components/common/button/ButtonComp';
+import InputComp from '../../components/common/input/InputComp';
+import useInputText from '../../hooks/useInputText';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
 
@@ -40,7 +43,8 @@ const stylesGlobalContainer = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.background,
     padding: 0,
-    marginBottom: 300,
+    marginBottom: 10,
+    marginTop: 20,
   },
 });
 
@@ -52,8 +56,6 @@ const stylesInnerContainer = StyleSheet.create({
     flexDirection: 'column',
     // justifyContent: 'center',
     alignItems: 'center',
-    margin: 0,
-    padding: 0,
     width: DEVICE_WIDTH * 0.9,
   },
 });
@@ -61,69 +63,36 @@ const stylesInnerContainer = StyleSheet.create({
 const stylesSignupInput = StyleSheet.create({
   box: {
     width: '100%',
-    marginBottom: 10,
-    marginTop: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: theme.mainColor.main,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingBottom: 10,
-    height: 60,
-  },
-  inputStyle: {
-    fontSize: theme.fontSize.regular,
-    // borderWidth: 1,
-    // borderColor: 'red',
-    height: 35,
-    flex: 1,
-    paddingTop: 2,
-    paddingBottom: 2,
-  },
-  button: {
-    width: '20%',
-    backgroundColor: theme.mainColor.light,
-    height: 30,
-    borderRadius: 50,
-  },
-  buttonInnerText: {
-    textAlign: 'center',
-    lineHeight: 30,
-    color: theme.textColor.main,
-    fontSize: theme.fontSize.small,
-  },
-  timeLeft: {
-    color: '#949494',
-    marginRight: 10,
-    marginLeft: 10,
+    // marginBottom: 10,
+    // marginTop: 20,
+    // borderBottomWidth: 2,
+    // borderBottomColor: theme.mainColor.main,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'flex-end',
+    // paddingBottom: 10,
+    // height: 60,
   },
 });
 
 export default function JoinPW(): JSX.Element {
   const navigation = useNav();
 
-  const [userName, setUserName] = useState<string>('');
-  const [userEmail, setUserEmail] = useState<string>('');
-  const [verifCode, setVerifCode] = useState<string>('');
+  //이름
+  const { text: userName, onChangeText: onChangeUserName } = useInputText();
 
-  const [timeLeft, setTimeLeft] = useState<number>(5);
+  //이메일 인증
+  const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
+  const requestVerifCode = () => {
+    console.log('인증 버튼 눌림');
+  };
+  const { text: verifCode, onChangeText: onChangeVerifCode } = useInputText();
   const [timerOn, setTimerOn] = useState<boolean>(false);
-
-  const handleUserName = (input: string) => {
-    setUserName(input);
-  };
-  const handleUserEmail = (input: string) => {
-    setUserEmail(input);
-  };
-  const handleVerifCode = (input: string) => {
-    setVerifCode(input);
-  };
-
-  const handleTimeLeft = () => {
+  const [timeLeft, setTimeLeft] = useState<number>(5);
+  const checkVerifCode = () => {
+    console.log('인증 확인 버튼 눌림');
     setTimerOn(true);
   };
-
-  //이메일 인증 관련
   useEffect(() => {
     let interval: any;
     console.log('카운트다운');
@@ -159,14 +128,11 @@ export default function JoinPW(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputName'
-              onChangeText={handleUserName}
-              value={userName}
-              placeholder='이름 (~8자)'
-              maxLength={8}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
+            <InputComp
+              name={'이름'}
+              text={userName}
+              onChangeText={onChangeUserName}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -174,19 +140,14 @@ export default function JoinPW(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputEmail'
-              onChangeText={handleUserEmail}
-              value={userEmail}
-              placeholder='이메일'
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <Pressable
-              onPress={handleTimeLeft}
-              style={stylesSignupInput.button}
-            >
-              <Text style={stylesSignupInput.buttonInnerText}>인증</Text>
-            </Pressable>
+            <InputComp
+              name={'이메일'}
+              text={userEmail}
+              onChangeText={onChangeUserEmail}
+              btn={true}
+              btnText={'인증'}
+              onPressBtn={requestVerifCode}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -194,32 +155,30 @@ export default function JoinPW(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputVerifCode'
-              onChangeText={handleVerifCode}
-              value={verifCode}
-              placeholder='코드 입력'
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <Text style={stylesSignupInput.timeLeft}>{`${Math.floor(
-              timeLeft / 60
-            )
-              .toString()
-              .padStart(2, '0')}:${(timeLeft % 60)
-              .toString()
-              .padStart(2, '0')}`}</Text>
-            <Pressable style={stylesSignupInput.button}>
-              <Text style={stylesSignupInput.buttonInnerText}>확인</Text>
-            </Pressable>
+            <InputComp
+              name={'인증 코드'}
+              text={verifCode}
+              onChangeText={onChangeVerifCode}
+              btn={true}
+              btnText={
+                timerOn
+                  ? `${Math.floor(timeLeft / 60)
+                      .toString()
+                      .padStart(2, '0')}:${(timeLeft % 60)
+                      .toString()
+                      .padStart(2, '0')}`
+                  : '확인'
+              }
+              onPressBtn={checkVerifCode}
+            ></InputComp>
           </View>
-          <View>
-            <Pressable
-              onPress={() => {
+          <View style={{ marginTop: 20 }}>
+            <ButtonComp
+              text={'비밀번호 설정'}
+              onPressBtn={() => {
                 navigation.push('SetNewPW');
               }}
-            >
-              <Text>비밀번호 설정</Text>
-            </Pressable>
+            ></ButtonComp>
           </View>
         </View>
         {/* inner container */}
