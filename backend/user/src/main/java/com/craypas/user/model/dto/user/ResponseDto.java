@@ -1,9 +1,7 @@
 package com.craypas.user.model.dto.user;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,7 +36,22 @@ public class ResponseDto {
 			this.profileImage = profileImage;
 			this.introduction = user.getIntroduction();
 			this.groupName = user.getGroupName();
-			this.dayCnt = (int) Duration.between(user.getRegTime(), LocalDateTime.now()).toDays();
+			this.dayCnt = (int)Duration.between(user.getRegTime(), LocalDateTime.now()).toDays();
+		}
+	}
+
+	@Getter
+	public static class GetDreamSupportUser {
+		private Long uid;
+		private String nickname;
+		private String introduction;
+		private String imagePath;
+
+		public GetDreamSupportUser(User user) {
+			this.uid = user.getId();
+			this.nickname = user.getNickname();
+			this.introduction = user.getIntroduction();
+			this.imagePath = user.getImagePath();
 		}
 	}
 }

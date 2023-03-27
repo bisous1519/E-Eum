@@ -60,14 +60,27 @@ public class UserController {
 
 	// 회원 정보 수정
 	@PutMapping("/{uid}")
-	public ResponseEntity<?> updateUser(@PathVariable final Long uid, @RequestBody final RequestDto.UpdateUser requestDto){
+	public ResponseEntity<?> updateUser(@PathVariable final Long uid,
+		@RequestBody final RequestDto.UpdateUser requestDto) {
 		return new ResponseEntity<>(userService.updateUser(uid, requestDto), HttpStatus.OK);
 	}
 
 	// 비밀번호 재설정
 	@PutMapping("/findpw/{uid}")
-	public ResponseEntity<?> updatePassword(@PathVariable final Long uid, @RequestBody final String password){
+	public ResponseEntity<?> updatePassword(@PathVariable final Long uid, @RequestBody final String password) {
 		return new ResponseEntity<>(userService.updatePassword(uid, password), HttpStatus.OK);
+	}
+
+	// 회원 정보 단일 조회(꿈 후원글)
+	@GetMapping("/support/{uid}")
+	public ResponseEntity<?> getDreamSupportUser(@PathVariable final Long uid) {
+		return new ResponseEntity<>(userService.getDreamSupportUser(uid), HttpStatus.OK);
+	}
+
+	// 여러 회원 프로필 사진 조회(후원자)
+	@PostMapping("/support")
+	public ResponseEntity<?> getDreamSupportSponsor(@RequestBody final String uidList) {
+		return new ResponseEntity<>(userService.getDreamSupportSponsor(uidList), HttpStatus.OK);
 	}
 
 	// 회원 탈퇴

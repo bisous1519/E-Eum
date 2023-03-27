@@ -1,5 +1,7 @@
 package com.craypas.user.model.service;
 
+import java.util.List;
+
 import com.craypas.user.model.dto.user.RequestDto;
 import com.craypas.user.model.dto.user.ResponseDto;
 
@@ -42,6 +44,12 @@ public interface UserService {
 
 	// 포인트 초기화
 	Integer initPoint(final Long uid, final Integer point);
+
+	// 회원 정보 단일 조회(꿈 후원글)
+	ResponseDto.GetDreamSupportUser getDreamSupportUser(final Long uid);
+
+	// 여러 회원 프로필 사진 조회(후원자)
+	List<String> getDreamSupportSponsor(final String uidList);
 
 	// 비밀번호 찾기
 	void findPassword();

@@ -1,13 +1,20 @@
 package com.craypas.user.model.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.craypas.user.exception.CustomException;
+import com.craypas.user.exception.ErrorCode;
 import com.craypas.user.model.dto.user.RequestDto;
 import com.craypas.user.model.dto.user.ResponseDto;
 import com.craypas.user.model.entity.User;
 import com.craypas.user.model.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,7 +34,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void isEmailUnique(final String email){
 		if(!userRepository.findAllByEmail(email).isEmpty()){
-			throw new NullPointerException();
+			throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
 		}
 	}
 
@@ -42,7 +49,8 @@ public class UserServiceImpl implements UserService {
 	public ResponseDto.GetDreamFeedUser getDreamFeedUser(final Long uid) {
 		// 파이어베이스에서 프로필이미지 불러오기
 		MultipartFile profileImage = null;
-		return new ResponseDto.GetDreamFeedUser(userRepository.findById(uid).orElseThrow(NullPointerException::new),
+		return new ResponseDto.GetDreamFeedUser(
+			userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)),
 			profileImage);
 	}
 
@@ -50,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public ResponseDto.GetUser updateUser(final Long uid, final RequestDto.UpdateUser requestDto) {
-		User user = userRepository.findById(uid).orElseThrow(NullPointerException::new);
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		user.updateUser(requestDto.getPassword(), requestDto.getIntroduction(), requestDto.getGroupName());
 		return new ResponseDto.GetUser(user);
 	}
@@ -58,10 +66,37 @@ public class UserServiceImpl implements UserService {
 	// 비밀번호 재설정
 	@Override
 	@Transactional
-	public ResponseDto.GetUser updatePassword(final Long uid, final String password){
-		User user = userRepository.findById(uid).orElseThrow(NullPointerException::new);
+	public ResponseDto.GetUser updatePassword(final Long uid, final String password) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 		user.updatePassword(password);
 		return new ResponseDto.GetUser(user);
+	}
+
+	// 회원 정보 단일 조회(꿈 후원글)
+	@Override
+	public ResponseDto.GetDreamSupportUser getDreamSupportUser(final Long uid) {
+		return new ResponseDto.GetDreamSupportUser(
+			userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
+	}
+
+	// 여러 회원 프로필 사진 조회(후원자)
+	@Override
+	public List<String> getDreamSupportSponsor(final String uidList) {
+		List<String> imagePathList = new ArrayList<>();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			List<Integer> list = mapper.readValue(uidList, List.class);
+			for (Integer uid : list) {
+				imagePathList.add(
+					userRepository.findById(uid.longValue())
+						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))
+						.getImagePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(imagePathList.toString());
+		return imagePathList;
 	}
 
 	// 회원 탈퇴
