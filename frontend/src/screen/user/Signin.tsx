@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import theme from '../../utils/theme';
 import useNav from '../../hooks/useNav';
 import { MaterialIcons } from '@expo/vector-icons';
+import InputComp from '../../components/common/input/InputComp';
 
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
@@ -368,6 +369,9 @@ export default function Signin(): JSX.Element {
                 />
               </Pressable>
             </View>
+          </View>
+          <View>
+            <InputComp />
           </View>
         </View>
       </View>
