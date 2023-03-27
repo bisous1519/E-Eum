@@ -370,9 +370,6 @@ export default function Signin(): JSX.Element {
               </Pressable>
             </View>
           </View>
-          <View>
-            <InputComp />
-          </View>
         </View>
       </View>
     </ScrollView>
