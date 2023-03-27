@@ -296,12 +296,14 @@ export default function NewSupport(): JSX.Element {
             placeholder='배송지를 입력하세요'
             onChangeText={(e) => setLink(e)}
           /> */}
-          <Postcode
-            style={{ width: '100%', height: '100%' }}
-            jsOptions={{ animation: true }}
-            onSelected={(data) => alert(JSON.stringify(data))}
-            onError={(data) => console.log(data)}
-          />
+          {
+            <Postcode
+              style={{ width: '100%', height: '100%' }}
+              jsOptions={{ animation: true }}
+              onSelected={(data) => alert(JSON.stringify(data))}
+              onError={(data) => console.log(data)}
+            />
+          }
         </View>
       </View>
       {/* 000. 등록버튼 */}
