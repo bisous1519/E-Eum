@@ -100,6 +100,10 @@ export default function SetNewPW(): JSX.Element {
     else setCheckSamePW(false);
   }, [userVerifPW]);
 
+  const NavToSignIn = () => {
+    navigation.push('Signin');
+  };
+
   return (
     <ScrollView style={stylesGlobalContainer.scrollContainer}>
       <View
@@ -129,7 +133,7 @@ export default function SetNewPW(): JSX.Element {
               check={true}
               isValid={checkRegexPW}
               errorMsg={'영문자, 특수문자, 숫자 포함 8~16자'}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -148,12 +152,7 @@ export default function SetNewPW(): JSX.Element {
             />
           </View>
           <View style={{ marginTop: 20 }}>
-            <ButtonComp
-              text={'로그인 화면으로'}
-              onPressBtn={() => {
-                navigation.push('Signin');
-              }}
-            ></ButtonComp>
+            <ButtonComp text={'로그인 화면으로'} onPressBtn={NavToSignIn} />
           </View>
         </View>
         {/* inner container */}

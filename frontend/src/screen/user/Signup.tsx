@@ -32,7 +32,7 @@ const stylesTempBorder = StyleSheet.create({
   },
   Yellow: {
     // borderWidth: 1,
-    // borderColor: 'yellow',
+    // borderColor: 'red',
   },
 });
 
@@ -62,13 +62,14 @@ const stylesInnerContainer = StyleSheet.create({
     alignItems: 'center',
     // margin: 0,
     // padding: 0,
-    width: DEVICE_WIDTH * 0.9,
+    width: DEVICE_WIDTH * 0.8,
   },
 });
 
 const stylesSignupInput = StyleSheet.create({
   box: {
     width: '100%',
+    marginTop: +15,
     // marginBottom: 10,
     // marginTop: 20,
     // borderBottomWidth: 2,
@@ -193,15 +194,24 @@ export default function Signup(): JSX.Element {
   const [userType, setUserType] = useState<string>('');
 
   // 성별 관련
-  const handleGender = (input: string) => {
-    setUserGender(input);
+  const handleGenderFemale = () => {
+    setUserGender('Female');
+  };
+  const handleGenderMale = () => {
+    setUserGender('Male');
+  };
+  const handleGenderNone = () => {
+    setUserGender('None');
   };
 
   //프로필 사진 관련
 
   //회원 구분 관련
-  const handleUserType = (input: string) => {
-    setUserType(input);
+  const handleUserTypeYA = () => {
+    setUserType('YoungAdult');
+  };
+  const handleUserTypeETC = () => {
+    setUserType('ETC');
   };
 
   return (
@@ -229,12 +239,13 @@ export default function Signup(): JSX.Element {
               name={'이름'}
               text={userName}
               onChangeText={onChangeUserName}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
               stylesTempBorder.Yellow,
               stylesSignupInput.box,
+              { marginTop: 20 },
             ])}
           >
             <InputComp
@@ -244,7 +255,7 @@ export default function Signup(): JSX.Element {
               btn={true}
               btnText={'인증'}
               onPressBtn={requestVerifCode}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -267,12 +278,13 @@ export default function Signup(): JSX.Element {
                   : '확인'
               }
               onPressBtn={checkVerifCode}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
               stylesTempBorder.Yellow,
               stylesSignupInput.box,
+              { marginTop: 20 },
             ])}
           >
             <InputComp
@@ -280,10 +292,10 @@ export default function Signup(): JSX.Element {
               text={userPW}
               onChangeText={onChangeUserText}
               pw={true}
-              check={true}
+              // check={true}
               isValid={checkRegexPW}
               errorMsg={'영문자, 특수문자, 숫자 포함 8~16자'}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -296,7 +308,7 @@ export default function Signup(): JSX.Element {
               text={userVerifPW}
               onChangeText={onChangeUserVerifPW}
               pw={true}
-              check={true}
+              // check={true}
               isValid={checkSamePW}
               errorMsg={'비밀번호가 다릅니다'}
             />
@@ -305,6 +317,7 @@ export default function Signup(): JSX.Element {
             style={StyleSheet.flatten([
               stylesTempBorder.Yellow,
               stylesSignupInput.box,
+              { marginTop: 20 },
             ])}
           >
             <InputComp
@@ -314,7 +327,7 @@ export default function Signup(): JSX.Element {
               check={true}
               isValid={checkNickNameLength}
               errorMsg={'3~10자'}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -330,7 +343,7 @@ export default function Signup(): JSX.Element {
               ])}
             >
               <Pressable
-                onPress={() => handleGender('Female')}
+                onPress={handleGenderFemale}
                 style={stylesSignupInput.noInputTextSelections}
               >
                 <View
@@ -349,7 +362,7 @@ export default function Signup(): JSX.Element {
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => handleGender('Male')}
+                onPress={handleGenderMale}
                 style={stylesSignupInput.noInputTextSelections}
               >
                 <View
@@ -368,7 +381,7 @@ export default function Signup(): JSX.Element {
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => handleGender('None')}
+                onPress={handleGenderNone}
                 style={stylesSignupInput.noInputTextSelections}
               >
                 <View
@@ -418,7 +431,7 @@ export default function Signup(): JSX.Element {
               ])}
             >
               <Pressable
-                onPress={() => handleUserType('YoungAdult')}
+                onPress={handleUserTypeYA}
                 style={stylesSignupInput.noInputTextSelections}
               >
                 <View
@@ -437,7 +450,7 @@ export default function Signup(): JSX.Element {
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => handleUserType('ETC')}
+                onPress={handleUserTypeETC}
                 style={stylesSignupInput.noInputTextSelections}
               >
                 <View

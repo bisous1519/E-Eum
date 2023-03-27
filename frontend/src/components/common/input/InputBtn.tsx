@@ -9,7 +9,8 @@ const PressableBox = styled.Pressable`
   align-items: center;
   border-radius: 30px;
   width: 70px;
-  padding: 7px;
+  padding: 4px;
+  margin-bottom: 3px;
 `;
 
 const TextBox = styled.Text`
@@ -38,4 +39,3 @@ export default function InputBtn({ text, onPressBtn }: ButtonCompPropsType) {
     </PressableBox>
   );
 }
-

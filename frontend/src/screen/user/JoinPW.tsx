@@ -107,6 +107,10 @@ export default function JoinPW(): JSX.Element {
     return () => clearInterval(interval);
   }, [timerOn, timeLeft]);
 
+  const NavToSetNewPW = () => {
+    navigation.push('SetNewPW');
+  };
+
   return (
     <ScrollView style={stylesGlobalContainer.scrollContainer}>
       <View
@@ -132,7 +136,7 @@ export default function JoinPW(): JSX.Element {
               name={'이름'}
               text={userName}
               onChangeText={onChangeUserName}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -147,7 +151,7 @@ export default function JoinPW(): JSX.Element {
               btn={true}
               btnText={'인증'}
               onPressBtn={requestVerifCode}
-            ></InputComp>
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -170,15 +174,10 @@ export default function JoinPW(): JSX.Element {
                   : '확인'
               }
               onPressBtn={checkVerifCode}
-            ></InputComp>
+            />
           </View>
           <View style={{ marginTop: 20 }}>
-            <ButtonComp
-              text={'비밀번호 설정'}
-              onPressBtn={() => {
-                navigation.push('SetNewPW');
-              }}
-            ></ButtonComp>
+            <ButtonComp text={'비밀번호 설정'} onPressBtn={NavToSetNewPW} />
           </View>
         </View>
         {/* inner container */}

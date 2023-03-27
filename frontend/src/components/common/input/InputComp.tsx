@@ -161,6 +161,30 @@ export default function InputComp({
           secureTextEntry={pw && !isVisiblePW ? true : false}
         />
         <View style={styles.icon}>
+          {/* {pw ? (
+            <MaterialIcons
+              name={isVisiblePW ? 'visibility' : 'visibility-off'}
+              size={24}
+              style={stylesSignin.showPWIcon}
+              onPress={onPressPwVisible}
+            />
+          ) : (
+            <></>
+          )}
+          {check ? (
+            <Feather
+              name='check'
+              size={20}
+              color={isValid ? theme.mainColor.main : theme.grayColor.inputIcon}
+            />
+          ) : (
+            <></>
+          )}
+          {btn && btnText && onPressBtn ? (
+            <InputBtn text={btnText} onPressBtn={onPressBtn} />
+          ) : (
+            <></>
+          )} */}
           {pw && !check ? (
             <MaterialIcons
               name={isVisiblePW ? 'visibility' : 'visibility-off'}
