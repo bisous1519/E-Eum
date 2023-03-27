@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+// Radio Button
+import { RadioButton } from 'react-native-paper';
+
 // Text Editor
 import {
   actions,
@@ -27,6 +30,10 @@ import theme from '../../utils/theme';
 
 // 신규 게시물
 export default function NewSupport(): JSX.Element {
+  // 체크된 태그를 표시 =========================================
+  const [checked, setChecked] = useState<string>('');
+  const [tag, setTag] = useState<string>('');
+  // ===========================================================
   const [title, setTitle] = useState<string>('');
   const [context, setContext] = useState<string>('');
   const [link, setLink] = useState<string>('');
@@ -50,7 +57,7 @@ export default function NewSupport(): JSX.Element {
   // ===========================================================
 
   const [addImage, setAddImage] = useState<string[]>([]);
-  const richText = React.useRef();
+  const richText = React.useRef<RichEditor>(null);
 
   // ImagePicker 사용을 위한 부분
   const pickImage = async () => {
@@ -78,11 +85,45 @@ export default function NewSupport(): JSX.Element {
           onChangeText={(e) => setTitle(e)}
         />
       </View>
+      {/* 0. 후원 태그(분야) 선택 */}
+      <View style={styles.write}>
+        <View style={styles.guideline}>
+          <Text>태그 선택</Text>
+          <Text style={{ fontSize: 8, marginLeft: 5 }}>
+            * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
+          </Text>
+        </View>
+        {/* 안예쁜데..?;;; 걍 태그 모양으로 넣자..일단 틀만 잡아놓고..;; */}
+        <RadioButton.Group onValueChange={(tag) => setTag(tag)} value={tag}>
+          <RadioButton.Item
+            label='안예쁘네'
+            value='first'
+            color={theme.mainColor.dark}
+          />
+          <RadioButton.Item
+            label='태그로바꾼다'
+            value='second'
+            color={theme.mainColor.dark}
+          />
+        </RadioButton.Group>
+        {/* <RadioButton
+          value='first'
+          status={checked === 'first' ? 'checked' : 'unchecked'}
+          color={theme.mainColor.dark}
+          onPress={() => setChecked('first')}
+        />
+        <RadioButton
+          value='second'
+          status={checked === 'second' ? 'checked' : 'unchecked'}
+          color={theme.mainColor.dark}
+          onPress={() => setChecked('second')}
+        /> */}
+      </View>
       {/* 2. 내용 */}
       <View style={styles.write}>
         <Text>내용</Text>
         <RichEditor
-          // ref={richText}
+          ref={richText}
           placeholder='내용을 입력하세요'
           initialHeight={250}
           editorStyle={{ backgroundColor: theme.grayColor.lightGray }}
@@ -168,7 +209,6 @@ export default function NewSupport(): JSX.Element {
         </TouchableOpacity>
       </View>
       {/* 000. 등록버튼 */}
-      <ButtonComp />
     </ScrollView>
   );
 }

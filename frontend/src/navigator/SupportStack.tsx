@@ -9,7 +9,11 @@ const SupportStack = () => {
   return (
     <Stack.Navigator initialRouteName='SupportList'>
       <Stack.Screen name='꿈후원' component={SupportList} />
-      <Stack.Screen name='SupportDetail' component={SupportDetail} />
+      <Stack.Screen
+        name='SupportDetail'
+        component={SupportDetail}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name='NewSupport' component={NewSupport} />
     </Stack.Navigator>
   );
