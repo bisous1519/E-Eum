@@ -15,16 +15,13 @@ import com.craypas.dream.model.entity.Record;
 import com.craypas.dream.model.repository.RecordRepository;
 import com.craypas.dream.model.repository.TagRepository;
 
-@Service
-public class RecordServiceImpl implements RecordService {
-	final private RecordRepository recordRepository;
-	final private TagRepository tagRepository;
+import lombok.RequiredArgsConstructor;
 
-	public RecordServiceImpl(RecordRepository recordRepository,
-		TagRepository tagRepository) {
-		this.recordRepository = recordRepository;
-		this.tagRepository = tagRepository;
-	}
+@Service
+@RequiredArgsConstructor
+public class RecordServiceImpl implements RecordService {
+	private final RecordRepository recordRepository;
+	private final TagRepository tagRepository;
 
 	// 꿈 기록 작성
 	@Override
