@@ -32,8 +32,8 @@ public class UserServiceImpl implements UserService {
 
 	// 이메일 중복 확인(중복 시 예외 호출)
 	@Override
-	public void isEmailUnique(final String email){
-		if(!userRepository.findAllByEmail(email).isEmpty()){
+	public void isEmailUnique(final String email) {
+		if (!userRepository.findAllByEmail(email).isEmpty()) {
 			throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
 		}
 	}
@@ -95,8 +95,26 @@ public class UserServiceImpl implements UserService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(imagePathList.toString());
+
 		return imagePathList;
+	}
+
+	// 회원 프리뷰 목록 조회
+	@Override
+	public List<ResponseDto.UserPreview> getUserPreviewList(final String uidList) {
+		List<ResponseDto.UserPreview> userPreviewList = new ArrayList<>();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			List<Integer> list = mapper.readValue(uidList, List.class);
+			for (Integer uid : list) {
+				userPreviewList.add(new ResponseDto.UserPreview(userRepository.findById(uid.longValue())
+					.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return userPreviewList;
 	}
 
 	// 회원 탈퇴

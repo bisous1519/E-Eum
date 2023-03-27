@@ -51,6 +51,9 @@ public interface UserService {
 	// 여러 회원 프로필 사진 조회(후원자)
 	List<String> getDreamSupportSponsor(final String uidList);
 
+	// 회원 프리뷰 목록 조회
+	List<ResponseDto.UserPreview> getUserPreviewList(final String uidList);
+
 	// 비밀번호 찾기
 	void findPassword();
 

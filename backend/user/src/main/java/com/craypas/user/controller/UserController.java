@@ -1,5 +1,7 @@
 package com.craypas.user.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.craypas.user.model.dto.user.RequestDto;
+import com.craypas.user.model.dto.user.ResponseDto;
 import com.craypas.user.model.service.EmailService;
 import com.craypas.user.model.service.UserService;
 
@@ -81,6 +84,12 @@ public class UserController {
 	@PostMapping("/support")
 	public ResponseEntity<?> getDreamSupportSponsor(@RequestBody final String uidList) {
 		return new ResponseEntity<>(userService.getDreamSupportSponsor(uidList), HttpStatus.OK);
+	}
+
+	// 회원 프리뷰 목록 조회
+	@PostMapping("/support/preview")
+	public ResponseEntity<?> getUserPreviewList(@RequestBody final String uidList) {
+		return new ResponseEntity<>(userService.getUserPreviewList(uidList), HttpStatus.OK);
 	}
 
 	// 회원 탈퇴

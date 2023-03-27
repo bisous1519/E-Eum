@@ -54,4 +54,17 @@ public class ResponseDto {
 			this.imagePath = user.getImagePath();
 		}
 	}
+
+	@Getter
+	public static class UserPreview {
+		private Long uid;
+		private String nickname;
+		private String imagePath;
+
+		public UserPreview(User user) {
+			this.uid = user.getId();
+			this.nickname = user.getNickname();
+			this.imagePath = user.getImagePath();
+		}
+	}
 }
