@@ -9,6 +9,9 @@ import {
   Pressable,
   Text,
 } from 'react-native';
+import ButtonComp from '../../components/common/button/ButtonComp';
+import InputComp from '../../components/common/input/InputComp';
+import useInputText from '../../hooks/useInputText';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
 
@@ -56,69 +59,45 @@ const stylesInnerContainer = StyleSheet.create({
     margin: 0,
     padding: 0,
     width: DEVICE_WIDTH * 0.9,
+    marginTop: 20,
   },
 });
 
 const stylesSignupInput = StyleSheet.create({
   box: {
     width: '100%',
-    marginBottom: 10,
-    marginTop: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: theme.mainColor.main,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    paddingBottom: 10,
-    height: 60,
-  },
-  inputStyle: {
-    fontSize: theme.fontSize.regular,
-    // borderWidth: 1,
-    // borderColor: 'red',
-    height: 35,
-    flex: 1,
-    paddingTop: 2,
-    paddingBottom: 2,
-  },
-  button: {
-    width: '20%',
-    backgroundColor: theme.mainColor.light,
-    height: 30,
-    borderRadius: 50,
-  },
-  checkIcon: {
-    marginRight: 10,
-    marginLeft: 10,
+    // marginBottom: 10,
+    // marginTop: 20,
+    // borderBottomWidth: 2,
+    // borderBottomColor: theme.mainColor.main,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'flex-end',
+    // paddingBottom: 10,
+    // height: 60,
   },
 });
 
 export default function SetNewPW(): JSX.Element {
   const navigation = useNav();
 
-  const [userPW, setUserPW] = useState<string>('');
-  const [userVerifPW, setUserVerifPW] = useState<string>('');
-
-  const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
-  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
-
-  // 비밀번호 관련
+  //비밀번호
+  const { text: userPW, onChangeText: onChangeUserText } = useInputText();
   const PWRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/;
-  const handleUserPW = (input: string) => {
-    setUserPW(input);
-    setUserVerifPW('');
-    if (!PWRegex.test(input)) setCheckRegexPW(false);
-    else setCheckRegexPW(true);
-    setCheckSamePW(false);
-  };
-
-  const handleUserVerifPW = (input: string) => {
-    setUserVerifPW(input);
-  };
-
+  const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
   useEffect(() => {
-    console.log('비밀번호 같은지 체크');
-    setCheckSamePW(userPW !== '' && userPW === userVerifPW);
+    if (userPW !== '') {
+      if (!PWRegex.test(userPW)) setCheckRegexPW(false);
+      else setCheckRegexPW(true);
+      setCheckSamePW(false);
+    }
+  }, [userPW]);
+  const { text: userVerifPW, onChangeText: onChangeUserVerifPW } =
+    useInputText();
+  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
+  useEffect(() => {
+    if (userPW === userVerifPW) setCheckSamePW(true);
+    else setCheckSamePW(false);
   }, [userVerifPW]);
 
   return (
@@ -142,28 +121,15 @@ export default function SetNewPW(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputPW'
-              onChangeText={handleUserPW}
-              value={userPW}
-              placeholder='비밀번호'
-              secureTextEntry={true}
-              maxLength={16}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <View style={stylesSignupInput.checkIcon}>
-              <Feather
-                name='check-circle'
-                size={24}
-                color={
-                  checkRegexPW
-                    ? theme.mainColor.main
-                    : userPW === ''
-                    ? theme.textColor.light
-                    : theme.textColor.error
-                }
-              />
-            </View>
+            <InputComp
+              name={'비밀번호'}
+              text={userPW}
+              onChangeText={onChangeUserText}
+              pw={true}
+              check={true}
+              isValid={checkRegexPW}
+              errorMsg={'영문자, 특수문자, 숫자 포함 8~16자'}
+            ></InputComp>
           </View>
           <View
             style={StyleSheet.flatten([
@@ -171,37 +137,23 @@ export default function SetNewPW(): JSX.Element {
               stylesSignupInput.box,
             ])}
           >
-            <TextInput
-              testID='inputVerifPW'
-              onChangeText={handleUserVerifPW}
-              value={userVerifPW}
-              placeholder='비밀번호 확인'
-              secureTextEntry={true}
-              maxLength={16}
-              style={stylesSignupInput.inputStyle}
-            ></TextInput>
-            <View style={stylesSignupInput.checkIcon}>
-              <Feather
-                name='check-circle'
-                size={24}
-                color={
-                  checkSamePW
-                    ? theme.mainColor.main
-                    : userVerifPW === ''
-                    ? theme.textColor.light
-                    : theme.textColor.error
-                }
-              />
-            </View>
+            <InputComp
+              name={'비밀번호 확인'}
+              text={userVerifPW}
+              onChangeText={onChangeUserVerifPW}
+              pw={true}
+              check={true}
+              isValid={checkSamePW}
+              errorMsg={'비밀번호가 다릅니다'}
+            />
           </View>
-          <View>
-            <Pressable
-              onPress={() => {
+          <View style={{ marginTop: 20 }}>
+            <ButtonComp
+              text={'로그인 화면으로'}
+              onPressBtn={() => {
                 navigation.push('Signin');
               }}
-            >
-              <Text>로그인 화면으로 돌아가기</Text>
-            </Pressable>
+            ></ButtonComp>
           </View>
         </View>
         {/* inner container */}

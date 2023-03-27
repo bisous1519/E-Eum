@@ -60,8 +60,8 @@ const stylesInnerContainer = StyleSheet.create({
     flexDirection: 'column',
     // justifyContent: 'center',
     alignItems: 'center',
-    margin: 0,
-    padding: 0,
+    // margin: 0,
+    // padding: 0,
     width: DEVICE_WIDTH * 0.9,
   },
 });
