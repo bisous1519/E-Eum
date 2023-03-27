@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Dimensions,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  ScrollView,
-  // TextInput,
 } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import theme from '../../utils/theme';
-import useNav from '../../hooks/useNav';
-import { MaterialIcons } from '@expo/vector-icons';
+import ButtonComp from '../../components/common/button/ButtonComp';
+import InputComp from '../../components/common/input/InputComp';
 import useDimension from '../../hooks/useDimension';
+import useInputText from '../../hooks/useInputText';
+import useNav from '../../hooks/useNav';
+import theme from '../../utils/theme';
 
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
@@ -94,70 +91,21 @@ const stylesSignin = StyleSheet.create({
   },
   box: {
     width: '100%',
-    marginBottom: 10,
-    marginTop: 20,
-  },
-  alignLeft: {
-    alignItems: 'flex-start',
-  },
-  inputBoxID: {
-    borderBottomColor: theme.mainColor.main,
-    borderBottomWidth: 2,
-    width: '100%',
-    fontSize: 15,
-    paddingBottom: 8,
-  },
-  inputBoxPW: {
-    fontSize: 15,
-    paddingBottom: 8,
-    width: '80%',
-  },
-  boxPW: {
-    borderBottomColor: theme.mainColor.main,
-    borderBottomWidth: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  showPWIcon: {
-    color: 'gray',
-    marginRight: 10,
-    marginLeft: 10,
-    marginTop: 5,
-    marginBottom: 5,
-    paddingLeft: 10,
-    paddingright: 10,
-  },
-  showPWPressable: {
-    width: '20%',
-    // borderColor: 'blue',
-    // borderWidth: 1,
-    height: '100%',
-    flexDirection: 'column',
-  },
-  loginButton: {
-    marginTop: 10,
-    alignItems: 'center',
-    backgroundColor: theme.mainColor.main,
-    borderRadius: 50,
-    width: '100%',
-    height: 50,
-  },
-  loginButtonText: {
-    lineHeight: 50,
-    fontSize: 20,
-    color: 'white',
+    // marginBottom: 10,
+    // marginTop: 20,
   },
   dividedTwo: {
-    width: '70%',
+    width: '80%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   dividedEach: {
-    width: 100,
+    width: 120,
   },
   dividedEaceText: {
     textAlign: 'center',
     color: '#525252',
+    fontSize: theme.fontSize.regular,
   },
 });
 
@@ -193,24 +141,11 @@ export default function Signin(): JSX.Element {
     navigation.push('JoinPW');
   };
 
-  const [userID, setUserID] = useState<string>('');
-  const [userPW, setUserPW] = useState<string>('');
-
-  const [showPW, setShowPW] = useState<boolean>(false);
-
-  const handleUserIDChange = (input: string) => {
-    setUserID(input);
-  };
-  const handleUserPWChange = (input: string) => {
-    setUserPW(input);
-  };
+  const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
+  const { text: userPW, onChangeText: onChangeUserPW } = useInputText();
 
   const handleSubmit = () => {
-    console.log(userID + ', ' + userPW);
-  };
-
-  const handleSetShowPW = () => {
-    setShowPW(!showPW);
+    console.log(userEmail + ', ' + userPW);
   };
 
   return (
@@ -240,6 +175,7 @@ export default function Signin(): JSX.Element {
               source={require('../../assets/images/logoWithText.png')}
             />
           </View>
+          {/* 로고 */}
           <View
             testID='innerSecond'
             /* 두번쨰 */ style={StyleSheet.flatten([
@@ -251,57 +187,38 @@ export default function Signin(): JSX.Element {
               style={StyleSheet.flatten([
                 stylesTempBorder.Yellow,
                 stylesSignin.box,
-                stylesSignin.alignLeft,
+                // stylesSignin.alignLeft,
               ])}
             >
-              <TextInput
-                testID='inputID'
-                onChangeText={handleUserIDChange}
-                value={userID}
-                placeholder='EMAIL'
-                style={stylesSignin.inputBoxID}
-              ></TextInput>
+              <InputComp
+                name={'EMAIL'}
+                text={userEmail}
+                onChangeText={onChangeUserEmail}
+              />
             </View>
             <View
               style={StyleSheet.flatten([
                 stylesTempBorder.Yellow,
                 stylesSignin.box,
-                stylesSignin.alignLeft,
-                stylesSignin.boxPW,
+                // stylesSignin.alignLeft,
               ])}
             >
-              <TextInput
-                testID='inputPW'
-                onChangeText={handleUserPWChange}
-                value={userPW}
-                placeholder='PW'
-                secureTextEntry={showPW ? false : true}
-                style={[stylesSignin.inputBoxPW, stylesTempBorder.Red]}
-              ></TextInput>
-              <Pressable
-                onPress={handleSetShowPW}
-                style={stylesSignin.showPWPressable}
-              >
-                <MaterialIcons
-                  name={showPW ? 'visibility' : 'visibility-off'}
-                  size={24}
-                  style={[stylesSignin.showPWIcon, stylesTempBorder.Red]}
-                />
-              </Pressable>
+              <InputComp
+                name={'PW'}
+                text={userPW}
+                onChangeText={onChangeUserPW}
+                pw={true}
+              ></InputComp>
             </View>
             <View
               testID='loginButton'
               style={StyleSheet.flatten([
                 stylesTempBorder.Yellow,
                 stylesSignin.box,
+                { marginTop: 20 },
               ])}
             >
-              <Pressable
-                onPress={handleSubmit}
-                style={stylesSignin.loginButton}
-              >
-                <Text style={stylesSignin.loginButtonText}>로그인</Text>
-              </Pressable>
+              <ButtonComp text={'로그인'} onPressBtn={handleSubmit} />
             </View>
             <View
               testID='SignupOrJoinPW'
@@ -309,6 +226,7 @@ export default function Signin(): JSX.Element {
                 stylesTempBorder.Red,
                 stylesSignin.box,
                 stylesSignin.dividedTwo,
+                { marginTop: 40 },
               ])}
             >
               <View

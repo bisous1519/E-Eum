@@ -57,6 +57,8 @@ const stylesSignin = StyleSheet.create({
 
 type InputCompPropsType = {
   name: string;
+  text: string;
+  onChangeText: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
   check?: boolean;
   isValid?: boolean;
   errorMsg?: string;
@@ -71,6 +73,8 @@ export default function InputComp({
   // TextInput이 쓰일 용도에 따라 아래 주석 확인하고 프롭스로 추가하면됩니다람쥐
   // ex) <InputComp name='EMAIL' check={true} isValid={isValid} errorMsg='어쩌고 형식 맞지않습 어쩌고' />
   name, // **필수** input 타이틀!
+  text, // **필수**
+  onChangeText, // **필수**
   check, // 오른쪽에 체크모양 있는 input (isValid도 같이 넘겨줘야함)
   isValid, // check 색깔 결정하는애. input에 작성한 내용이 유효한지 검사한 값 (useState로 isValid, setIsValid 만들고 isValid만 여기로 넘겨주세여)
   errorMsg, // error 상황일 때 input 하단에 뜰 메세지
@@ -80,7 +84,6 @@ export default function InputComp({
   onPressBtn, // 버튼 클릭했을 때 호출할 콜백함수
   timer, // 오른쪽에 타이머 있는 input
 }: InputCompPropsType): JSX.Element {
-  const [text, setText] = useState<string>('');
   const [isVisiblePW, setIsVisiblePW] = useState<boolean>(false);
   const [inputEventState, setInputEventState] = useState<
     'onFocus' | 'onBlur' | ''
@@ -92,9 +95,6 @@ export default function InputComp({
     useNativeDriver: false,
   };
 
-  const onChangeText = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-    setText(e.nativeEvent.text);
-  };
   const onPressPwVisible = () => {
     setIsVisiblePW((prev) => !prev);
     console.log('IsVisiblePW', isVisiblePW);
@@ -138,7 +138,7 @@ export default function InputComp({
   }, [inputEventState]);
 
   return (
-    <View>
+    <View style={{ width: '100%' }}>
       <View style={styles.container}>
         <Animated.Text
           style={StyleSheet.flatten([
@@ -151,7 +151,7 @@ export default function InputComp({
         <TextInput
           style={StyleSheet.flatten([
             styles.input,
-            errorMsg && !isValid ? styles.inputError : {},
+            text !== '' && errorMsg && !isValid ? styles.inputError : {},
           ])}
           value={text}
           onChange={onChangeText}
@@ -182,8 +182,8 @@ export default function InputComp({
         </View>
       </View>
       <View style={styles.errorMsgWrapper}>
-        {errorMsg && !isValid ? (
-          <Text style={styles.errorMsg}>이메일 형식에 맞게 어쩌고</Text>
+        {text !== '' && errorMsg && !isValid ? (
+          <Text style={styles.errorMsg}>{errorMsg}</Text>
         ) : (
           <></>
         )}
@@ -191,4 +191,3 @@ export default function InputComp({
     </View>
   );
 }
-
