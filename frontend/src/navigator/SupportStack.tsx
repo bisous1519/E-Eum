@@ -8,7 +8,11 @@ const Stack = createNativeStackNavigator();
 const SupportStack = () => {
   return (
     <Stack.Navigator initialRouteName='SupportList'>
-      <Stack.Screen name='꿈후원' component={SupportList} />
+      <Stack.Screen
+        name='꿈후원'
+        component={SupportList}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name='SupportDetail'
         component={SupportDetail}
