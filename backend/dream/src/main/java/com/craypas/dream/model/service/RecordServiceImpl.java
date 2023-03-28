@@ -70,7 +70,7 @@ public class RecordServiceImpl implements RecordService {
 			// 현재 record 객체를 리스트에 추가
 			recordList.get(currIdx).add(new ResponseDto.Read(record));
 		}
-		return new ResponseDto.Feed(currIdx, dateList, recordList);
+		return new ResponseDto.Feed(records.size(), dateList, recordList);
 	}
 
 	// 꿈 기록 수정

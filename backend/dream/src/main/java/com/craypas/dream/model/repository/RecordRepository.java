@@ -13,4 +13,5 @@ import com.craypas.dream.model.entity.Tag;
 public interface RecordRepository extends JpaRepository<Record, Long> {
 	List<Record> findAllByWriterIdOrderByRegTimeDesc(Long writerId);
 	List<Record> findAllByWriterIdAndTagOrderByRegTimeDesc(Long writerId, Tag tag);
+	void deleteAllByTag(Tag tag);
 }
