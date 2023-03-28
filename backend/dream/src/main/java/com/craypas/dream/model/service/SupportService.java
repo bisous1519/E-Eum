@@ -15,7 +15,7 @@ public interface SupportService {
 	ResponseDto.Read getSupport(final Long sid);
 
 	// 꿈 후원요청 전체 조회
-	List<ResponseDto.Read> getSupportList(final Pageable pageable);
+	List<ResponseDto.Preview> getSupportList(final Integer sortType);
 
 	// 꿈 후원요청 수정
 	ResponseDto.Read updateSupport(final Long sid, final RequestDto.Create requestDto);
