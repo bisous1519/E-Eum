@@ -1,13 +1,7 @@
 package com.craypas.dream.model.dto.support;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.dream.model.entity.Support;
 
@@ -84,6 +78,39 @@ public class ResponseDto {
 			this.title = support.getTitle();
 			this.targetAmount = support.getTargetAmount();
 			this.achievementRate = (100 * support.getCurrentAmount()) / support.getTargetAmount();
+		}
+	}
+
+	@Getter
+	@ToString
+	public static class Update {
+		private Long sid;
+		private Long uid;
+		private Long tid;
+		private String title;
+		private String content;
+		private String purchaseLink;
+		private String purchaseLinkDetail;
+		private Integer targetAmount;
+		private LocalDate deadline;
+		private String roadAddress;
+		private String detailAddress;
+		private String imagePath;
+
+		@Builder
+		public Update(Support support) {
+			this.sid = support.getId();
+			this.uid = support.getUserId();
+			this.tid = support.getTag().getId();
+			this.title = support.getTitle();
+			this.content = support.getContent();
+			this.purchaseLink = support.getPurchaseLink();
+			this.purchaseLinkDetail = support.getPurchaseLinkDetail();
+			this.targetAmount = support.getTargetAmount();
+			this.deadline = support.getDeadline().toLocalDate();
+			this.roadAddress = support.getRoadAddress();
+			this.detailAddress = support.getDetailAddress();
+			this.imagePath = support.getImagePath();
 		}
 	}
 }

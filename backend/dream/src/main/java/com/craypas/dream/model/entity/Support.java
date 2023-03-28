@@ -89,9 +89,13 @@ public class Support {
 		this.tag = tag;
 	}
 
-	public void update(String title, String content){
+	public void updateTitleAndContent(String title, String content) {
 		this.title = title;
 		this.content = content;
+	}
+
+	public void updateCurrAmount(Integer amount) {
+		this.currentAmount += amount;
 	}
 
 	public void done(){
