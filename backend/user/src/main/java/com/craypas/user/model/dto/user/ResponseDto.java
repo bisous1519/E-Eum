@@ -26,14 +26,14 @@ public class ResponseDto {
 	@Getter
 	public static class GetDreamFeedUser {
 		private String nickname;
-		private MultipartFile profileImage;
+		private String imagePath;
 		private String introduction;
 		private String groupName;
 		private Integer dayCnt;
 
-		public GetDreamFeedUser(User user, MultipartFile profileImage) {
+		public GetDreamFeedUser(User user) {
 			this.nickname = user.getNickname();
-			this.profileImage = profileImage;
+			this.imagePath = user.getImagePath();
 			this.introduction = user.getIntroduction();
 			this.groupName = user.getGroupName();
 			this.dayCnt = (int)Duration.between(user.getRegTime(), LocalDateTime.now()).toDays();

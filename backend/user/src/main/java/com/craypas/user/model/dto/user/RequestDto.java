@@ -19,6 +19,7 @@ public class RequestDto {
 		private Integer gender; // 성별(여성 / 남성 / 선택안함)
 		private MultipartFile image; // 프로필 사진
 		private Integer type; // 회원구분(자립준비청년 / 기타사용자)
+		private MultipartFile certificateFile; // 증빙 자료
 
 		@Builder
 		public User toEntity() {

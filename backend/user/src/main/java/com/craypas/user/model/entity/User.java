@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.craypas.user.model.dto.user.RequestDto;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -87,13 +85,29 @@ public class User {
 		this.groupName = groupName;
 	}
 
-	public void updateUser(String password, String introduction, String groupName){
+	public void updateUser(String password, String introduction, String groupName) {
 		this.password = password;
 		this.introduction = introduction;
 		this.groupName = groupName;
 	}
 
-	public void updatePassword(String password){
+	public void updatePassword(String password) {
 		this.password = password;
+	}
+
+	public void updateImagePath(String imagePath) {
+		this.certificatePath = certificatePath;
+	}
+
+	public void updateCertificatePath(String certificatePath) {
+		this.certificatePath = certificatePath;
+	}
+
+	public void updatePoint(Integer point){
+		this.point = point;
+	}
+
+	public void deactivate(){
+		this.status = 1;
 	}
 }
