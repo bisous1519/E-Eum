@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -145,17 +144,27 @@ public class SupportServiceImpl implements SupportService {
 		List<Support> supportList = supportRepository.findAllByStatus(0);
 		switch (sortType){
 			// 1. 최신순
-			case 1: Collections.sort(supportList, ((o1, o2) -> o1.getRegTime().isBefore(o2.getRegTime())? 1 : -1));
+			case 1:
+				Collections.sort(supportList, ((o1, o2) -> o1.getRegTime().isBefore(o2.getRegTime()) ? 1 : -1));
 				break;
 			// 2. 마감 임박 순
-			case 2: Collections.sort(supportList, ((o1, o2) -> o1.getDeadline().isAfter(o2.getDeadline())? 1 : -1));
+			case 2:
+				Collections.sort(supportList, ((o1, o2) -> o1.getDeadline().isAfter(o2.getDeadline()) ? 1 : -1));
 				break;
 			// 3. 달성률 높은 순
-			case 3: Collections.sort(supportList, ((o1, o2) -> o1.getCurrentAmount() * o2.getTargetAmount() < o2.getCurrentAmount() * o1.getTargetAmount()? 1 : -1));
+			case 3:
+				Collections.sort(supportList, ((o1, o2) ->
+					o1.getCurrentAmount() * o2.getTargetAmount() < o2.getCurrentAmount() * o1.getTargetAmount() ? 1 :
+						-1));
 				break;
 			// 4. 달성률 낮은 순
-			case 4: Collections.sort(supportList, ((o1, o2) -> o1.getCurrentAmount() * o2.getTargetAmount() > o2.getCurrentAmount() * o1.getTargetAmount()? 1 : -1));
+			case 4:
+				Collections.sort(supportList, ((o1, o2) ->
+					o1.getCurrentAmount() * o2.getTargetAmount() > o2.getCurrentAmount() * o1.getTargetAmount() ? 1 :
+						-1));
 				break;
+			default:
+				throw new CustomException(ErrorCode.INVALID_SORT_TYPE);
 		}
 
 		// 2. 각 support를 순회하며 적절한 dto를 만들고 리스트에 추가한다
@@ -194,35 +203,43 @@ public class SupportServiceImpl implements SupportService {
 		return previewList;
 	}
 
+	// 꿈 후원요청 수정시 필요한 정보 조회
+	@Override
+	public ResponseDto.Update getSupportForUpdate(final Long sid) {
+		return new ResponseDto.Update(
+			supportRepository.findById(sid).orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND)));
+	}
+
 	// 꿈 후원요청 수정
 	@Override
 	@Transactional
-	public ResponseDto.Read updateSupport(Long sid, RequestDto.Create requestDto) {
+	public ResponseDto.Read updateSupport(final Long sid, final RequestDto.Create requestDto) {
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
-		support.update(requestDto.getTitle(), requestDto.getContent());
+		support.updateTitleAndContent(requestDto.getTitle(), requestDto.getContent());
 		return new ResponseDto.Read(support);
 	}
 
 	// 꿈 후원요청 삭제
 	@Override
-	public void deleteSupport(Long sid) {
+	public void deleteSupport(final Long sid) {
 		supportRepository.delete(
 			supportRepository.findById(sid).orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND)));
 	}
 
 	// 꿈 후원요청 검색
 	@Override
-	public List<ResponseDto.Read> searchSupport(String keyword, Pageable pageable) {
-		return supportRepository.findAllByTitleContaining(keyword, pageable)
+	public List<ResponseDto.Preview> searchSupport(final String keyword) {
+		return supportRepository.findAllByTitleContainingOrderByRegTimeDesc(keyword)
 			.stream()
-			.map(ResponseDto.Read::new)
+			.map(ResponseDto.Preview::new)
 			.collect(Collectors.toList());
 	}
 
 	// 꿈 후원하기
 	@Override
-	public void createSupportUser(final Long sid, final Long uid, final Integer point) {
+	@Transactional
+	public ResponseDto.Read createSupportUser(final Long sid, final Long uid, final Integer point) {
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
 		supportUserRepository.save(SupportUser.builder()
@@ -231,20 +248,23 @@ public class SupportServiceImpl implements SupportService {
 			.point(point)
 			.regTime(LocalDateTime.now())
 			.build());
+		support.updateCurrAmount(point);
+		return new ResponseDto.Read(support);
 	}
 
 	// 꿈 후원 취소하기
 	@Override
-	public void deleteSupportUser(Long sid, Long uid) {
+	@Transactional
+	public ResponseDto.Read deleteSupportUser(Long sid, Long uid) {
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
 		SupportUser supportUser = supportUserRepository.findBySupportAndWriterId(support, uid);
+		Integer point = supportUser.getPoint();
 		if (supportUser == null) {
 			throw new CustomException(ErrorCode.SUPPORT_USER_NOT_FOUND);
-		} else {
-			supportUserRepository.delete(supportUser);
 		}
+		supportUserRepository.delete(supportUser);
+		support.updateCurrAmount((-1) * point);
+		return new ResponseDto.Read(support);
 	}
-
-	// 사진 업로드(?)
 }

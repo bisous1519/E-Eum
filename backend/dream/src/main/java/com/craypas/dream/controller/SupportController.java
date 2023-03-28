@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/support")
+@RequestMapping("/api/dream/support")
 public class SupportController {
 	private final SupportService supportService;
 
@@ -42,8 +42,14 @@ public class SupportController {
 
 	// 꿈 후원요청 전체 조회
 	@GetMapping("/req")
-	public ResponseEntity<?> getSupportList(final Integer sortType) {
+	public ResponseEntity<?> getSupportList(@RequestParam("sortType") final Integer sortType) {
 		return new ResponseEntity<>(supportService.getSupportList(sortType), HttpStatus.OK);
+	}
+
+	// 꿈 후원요청 수정시 필요한 정보 조회
+	@GetMapping("/req/update/{sid}")
+	public ResponseEntity<?> getSupportForUpdate(@PathVariable final Long sid) {
+		return new ResponseEntity<>(supportService.getSupportForUpdate(sid), HttpStatus.OK);
 	}
 
 	// 꿈 후원요청 수정
@@ -62,26 +68,21 @@ public class SupportController {
 
 	// 꿈 후원요청 검색
 	@GetMapping("/req/search")
-	public ResponseEntity<?> searchSupport(@RequestParam("keyword") final String keyword, final Pageable pageable) {
-		return new ResponseEntity<>(supportService.searchSupport(keyword, pageable), HttpStatus.OK);
+	public ResponseEntity<?> searchSupport(@RequestParam("keyword") final String keyword) {
+		return new ResponseEntity<>(supportService.searchSupport(keyword), HttpStatus.OK);
 	}
 
 	// 꿈 후원하기
 	@PostMapping("/res")
 	public ResponseEntity<?> createSupportUser(@RequestParam("sid") final Long sid, @RequestParam("uid") final Long uid,
 		@RequestParam("point") final Integer point) {
-		supportService.createSupportUser(sid, uid, point);
-		return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
+		return new ResponseEntity<>(supportService.createSupportUser(sid, uid, point), HttpStatus.CREATED);
 	}
 
 	// 꿈 후원 취소하기
 	@DeleteMapping("/res/{sid}/{uid}")
 	public ResponseEntity<?> deleteSupportUser(@PathVariable("sid") final Long sid,
 		@PathVariable("uid") final Long uid) {
-		supportService.deleteSupportUser(sid, uid);
-		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+		return new ResponseEntity<>(supportService.deleteSupportUser(sid, uid), HttpStatus.OK);
 	}
-
-	// 사진 업로드(?)
-
 }
