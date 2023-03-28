@@ -1,4 +1,4 @@
-package com.craypas.dream.model.dto;
+package com.craypas.dream.model.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

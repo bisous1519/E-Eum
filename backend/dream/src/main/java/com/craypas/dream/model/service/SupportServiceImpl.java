@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.craypas.dream.exception.CustomException;
 import com.craypas.dream.exception.ErrorCode;
-import com.craypas.dream.model.dto.FireBaseService;
 import com.craypas.dream.model.dto.support.RequestDto;
 import com.craypas.dream.model.dto.support.ResponseDto;
 import com.craypas.dream.model.entity.Support;
@@ -49,11 +48,11 @@ public class SupportServiceImpl implements SupportService {
 	// 꿈 후원요청 작성
 	@Override
 	public ResponseDto.Read createSupport(final RequestDto.Create requestDto) {
-		String imagePath = null;
 		// 이미지가 존재하면 FireBase에 저장 후 경로 반환
+		String imagePath = null;
 		if (requestDto.getImage() != null) {
 			String saveFileName = String.valueOf(System.nanoTime());
-			String bucketFolder = "profile-img";
+			String bucketFolder = "support-image";
 			try {
 				fireBaseService.uploadFiles(requestDto.getImage(), bucketFolder, saveFileName);    // firebase에 파일 저장
 			} catch (IOException e) {
@@ -240,6 +239,7 @@ public class SupportServiceImpl implements SupportService {
 	@Override
 	@Transactional
 	public ResponseDto.Read createSupportUser(final Long sid, final Long uid, final Integer point) {
+		// 1. 관계테이블에 정보 추가
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
 		supportUserRepository.save(SupportUser.builder()
@@ -248,6 +248,19 @@ public class SupportServiceImpl implements SupportService {
 			.point(point)
 			.regTime(LocalDateTime.now())
 			.build());
+
+		// 2. 후원자의 포인트 차감
+		RestTemplate restTemplate = new RestTemplate();
+		String url = PROJECT_USER_SUPPORT_URL + "/profile" + uid.toString();
+		// Header set
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		// Message
+		HttpEntity<?> requestMessage = new HttpEntity<>(point, httpHeaders);
+		// Request
+		ResponseEntity<String> result2 = restTemplate.postForEntity(url, requestMessage, String.class);
+
+		// 3. 후원글의 현재 모금액 수정
 		support.updateCurrAmount(point);
 		return new ResponseDto.Read(support);
 	}
