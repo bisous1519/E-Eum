@@ -11,15 +11,16 @@ import com.craypas.dream.exception.ErrorCode;
 import com.craypas.dream.model.dto.tag.RequestDto;
 import com.craypas.dream.model.dto.tag.ResponseDto;
 import com.craypas.dream.model.entity.Tag;
+import com.craypas.dream.model.repository.RecordRepository;
 import com.craypas.dream.model.repository.TagRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
 	private final TagRepository tagRepository;
-
-	public TagServiceImpl(TagRepository tagRepository) {
-		this.tagRepository = tagRepository;
-	}
+	private final RecordRepository recordRepository;
 
 	// 태그 생성
 	@Override
@@ -47,8 +48,13 @@ public class TagServiceImpl implements TagService {
 
 	// 태그 삭제
 	@Override
+	@Transactional
 	public void deleteTag(Long tid) {
-		tagRepository.delete(
-			tagRepository.findById(tid).orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND)));
+		// 1. tid로 태그 객체 조회
+		Tag tag = tagRepository.findById(tid).orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND));
+		// 2. 해당 태그가 포함된 게시글 삭제
+		recordRepository.deleteAllByTag(tag);
+		// 3. 태그 삭제
+		tagRepository.delete(tag);
 	}
 }
