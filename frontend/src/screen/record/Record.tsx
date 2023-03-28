@@ -20,6 +20,13 @@ import useDimension from '../../hooks/useDimension';
 import ModalComp from '../../components/common/ModalComp';
 import DeleteModal from '../../components/record/DeleteModal';
 import MockupDateGroupType from '../../models/record/mockupDateGroupType';
+import { useRecoilState } from 'recoil';
+import {
+  recordsState,
+  recordState,
+} from '../../modules/apis/record/recordAtoms';
+import { getRecords } from '../../modules/apis/record/recordApis';
+import { RecordsStateType, RecordStateType } from '../../modules/apis/record/recordAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -156,31 +163,42 @@ const mockup: MockupDateGroupType[] = [
 ];
 
 export default function Record(): JSX.Element {
+  const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
 
-  const onLayoutProfile = (e: LayoutChangeEvent) => {
+  const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
     setProfileHeight(height);
   };
-  const onLayoutTag = (e: LayoutChangeEvent) => {
+  const onLayoutTag = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
     setTagHeight(height);
   };
 
-  const handleSheetChange = (idx: number) => {
+  const handleSheetChange = (idx: number): void => {
     console.log('bottomSheet changed', idx);
   };
-  const onPressPlusBtn = () => {
+  const onPressPlusBtn = (): void => {
     navigation.push('RecordEditor', { itemId: 3 });
   };
-  const onToggleDelete = () => {
+  const onToggleDelete = (): void => {
     console.log('삭제!!!!!');
     setDeleteModal((prev) => !prev);
   };
+
+  const fetchData = async () => {
+    const { data } = await getRecords(1); // userId 넣어야됨
+    setRecords(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <View style={stylesContainer.container}>
@@ -226,11 +244,11 @@ export default function Record(): JSX.Element {
             <BottomSheetFlatList
               contentContainerStyle={styles.contentContainer}
               showsVerticalScrollIndicator={false}
-              data={mockup}
-              renderItem={({ item }) => (
+              data={records.recordList}
+              renderItem={({ item, index }) => (
                 <ItemContainer
                   regTime={item.regTime}
-                  list={item.list}
+                  list={item.}
                   onToggleDelete={onToggleDelete}
                 />
               )}
@@ -269,3 +287,4 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
+

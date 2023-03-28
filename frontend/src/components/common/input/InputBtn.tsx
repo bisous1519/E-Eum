@@ -15,7 +15,7 @@ const PressableBox = styled.Pressable`
 
 const TextBox = styled.Text`
   color: ${({ theme }) => theme.textColor.white};
-  font-size: ${({ theme }) => theme.fontSize.small};
+  font-size: ${({ theme }) => theme.fontSize.small}px;
 `;
 
 const styles = StyleSheet.create({
