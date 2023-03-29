@@ -56,7 +56,7 @@ public class UserController {
 
 	// 꿈피드 회원정보 조회
 	@GetMapping("/dream/{uid}")
-	public ResponseEntity<?> getDreamFeedUser(@PathVariable final Long uid){
+	public ResponseEntity<?> getDreamFeedUser(@PathVariable final Long uid) {
 		return new ResponseEntity<>(userService.getDreamFeedUser(uid), HttpStatus.OK);
 	}
 

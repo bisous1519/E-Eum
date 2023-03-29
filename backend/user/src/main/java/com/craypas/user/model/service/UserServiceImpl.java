@@ -255,5 +255,9 @@ public class UserServiceImpl implements UserService {
 		return certificatePath;
 	}
 
+
+
+
+
 	// 뱃지 상세 조회
 }
