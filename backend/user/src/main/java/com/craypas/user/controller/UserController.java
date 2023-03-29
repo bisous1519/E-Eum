@@ -55,7 +55,7 @@ public class UserController {
 	}
 
 	// 꿈피드 회원정보 조회
-	@GetMapping("dream/{uid}")
+	@GetMapping("/dream/{uid}")
 	public ResponseEntity<?> getDreamFeedUser(@PathVariable final Long uid){
 		return new ResponseEntity<>(userService.getDreamFeedUser(uid), HttpStatus.OK);
 	}
@@ -112,13 +112,13 @@ public class UserController {
 	}
 
 	// 포인트 사용
-	@PutMapping("/point/use/{uid}")
+	@PostMapping("/point/use/{uid}")
 	public ResponseEntity<?> usePoint(@PathVariable final Long uid, @RequestBody final String point) {
 		return new ResponseEntity<>(userService.usePoint(uid, point), HttpStatus.OK);
 	}
 
 	// 포인트 환불
-	@PutMapping("/point/refund/{uid}")
+	@PostMapping("/point/refund/{uid}")
 	public ResponseEntity<?> refundPoint(@PathVariable final Long uid, @RequestBody final String point) {
 		return new ResponseEntity<>(userService.refundPoint(uid, point), HttpStatus.OK);
 	}
@@ -136,13 +136,13 @@ public class UserController {
 	}
 
 	// 프로필 사진 업로드
-	@PostMapping("/profile/{uid}")
+	@PutMapping("/profile/{uid}")
 	public ResponseEntity<?> updateImage(@PathVariable final Long uid, @RequestBody final MultipartFile image) {
 		return new ResponseEntity<>(userService.updateImage(uid, image), HttpStatus.OK);
 	}
 
 	// 증명 파일 업로드
-	@PostMapping("/certificate/{uid}")
+	@PutMapping("/certificate/{uid}")
 	public ResponseEntity<?> updateCertificateFile(@PathVariable final Long uid,
 		@RequestBody final MultipartFile file) {
 		return new ResponseEntity<>(userService.updateCertificateFile(uid, file), HttpStatus.OK);

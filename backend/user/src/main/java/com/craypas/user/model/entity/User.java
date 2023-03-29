@@ -96,7 +96,7 @@ public class User {
 	}
 
 	public void updateImagePath(String imagePath) {
-		this.certificatePath = certificatePath;
+		this.imagePath = imagePath;
 	}
 
 	public void updateCertificatePath(String certificatePath) {
@@ -104,7 +104,7 @@ public class User {
 	}
 
 	public void updatePoint(Integer point){
-		this.point = point;
+		this.point += point;
 	}
 
 	public void deactivate(){
