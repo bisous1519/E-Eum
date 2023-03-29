@@ -26,7 +26,10 @@ import {
   recordState,
 } from '../../modules/apis/record/recordAtoms';
 import { getRecords } from '../../modules/apis/record/recordApis';
-import { RecordsStateType, RecordStateType } from '../../modules/apis/record/recordAtomTypes';
+import {
+  RecordsStateType,
+  RecordStateType,
+} from '../../modules/apis/record/recordAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -241,18 +244,18 @@ export default function Record(): JSX.Element {
             onChange={handleSheetChange}
             style={{ alignItems: 'center' }}
           >
-            <BottomSheetFlatList
+            {/* <BottomSheetFlatList
               contentContainerStyle={styles.contentContainer}
               showsVerticalScrollIndicator={false}
               data={records.recordList}
               renderItem={({ item, index }) => (
                 <ItemContainer
                   regTime={item.regTime}
-                  list={item.}
+                  list={item.content}
                   onToggleDelete={onToggleDelete}
                 />
               )}
-            />
+            /> */}
           </BottomSheet>
         ) : (
           <></>
