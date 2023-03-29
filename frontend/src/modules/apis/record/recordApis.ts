@@ -1,4 +1,5 @@
 import axios from 'axios';
+import PostRecordType from '../../../models/record/postRecordType';
 import {
   RecordsStateType,
   RecordStateType,
@@ -23,6 +24,20 @@ export async function getRecords(userId: number) {
   try {
     const { data } = await axios.get<RecordsStateType>(
       `http://j8a607.p.ssafy.io/api/dream/record/user/${userId}?tid=`
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 꿈기록 작성
+export async function postRecord(postData: PostRecordType) {
+  try {
+    const { data } = await axios.post<RecordStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/record`,
+      postData
     );
     return data;
   } catch (error: unknown) {

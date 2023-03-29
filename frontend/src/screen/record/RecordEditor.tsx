@@ -13,6 +13,7 @@ import {
 import useNav from '../../hooks/useNav';
 import { ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { postRecord } from '../../modules/apis/record/recordApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -55,18 +56,21 @@ type RecordEditorPropsType = {
 export default function RecordEditor({
   route,
 }: RecordEditorPropsType): JSX.Element {
-  const richText = useRef<RichEditor>(null);
   const navigation = useNav();
-  const [context, setContext] = useState<string>('');
+  const richText = useRef<RichEditor>(null);
+  const [content, setContent] = useState<string>('');
 
   const onChangeContext = (e: string) => {
-    setContext(e);
+    setContent(e);
   };
   const onPressBack = () => {
     navigation.pop();
   };
   const onPressSubmit = () => {
-    console.log(context);
+    console.log(content);
+    postRecord({ content, writerId: 1, tid: 2 }).then(() =>
+      navigation.popToTop()
+    );
   };
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export default function RecordEditor({
     if (route.params) {
       // 수정하러 넘어온 애
       console.log('수정화면');
-      setContext('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
+      setContent('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
     }
   }, []);
 
