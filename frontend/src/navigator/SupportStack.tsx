@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import CustomHeader from '../components/support/CustomHeader';
 import NewSupport from '../screen/support/NewSupport';
 import SupportDetail from '../screen/support/SupportDetail';
 import SupportList from '../screen/support/SupportList';
@@ -11,7 +12,7 @@ const SupportStack = () => {
       <Stack.Screen
         name='꿈후원'
         component={SupportList}
-        options={{ headerShown: false }}
+        options={{ headerTitle: '', header: () => <CustomHeader /> }}
       />
       <Stack.Screen
         name='SupportDetail'

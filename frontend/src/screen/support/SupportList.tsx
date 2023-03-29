@@ -35,11 +35,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 15,
   },
+  // 제목을 감싸는 태그
+  titleBox: {
+    marginVertical: DEVICE_HEIGHT * 0.005,
+    height: DEVICE_HEIGHT * 0.05,
+    justifyContent: 'center',
+  },
   // 후원 카드에 표시되는 '제목'
   title: {
-    // height: 50,
     fontWeight: '700',
-    marginVertical: DEVICE_HEIGHT * 0.015,
   },
   // 목표금액, 달성률 -> 연한 회색 제목
   lightTitle: {
@@ -160,7 +164,9 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
         />
         <Text>{nick}</Text>
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.titleBox}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
       <View style={styles.goal}>
         <Text style={styles.lightTitle}>목표금액</Text>
         <Text>{goal}원</Text>

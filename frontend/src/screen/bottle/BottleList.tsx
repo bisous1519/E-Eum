@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 export default function BottleList(): JSX.Element {
   const beachVideo = require('../../assets/videos/beachblue.mp4');
   return (
-    <Swiper>
+    <>
       <View style={styles.container}>
         <View style={styles.backgroundVideo}>
           <BottleLeft />
@@ -81,7 +81,7 @@ export default function BottleList(): JSX.Element {
         </View>
         <View style={styles.popupFromBackground}></View>
       </View>
-    </Swiper>
+    </>
     // <KeyboardAwareScrollView
     //   // style={styles.container}
     //   keyboardShouldPersistTaps='handled'
