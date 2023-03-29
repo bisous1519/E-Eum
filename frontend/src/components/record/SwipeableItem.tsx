@@ -1,4 +1,4 @@
-import React, { RefObject, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   Pressable,
@@ -8,10 +8,12 @@ import {
   ViewComponent,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+// import WebView from 'react-native-webview';
 import useNav from '../../hooks/useNav';
 import MockupItemType from '../../models/record/mockupItemType';
 import theme from '../../utils/theme';
 import DeleteModal from './DeleteModal';
+// import * as Clipboard from 'expo-clipboard';
 
 const stylesRenderLeft = StyleSheet.create({
   rec: {
@@ -66,6 +68,7 @@ export default function SwipeableItem({
   const navigation = useNav();
   const swipeableRef = useRef<Swipeable>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
+  const [convertedContent, setConvertedContent] = useState('');
 
   const onLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
@@ -125,6 +128,16 @@ export default function SwipeableItem({
       </View>
     );
   };
+
+  const convertHTML = async () => {
+    // await Clipboard.setStringAsync(content);
+    // const text = await Clipboard.getStringAsync({});
+    // setConvertedContent(text);
+  };
+
+  useEffect(() => {
+    convertHTML();
+  }, []);
   return (
     <Swipeable
       ref={swipeableRef}
@@ -137,9 +150,8 @@ export default function SwipeableItem({
     >
       <View onLayout={onLayout} style={stylesFeed.content}>
         <Text style={stylesFeed.tag}># {tag.toString()}</Text>
-        <Text style={stylesFeed.text}>{content.toString()}</Text>
+        <Text style={stylesFeed.text}>{content}</Text>
       </View>
     </Swipeable>
   );
 }
-

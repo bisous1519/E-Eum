@@ -1,34 +1,27 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Image,
   StyleSheet,
   Text,
   View,
   ScrollView,
-  Pressable,
   LayoutChangeEvent,
 } from 'react-native';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import InputComp from '../../components/common/input/InputComp';
-import TextComp from '../../components/common/TextComp';
 import theme from '../../utils/theme';
 import ItemContainer from '../../components/record/ItemContainer';
 import Tag from '../../components/record/Tag';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
 import useDimension from '../../hooks/useDimension';
-import ModalComp from '../../components/common/ModalComp';
 import DeleteModal from '../../components/record/DeleteModal';
 import MockupDateGroupType from '../../models/record/mockupDateGroupType';
 import { useRecoilState } from 'recoil';
-import {
-  recordsState,
-  recordState,
-} from '../../modules/apis/record/recordAtoms';
-import { getRecords } from '../../modules/apis/record/recordApis';
+import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
+import { getRecords, getTags } from '../../modules/apis/record/recordApis';
 import {
   RecordsStateType,
-  RecordStateType,
+  TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
@@ -167,6 +160,7 @@ const mockup: MockupDateGroupType[] = [
 
 export default function Record(): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+  const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
@@ -195,8 +189,14 @@ export default function Record(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const { data } = await getRecords(1); // userId 넣어야됨
-    setRecords(data);
+    const recordsData: RecordsStateType | undefined = await getRecords(1); // userId 넣어야됨
+    const tagsData: TagStateType[] | undefined = await getTags(1);
+    if (recordsData) {
+      setRecords(recordsData);
+    }
+    if (tagsData) {
+      setTags(tagsData);
+    }
   };
 
   useEffect(() => {
@@ -215,7 +215,9 @@ export default function Record(): JSX.Element {
           />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
-              <Text style={stylesProfile.infoContent}>11개</Text>
+              <Text style={stylesProfile.infoContent}>
+                {records ? records.recordCnt + '개' : '-'}
+              </Text>
               <Text style={stylesProfile.infoCaption}>꿈피드</Text>
             </View>
             <View style={stylesProfile.infoItem}>
@@ -244,18 +246,22 @@ export default function Record(): JSX.Element {
             onChange={handleSheetChange}
             style={{ alignItems: 'center' }}
           >
-            {/* <BottomSheetFlatList
-              contentContainerStyle={styles.contentContainer}
-              showsVerticalScrollIndicator={false}
-              data={records.recordList}
-              renderItem={({ item, index }) => (
-                <ItemContainer
-                  regTime={item.regTime}
-                  list={item.content}
-                  onToggleDelete={onToggleDelete}
-                />
-              )}
-            /> */}
+            {records ? (
+              <BottomSheetFlatList
+                contentContainerStyle={styles.contentContainer}
+                showsVerticalScrollIndicator={false}
+                data={records.recordList}
+                renderItem={({ item, index }) => (
+                  <ItemContainer
+                    regTime={records.dateList[index]}
+                    list={item}
+                    onToggleDelete={onToggleDelete}
+                  />
+                )}
+              />
+            ) : (
+              <></>
+            )}
           </BottomSheet>
         ) : (
           <></>
@@ -276,12 +282,7 @@ export default function Record(): JSX.Element {
           contentContainerStyle={stylesTag.scrollBox}
         >
           <Tag text='전체' />
-          <Tag text='전체전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
+          {tags && tags.map((tag) => <Tag key={tag.id} text={tag.name} />)}
           <Tag text='+' />
         </ScrollView>
       </View>
@@ -290,4 +291,3 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
-

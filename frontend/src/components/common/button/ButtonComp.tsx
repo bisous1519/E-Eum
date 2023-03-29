@@ -22,7 +22,7 @@ const PressableBox = styled.Pressable<{ small: boolean }>`
 
 const TextBox = styled.Text`
   color: ${({ theme }) => theme.textColor.white};
-  font-size: ${({ theme }) => theme.fontSize.regular};
+  font-size: ${({ theme }) => theme.fontSize.regular}px;
 `;
 
 const styles = StyleSheet.create({
