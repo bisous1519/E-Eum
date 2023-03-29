@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -150,7 +150,7 @@ export default function NewSupport(): JSX.Element {
   // ===========================================================
 
   const [addImage, setAddImage] = useState<string[]>([]);
-  const richText = React.useRef<RichEditor>(null);
+  const richText = useRef<RichEditor>(null);
 
   // ImagePicker 사용을 위한 부분
   const pickImage = async () => {
@@ -257,6 +257,7 @@ export default function NewSupport(): JSX.Element {
               <RichEditor
                 ref={richText}
                 placeholder='내용을 입력하세요'
+                initialFocus={false}
                 initialHeight={250}
                 editorStyle={{ backgroundColor: theme.grayColor.lightGray }}
                 androidHardwareAccelerationDisabled={true}
