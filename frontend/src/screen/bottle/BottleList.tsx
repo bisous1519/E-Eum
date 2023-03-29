@@ -1,61 +1,95 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, Pressable } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import InputComp from '../../components/common/input/InputComp';
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
-import { useRecoilState } from 'recoil';
-import { getRecord } from '../../modules/apis/record/recordApis';
-import { recordState } from '../../modules/apis/record/recordAtoms';
-import { RecordStateType } from '../../modules/apis/record/recordAtomTypes';
+// import Video from 'react-native-video';
+import { Video } from 'expo-av';
+import Swiper from 'react-native-swiper';
+import BottleLeft from './BottleLeft';
+import BottleRight from './BottleRight';
 
 const { DEVICE_WIDTH } = useDimension();
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.background,
-    flex: 1,
-    alignItems: 'center',
+  tempBorderRed: {
+    borderWidth: 1,
+    borderColor: 'red',
   },
+  tempBorderBlue: {
+    borderWidth: 1,
+    borderColor: 'blue',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.mainColor.main,
+    // backgroundColor: theme.background,
+    // flex: 1,
+    // alignItems: 'center',
+  },
+  backgroundVideo: {
+    width: '100%',
+    height: '100%',
+    zIndex: 0,
+  },
+  popupFromBackground: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 1,
+  },
+  leftPagePressableLocation: {
+    position: 'absolute',
+    width: 200,
+    height: 170,
+    borderWidth: 1,
+    borderColor: 'red',
+    top: 290,
+    left: 160,
+  },
+  leftPageRedPressable: {
+    width: 50,
+    height: 50,
+  },
+  leftPageBlackPressable: {},
+  leftPageBluePressable: {},
 });
 
 export default function BottleList(): JSX.Element {
-  const [record, setRecord] = useRecoilState<RecordStateType>(recordState);
-
-  const onPressBtn = (): void => {
-    console.log('인증버튼클릭');
-    // console.log(record);
-  };
-
-  const fetchData = async () => {
-    const data = await getRecord(2);
-    setRecord(data);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  const beachVideo = require('../../assets/videos/beachblue.mp4');
   return (
-    <KeyboardAwareScrollView
-      // style={styles.container}
-      keyboardShouldPersistTaps='handled'
-      contentContainerStyle={styles.container}
-    >
-      <View style={{ width: DEVICE_WIDTH * 0.8 }}>
-        <Text>BottleList</Text>
-
-        <Text>꿈피드</Text>
-        <Text>꿈후원 목록</Text>
-        <Text>{record.tagName}</Text>
-        <Text>{record.content}</Text>
-        <InputComp
-          name='EMAIL'
-          btn={true}
-          btnText='인증'
-          onPressBtn={onPressBtn}
-        />
+    <Swiper>
+      <View style={styles.container}>
+        <View style={styles.backgroundVideo}>
+          <BottleLeft />
+        </View>
+        <View style={styles.popupFromBackground}>
+          <View style={styles.leftPagePressableLocation}>
+            <Pressable
+              style={StyleSheet.flatten([
+                styles.tempBorderBlue,
+                styles.leftPageRedPressable,
+              ])}
+            ></Pressable>
+          </View>
+        </View>
       </View>
-    </KeyboardAwareScrollView>
+      <View style={styles.container}>
+        <View style={styles.backgroundVideo}>
+          <BottleRight />
+        </View>
+        <View style={styles.popupFromBackground}></View>
+      </View>
+    </Swiper>
+    // <KeyboardAwareScrollView
+    //   // style={styles.container}
+    //   keyboardShouldPersistTaps='handled'
+    //   contentContainerStyle={styles.container}
+    // >
+    //   <View style={{ width: DEVICE_WIDTH * 0.8 }}>
+
+    //   </View>
+    // </KeyboardAwareScrollView>
   );
 }
-
