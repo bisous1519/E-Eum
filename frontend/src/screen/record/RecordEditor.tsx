@@ -48,7 +48,7 @@ type RecordEditorPropsType = {
 export default function RecordEditor({
   route,
 }: RecordEditorPropsType): JSX.Element {
-  const richText = useRef();
+  const richText = useRef<RichEditor>(null);
   const navigation = useNav();
   const [context, setContext] = useState<string>('');
 
@@ -79,7 +79,8 @@ export default function RecordEditor({
         {/* 에디터 */}
         <View style={styles.editor}>
           <RichEditor
-            initialContentHTML={context}
+            // initialContentHTML={context}
+            ref={richText}
             placeholder='내용을 입력하세요'
             initialFocus={false}
             useContainer={true}
@@ -115,4 +116,3 @@ export default function RecordEditor({
     </SafeAreaView>
   );
 }
-
