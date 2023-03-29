@@ -15,6 +15,8 @@ type RootStackParamList = {
   JoinPW?: undefined;
   SetNewPW?: undefined;
   Signin?: undefined;
+  BottleGreen?: undefined;
+  BottleBlue?: undefined;
 };
 
 // type RootStackParamList = {
