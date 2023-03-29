@@ -30,7 +30,7 @@ export default function Home() {
       </Text>
       <Text style={styles.s}>자동 로그인</Text>
       <Test />
-      <ButtonComp />
+      {/* <ButtonComp /> */}
     </View>
     // </Layer>
   );

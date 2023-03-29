@@ -15,6 +15,57 @@ import useNav from '../../hooks/useNav';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
+const styles = StyleSheet.create({
+  // 화면 전체에 적용
+  container: {
+    flex: 1,
+    fontSize: theme.fontSize.regular,
+  },
+  // navigating을 위해 잠시 사용
+  tempContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  // 개별 후원 카드
+  item: {
+    flex: 1,
+    backgroundColor: theme.textColor.white,
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 10,
+    borderRadius: 15,
+  },
+  // 후원 카드에 표시되는 '제목'
+  title: {
+    // height: 50,
+    fontWeight: '700',
+    marginVertical: DEVICE_HEIGHT * 0.015,
+  },
+  // 목표금액, 달성률 -> 연한 회색 제목
+  lightTitle: {
+    color: theme.textColor.light,
+    marginVertical: DEVICE_HEIGHT * 0.005,
+  },
+  // 프로필 사진
+  image: {
+    width: DEVICE_WIDTH * 0.11,
+    height: DEVICE_WIDTH * 0.11,
+    borderRadius: 30,
+    marginRight: 8,
+  },
+  // 사진과 이름을 묶은 스타일
+  profile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  // 목표금액: 제목 및 금액
+  goal: {},
+  // 달성률: 제목 및 그래프
+  progress: {
+    marginVertical: DEVICE_HEIGHT * 0.015,
+  },
+});
+
 // 나중에 다 분리하자.. ===================================================
 // 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
 const DATA = [
@@ -101,7 +152,7 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
     onPress={() => console.log('디테일 스크린이 까꿍')}
     activeOpacity={0.6}
   >
-    <View>
+    <View style={styles.container}>
       <View style={styles.profile}>
         <Image
           source={require('../../assets/images/sample.png')}
@@ -164,50 +215,3 @@ export default function SupportList(): JSX.Element {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  // 화면 전체에 적용
-  container: {
-    flex: 1,
-    fontSize: theme.fontSize.regular,
-  },
-  // navigating을 위해 잠시 사용
-  tempContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  // 개별 후원 카드
-  item: {
-    flex: 1,
-    backgroundColor: theme.textColor.white,
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 10,
-    borderRadius: 15,
-  },
-  // 후원 카드에 표시되는 '제목'
-  title: {
-    height: 50,
-    fontWeight: '700',
-  },
-  // 목표금액, 달성률 -> 연한 회색 제목
-  lightTitle: {
-    color: theme.textColor.light,
-  },
-  // 프로필 사진
-  image: {
-    width: 45,
-    height: 45,
-    borderRadius: 30,
-    marginRight: 8,
-  },
-  // 사진과 이름을 묶은 스타일
-  profile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  // 목표금액: 제목 및 금액
-  goal: {},
-  // 달성률: 제목 및 그래프
-  progress: {},
-});
