@@ -231,8 +231,7 @@ export default function Record(): JSX.Element {
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
-      >
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
         {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
@@ -242,8 +241,7 @@ export default function Record(): JSX.Element {
               '100%',
             ]}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}
-          >
+            style={{ alignItems: 'center' }}>
             {/* <BottomSheetFlatList
               contentContainerStyle={styles.contentContainer}
               showsVerticalScrollIndicator={false}
@@ -268,13 +266,11 @@ export default function Record(): JSX.Element {
           stylesTag.container,
           { top: profileHeight },
         ])}
-        onLayout={onLayoutTag}
-      >
+        onLayout={onLayoutTag}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={stylesTag.scrollBox}
-        >
+          contentContainerStyle={stylesTag.scrollBox}>
           <Tag text='전체' />
           <Tag text='전체전체' />
           <Tag text='전체' />
@@ -290,4 +286,3 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
-
