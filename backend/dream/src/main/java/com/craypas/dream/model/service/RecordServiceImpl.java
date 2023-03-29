@@ -1,5 +1,6 @@
 package com.craypas.dream.model.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,25 @@ import lombok.RequiredArgsConstructor;
 public class RecordServiceImpl implements RecordService {
 	private final RecordRepository recordRepository;
 	private final TagRepository tagRepository;
+	private final FireBaseService fireBaseService;
 
 	// 꿈 기록 작성
 	@Override
 	public ResponseDto.Read createRecord(final RequestDto.Create requestDto) {
-		// 이미지를 파이어베이스에 저장
+		// 이미지가 존재하면 FireBase에 저장 후 경로 반환
 		String imagePath = null;
+		if (requestDto.getImage() != null) {
+			String saveFileName = String.valueOf(System.nanoTime());
+			String bucketFolder = "record-image";
+			try {
+				fireBaseService.uploadFiles(requestDto.getImage(), bucketFolder, saveFileName);    // firebase에 파일 저장
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			imagePath = fireBaseService.getFileUrl(bucketFolder, saveFileName); // 파일 경로 저장
+		}
+
+
 		return new ResponseDto.Read(recordRepository.save(requestDto.toEntity(
 			tagRepository.findById(requestDto.getTid()).orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND)),
 			imagePath)));

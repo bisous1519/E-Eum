@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.craypas.dream.exception.CustomException;
 import com.craypas.dream.exception.ErrorCode;
-import com.craypas.dream.model.dto.FireBaseService;
 import com.craypas.dream.model.dto.support.RequestDto;
 import com.craypas.dream.model.dto.support.ResponseDto;
 import com.craypas.dream.model.entity.Support;
@@ -44,16 +43,16 @@ public class SupportServiceImpl implements SupportService {
 	private final FireBaseService fireBaseService;
 
 	@Value("${request.user.url}")
-	private String PROJECT_USER_SUPPORT_URL;
+	private String PROJECT_USER_URL;
 
 	// 꿈 후원요청 작성
 	@Override
 	public ResponseDto.Read createSupport(final RequestDto.Create requestDto) {
-		String imagePath = null;
 		// 이미지가 존재하면 FireBase에 저장 후 경로 반환
+		String imagePath = null;
 		if (requestDto.getImage() != null) {
 			String saveFileName = String.valueOf(System.nanoTime());
-			String bucketFolder = "profile-img";
+			String bucketFolder = "support-image";
 			try {
 				fireBaseService.uploadFiles(requestDto.getImage(), bucketFolder, saveFileName);    // firebase에 파일 저장
 			} catch (IOException e) {
@@ -72,7 +71,7 @@ public class SupportServiceImpl implements SupportService {
 
 		// 후원글 작성자 정보 호출
 		RestTemplate restTemplate = new RestTemplate();
-		String url = PROJECT_USER_SUPPORT_URL + "/" + support.getUserId().toString();
+		String url = PROJECT_USER_URL + "/support/" + support.getUserId().toString();
 		ResponseEntity<String> result = restTemplate.getForEntity(url, String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		try {
@@ -98,9 +97,9 @@ public class SupportServiceImpl implements SupportService {
 		// 후원글 작성자 정보 호출
 		RestTemplate restTemplate = new RestTemplate();
 		ObjectMapper mapper = new ObjectMapper();
-		String url = PROJECT_USER_SUPPORT_URL + "/" + support.getUserId().toString();
+		String url1 = PROJECT_USER_URL + "/support/" + support.getUserId().toString();
 		// Request
-		ResponseEntity<String> result1 = restTemplate.getForEntity(url, String.class);
+		ResponseEntity<String> result1 = restTemplate.getForEntity(url1, String.class);
 		try {
 			Map<String, Object> map = mapper.readValue(result1.getBody(), Map.class);
 			responseDto.setUserNickname((String)map.get("nickname"));
@@ -125,7 +124,8 @@ public class SupportServiceImpl implements SupportService {
 		// Message
 		HttpEntity<?> requestMessage = new HttpEntity<>(sponsorIdList, httpHeaders);
 		// Request
-		ResponseEntity<String> result2 = restTemplate.postForEntity(PROJECT_USER_SUPPORT_URL, requestMessage,
+		String url2 = PROJECT_USER_URL + "/support";
+		ResponseEntity<String> result2 = restTemplate.postForEntity(url2, requestMessage,
 			String.class);
 		try {
 			List<String> list = mapper.readValue(result2.getBody(), List.class);
@@ -184,7 +184,7 @@ public class SupportServiceImpl implements SupportService {
 		}
 		RestTemplate restTemplate = new RestTemplate();
 		ObjectMapper mapper = new ObjectMapper();
-		String url = PROJECT_USER_SUPPORT_URL + "/preview";
+		String url = PROJECT_USER_URL + "/support/preview";
 		// Message
 		HttpEntity<?> requestMessage = new HttpEntity<>(uidList, httpHeaders);
 		// Request
@@ -238,8 +238,8 @@ public class SupportServiceImpl implements SupportService {
 
 	// 꿈 후원하기
 	@Override
-	@Transactional
 	public ResponseDto.Read createSupportUser(final Long sid, final Long uid, final Integer point) {
+		// 1. 관계테이블에 정보 추가
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
 		supportUserRepository.save(SupportUser.builder()
@@ -248,14 +248,28 @@ public class SupportServiceImpl implements SupportService {
 			.point(point)
 			.regTime(LocalDateTime.now())
 			.build());
+
+		// 2. 후원자의 포인트 차감
+		RestTemplate restTemplate = new RestTemplate();
+		String url = PROJECT_USER_URL + "/point/use/" + uid.toString();
+		// Header set
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		// Message
+		HttpEntity<?> requestMessage = new HttpEntity<>(point, httpHeaders);
+		// Request
+		ResponseEntity<String> result2 = restTemplate.postForEntity(url, requestMessage, String.class);
+
+		// 3. 후원글의 현재 모금액 수정
 		support.updateCurrAmount(point);
-		return new ResponseDto.Read(support);
+		return new ResponseDto.Read(supportRepository.save(support));
 	}
 
 	// 꿈 후원 취소하기
 	@Override
 	@Transactional
 	public ResponseDto.Read deleteSupportUser(Long sid, Long uid) {
+		// 1. 관계테이블에서 정보 삭제
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
 		SupportUser supportUser = supportUserRepository.findBySupportAndWriterId(support, uid);
@@ -264,7 +278,20 @@ public class SupportServiceImpl implements SupportService {
 			throw new CustomException(ErrorCode.SUPPORT_USER_NOT_FOUND);
 		}
 		supportUserRepository.delete(supportUser);
+
+		// 2. 후원자의 포인트 환불
+		RestTemplate restTemplate = new RestTemplate();
+		String url = PROJECT_USER_URL + "/point/refund/" + uid.toString();
+		// Header set
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		// Message
+		HttpEntity<?> requestMessage = new HttpEntity<>(point, httpHeaders);
+		// Request
+		ResponseEntity<String> result2 = restTemplate.postForEntity(url, requestMessage, String.class);
+
+		// 3. 후원글의 현재 모금액 수정
 		support.updateCurrAmount((-1) * point);
-		return new ResponseDto.Read(support);
+		return new ResponseDto.Read(supportRepository.save(support));
 	}
 }
