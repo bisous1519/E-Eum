@@ -42,6 +42,9 @@ const styles = StyleSheet.create({
     borderColor: theme.background,
     borderBottomColor: theme.mainColor.main,
   },
+  inputNumber: {
+    fontSize: theme.fontSize.regular,
+  },
   goal: {
     fontSize: theme.fontSize.small,
   },
@@ -98,7 +101,7 @@ export default function SupportModal({
       <View style={styles.modal}>
         {/* 이 부분에 TextInput, NumberPad 삽입 */}
         <View style={styles.input}>
-          <Text>{pay}</Text>
+          <TextInput style={styles.inputNumber}>{pay}</TextInput>
         </View>
         <View>
           <Text style={styles.goal}>목표까지 {tempNum}원</Text>
