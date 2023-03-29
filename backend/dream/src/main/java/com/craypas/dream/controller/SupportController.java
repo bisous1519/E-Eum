@@ -2,7 +2,6 @@ package com.craypas.dream.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -80,9 +79,9 @@ public class SupportController {
 	}
 
 	// 꿈 후원 취소하기
-	@DeleteMapping("/res/{sid}/{uid}")
-	public ResponseEntity<?> deleteSupportUser(@PathVariable("sid") final Long sid,
-		@PathVariable("uid") final Long uid) {
+	@DeleteMapping("/res")
+	public ResponseEntity<?> deleteSupportUser(@RequestParam("sid") final Long sid,
+		@RequestParam("uid") final Long uid) {
 		return new ResponseEntity<>(supportService.deleteSupportUser(sid, uid), HttpStatus.OK);
 	}
 }
