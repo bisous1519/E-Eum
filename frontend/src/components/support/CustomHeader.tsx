@@ -25,6 +25,10 @@ const styles = StyleSheet.create({
     color: theme.mainColor.dark,
     marginRight: 10,
   },
+  searchInput: {
+    fontSize: theme.fontSize.small,
+    width: DEVICE_HEIGHT * 0.23,
+  },
   rightContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -35,7 +39,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sort: {
-    marginRight: 15,
+    marginRight: 8,
   },
   mySupportSelected: {
     backgroundColor: theme.mainColor.main,
@@ -86,6 +90,7 @@ export default function CustomHeader(): JSX.Element {
           value={keyword}
           onChange={handleInput}
           onSubmitEditing={handleSearch}
+          style={styles.searchInput}
         />
       </View>
       <View style={styles.rightContent}>

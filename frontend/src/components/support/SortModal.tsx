@@ -2,10 +2,21 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import useDimension from '../../hooks/useDimension';
 import { AntDesign } from '@expo/vector-icons';
+import theme from '../../utils/theme';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  layer: {
+    flex: 1,
+    backgroundColor: theme.layerColor,
+    position: 'absolute',
+    width: DEVICE_WIDTH,
+    height: DEVICE_HEIGHT,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+});
 
 type SortModalPropsType = {
   onToggleDelete: () => void;
@@ -35,7 +46,7 @@ export default function SortModal({
   };
 
   return (
-    <View>
+    <View style={styles.layer}>
       <Text>정렬 기준</Text>
       <Pressable>
         <Text>최신순</Text>

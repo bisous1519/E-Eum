@@ -29,12 +29,14 @@ import theme from '../../utils/theme';
 import useDimension from '../../hooks/useDimension';
 import Tag from '../../components/record/Tag';
 import SubmitButton from '../../components/support/SubmitButton';
+import TextEditor from '../../components/common/editor/TextEditor';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.background,
   },
   mainTitleContainer: {
     marginTop: DEVICE_HEIGHT * 0.05,
@@ -121,20 +123,25 @@ export default function NewSupport(): JSX.Element {
   const [tag, setTag] = useState<string>('');
   // ===========================================================
   const [title, setTitle] = useState<string>('');
+  // TextEditor의 input
   const [context, setContext] = useState<string>('');
   const [productName, setProductName] = useState<string>('');
   const [link, setLink] = useState<string>('');
   const [goal, setGoal] = useState<number>(0);
   // 모집 기한 ==================================================
   const [due, setDue] = useState<string>(dateFormat(new Date()));
+
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
+
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
+
   const handleConfirm = (date: any) => {
     console.log('날짜가 선택되었습니다: ', date);
     setDue(dateFormat(date));
@@ -150,7 +157,6 @@ export default function NewSupport(): JSX.Element {
   // ===========================================================
 
   const [addImage, setAddImage] = useState<string[]>([]);
-  const richText = useRef<RichEditor>(null);
 
   // ImagePicker 사용을 위한 부분
   const pickImage = async () => {
@@ -166,6 +172,10 @@ export default function NewSupport(): JSX.Element {
       prevImage.push(result.assets[0].uri);
       setAddImage(prevImage);
     }
+  };
+
+  const handleContextChange = (data: any) => {
+    setContext(data);
   };
 
   // 카카오 API로 받아온 주소 데이터
@@ -254,12 +264,14 @@ export default function NewSupport(): JSX.Element {
             {/* 3. 내용 */}
             <View style={styles.write}>
               <Text style={styles.title}>내용</Text>
-              <RichEditor
+              <TextEditor onChangeContext={handleContextChange} />
+              {/* 너 진짜 가만 안둔다 */}
+              {/* <RichEditor
                 ref={richText}
                 placeholder='내용을 입력하세요'
                 initialFocus={false}
-                initialHeight={250}
-                editorStyle={{ backgroundColor: theme.grayColor.lightGray }}
+                initialHeight={500}
+                editorStyle={{ backgroundColor: theme.background }}
                 androidHardwareAccelerationDisabled={true}
                 onChange={(e) => setContext(e)}
               />
@@ -275,7 +287,8 @@ export default function NewSupport(): JSX.Element {
                   actions.setStrikethrough,
                   actions.setUnderline,
                 ]}
-              />
+                style={{ backgroundColor: theme.background }}
+              /> */}
             </View>
             {/* 4. 목표금액 */}
             <View style={styles.write}>
