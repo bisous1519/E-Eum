@@ -6,7 +6,7 @@ const Stack = createNativeStackNavigator();
 
 const BottleStack = () => {
   return (
-    <Stack.Navigator initialRouteName='Bottle'>
+    <Stack.Navigator initialRouteName='BottleBlue'>
       <Stack.Screen name='BottleBlue' component={BottleBlue} />
       <Stack.Screen name='BottleGreen' component={BottleGreen} />
     </Stack.Navigator>
