@@ -1,9 +1,8 @@
 package com.craypas.user.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.user.model.dto.user.RequestDto;
-import com.craypas.user.model.dto.user.ResponseDto;
 import com.craypas.user.model.service.EmailService;
 import com.craypas.user.model.service.UserService;
 
@@ -56,7 +55,7 @@ public class UserController {
 	}
 
 	// 꿈피드 회원정보 조회
-	@GetMapping("dream/{uid}")
+	@GetMapping("/dream/{uid}")
 	public ResponseEntity<?> getDreamFeedUser(@PathVariable final Long uid){
 		return new ResponseEntity<>(userService.getDreamFeedUser(uid), HttpStatus.OK);
 	}
@@ -93,14 +92,61 @@ public class UserController {
 	}
 
 	// 회원 탈퇴
+	@PutMapping("/withdraw/{uid}")
+	public ResponseEntity<?> removeUser(@PathVariable final Long uid) {
+		userService.removeUser(uid);
+		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+	}
+
 	// 회원정보 삭제
-	// 포인트 결제
-	// 포인트 사용내역 조회
-	// 포인트 환불 요청
-	// 비밀번호 찾기
-	// 이메일 중복 확인
-	// 이메일 인증 코드 발송
+	@DeleteMapping("/withdraw/{uid}")
+	public ResponseEntity<?> deleteUser(@PathVariable final Long uid) {
+		userService.deleteUser(uid);
+		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+	}
+
+	// 포인트 구매
+	@PutMapping("/point/buy/{uid}")
+	public ResponseEntity<?> buyPoint(@PathVariable final Long uid, @RequestBody final String point) {
+		return new ResponseEntity(userService.buyPoint(uid, point), HttpStatus.OK);
+	}
+
+	// 포인트 사용
+	@PostMapping("/point/use/{uid}")
+	public ResponseEntity<?> usePoint(@PathVariable final Long uid, @RequestBody final String point) {
+		return new ResponseEntity<>(userService.usePoint(uid, point), HttpStatus.OK);
+	}
+
+	// 포인트 환불
+	@PostMapping("/point/refund/{uid}")
+	public ResponseEntity<?> refundPoint(@PathVariable final Long uid, @RequestBody final String point) {
+		return new ResponseEntity<>(userService.refundPoint(uid, point), HttpStatus.OK);
+	}
+
+	// 포인트 현금화 요청
+	@PostMapping("/point/encash/{uid}")
+	public ResponseEntity<?> encashPoint(@PathVariable final Long uid) {
+		return new ResponseEntity<>(userService.encashPoint(uid), HttpStatus.CREATED);
+	}
+
+	// 포인트 초기화
+	@PutMapping("/point/init/{uid}")
+	public ResponseEntity<?> initPoint(@PathVariable final Long uid) {
+		return new ResponseEntity<>(userService.initPoint(uid), HttpStatus.OK);
+	}
+
 	// 프로필 사진 업로드
+	@PutMapping("/profile/{uid}")
+	public ResponseEntity<?> updateImage(@PathVariable final Long uid, @RequestBody final MultipartFile image) {
+		return new ResponseEntity<>(userService.updateImage(uid, image), HttpStatus.OK);
+	}
+
 	// 증명 파일 업로드
+	@PutMapping("/certificate/{uid}")
+	public ResponseEntity<?> updateCertificateFile(@PathVariable final Long uid,
+		@RequestBody final MultipartFile file) {
+		return new ResponseEntity<>(userService.updateCertificateFile(uid, file), HttpStatus.OK);
+	}
+
 	// 뱃지 상세 조회
 }

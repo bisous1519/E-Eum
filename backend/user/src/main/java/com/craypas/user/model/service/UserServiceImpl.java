@@ -16,18 +16,50 @@ import com.craypas.user.model.entity.User;
 import com.craypas.user.model.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 	final private UserRepository userRepository;
-
-	public UserServiceImpl(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+	final private FireBaseService fireBaseService;
 
 	// 회원정보 등록
 	@Override
+	@Transactional
 	public ResponseDto.GetUser createUser(RequestDto.CreateUser requestDto) {
-		return new ResponseDto.GetUser(userRepository.save(requestDto.toEntity()));
+		User user = requestDto.toEntity();
+
+		// 1. 프로필 이미지가 존재하면 FireBase에 저장 후 경로 반환
+		String imagePath = null;
+		if (requestDto.getImage() != null) {
+			String saveFileName = String.valueOf(System.nanoTime());
+			String bucketFolder = "profile-image";
+			try {
+				fireBaseService.uploadFiles(requestDto.getImage(), bucketFolder, saveFileName);    // firebase에 파일 저장
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			imagePath = fireBaseService.getFileUrl(bucketFolder, saveFileName); // 파일 경로 저장
+		}
+
+		// 2. 증빙 파일이 존재하면 FireBase에 저장 후 경로 반환
+		String certificateFile = null;
+		if (requestDto.getCertificateFile() != null) {
+			String saveFileName = String.valueOf(System.nanoTime());
+			String bucketFolder = "certificate-file";
+			try {
+				fireBaseService.uploadFiles(requestDto.getImage(), bucketFolder, saveFileName);    // firebase에 파일 저장
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			certificateFile = fireBaseService.getFileUrl(bucketFolder, saveFileName); // 파일 경로 저장
+		}
+
+		// 3. 파일 경로들을 user 객체에 저장
+		user.updateImagePath(imagePath);
+		user.updateCertificatePath(certificateFile);
+		return new ResponseDto.GetUser(userRepository.save(user));
 	}
 
 	// 이메일 중복 확인(중복 시 예외 호출)
@@ -47,11 +79,8 @@ public class UserServiceImpl implements UserService {
 	// 꿈피드 회원정보 조회
 	@Override
 	public ResponseDto.GetDreamFeedUser getDreamFeedUser(final Long uid) {
-		// 파이어베이스에서 프로필이미지 불러오기
-		MultipartFile profileImage = null;
 		return new ResponseDto.GetDreamFeedUser(
-			userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)),
-			profileImage);
+			userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
 	}
 
 	// 회원 정보 수정
@@ -119,71 +148,112 @@ public class UserServiceImpl implements UserService {
 
 	// 회원 탈퇴
 	@Override
+	@Transactional
 	public void removeUser(Long uid) {
-
+		userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)).deactivate();
 	}
 
 	// 회원정보 삭제
 	@Override
 	public void deleteUser(Long uid) {
-
+		userRepository.delete(
+			userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)));
 	}
 
 	// 포인트 구매
 	@Override
-	public Integer buyPoint(Long uid, Integer point) {
-		return null;
+	@Transactional
+	public Integer buyPoint(Long uid, String point) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		user.updatePoint(Integer.parseInt(point));
+		return user.getPoint();
 	}
 
 	// 포인트 사용
 	@Override
-	public Integer usePoint(Long uid, Integer point) {
-		return null;
+	@Transactional
+	public Integer usePoint(Long uid, String point) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		user.updatePoint((-1) * Integer.parseInt(point));
+		return user.getPoint();
 	}
 
 	// 포인트 환불
 	@Override
-	public Integer refundPoint(Long uid, Integer point) {
-		return null;
+	@Transactional
+	public Integer refundPoint(Long uid, String point) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		user.updatePoint(Integer.parseInt(point));
+		return user.getPoint();
 	}
 
 	// 포인트 현금화 요청
 	@Override
-	public Integer encashPoint(Long uid, Integer point) {
-		return null;
+	public Integer encashPoint(Long uid) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		return user.getPoint();
 	}
 
 	// 포인트 초기화
 	@Override
-	public Integer initPoint(Long uid, Integer point) {
-		return null;
-	}
-
-	// 비밀번호 찾기
-	@Override
-	public void findPassword() {
-
-	}
-
-	// 비밀번호 변경
-	@Override
-	public void updatePassword() {
-
-	}
-
-	// 이메일 중복 확인
-	@Override
-	public Boolean checkEmail() {
-		return null;
-	}
-
-	// 이메일 인증 코드 발송
-	@Override
-	public void certifyEmail() {
-
+	@Transactional
+	public Integer initPoint(Long uid) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		user.updatePoint((-1) * user.getPoint());
+		return user.getPoint();
 	}
 
 	// 프로필 사진 업로드
+	@Override
+	@Transactional
+	public String updateImage(final Long uid, final MultipartFile image) {
+		// 프로필 사진이 존재하면 삭제
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		String bucketFolder = "profile-image";
+		if (user.getImagePath() != null) {
+			fireBaseService.deleteFile(bucketFolder, user.getImagePath());
+		}
+
+		// 새 프로필 사진 저장
+		String imagePath = null;
+		String saveFileName = String.valueOf(System.nanoTime());
+		if (image != null) {
+			try {
+				fireBaseService.uploadFiles(image, bucketFolder, saveFileName);    // firebase에 파일 저장
+				imagePath = fireBaseService.getFileUrl(bucketFolder, saveFileName); // 파일 경로 저장
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		user.updateImagePath(imagePath);
+		return imagePath;
+	}
+
 	// 증명 파일 업로드
+	@Override
+	@Transactional
+	public String updateCertificateFile(final Long uid, final MultipartFile file) {
+		// 증빙 파일이 존재하면 삭제
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		String bucketFolder = "certificate-file";
+		if (user.getCertificatePath() != null) {
+			fireBaseService.deleteFile(bucketFolder, user.getCertificatePath());
+		}
+
+		// 새 프로필 사진 저장
+		String certificatePath = null;
+		String saveFileName = String.valueOf(System.nanoTime());
+		if (file != null) {
+			try {
+				fireBaseService.uploadFiles(file, bucketFolder, saveFileName);    // firebase에 파일 저장
+				certificatePath = fireBaseService.getFileUrl(bucketFolder, saveFileName); // 파일 경로 저장
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		user.updateCertificatePath(certificatePath);
+		return certificatePath;
+	}
+
 	// 뱃지 상세 조회
 }
