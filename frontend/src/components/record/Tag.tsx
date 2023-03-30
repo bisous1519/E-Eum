@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import theme from '../../utils/theme';
 
 const styles = StyleSheet.create({
-  basicBox: {
+  basicTag: {
     borderColor: theme.mainColor.main,
     borderWidth: 2,
     borderRadius: 15,
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  selectedBox: {
+  selectedTag: {
     backgroundColor: theme.mainColor.main,
   },
   text: {
@@ -24,14 +24,23 @@ const styles = StyleSheet.create({
 
 type TagPropsType = {
   text: string;
+  isSelected?: boolean;
+  onPressTag: () => void;
 };
 
-export default function Tag({ text }: TagPropsType): JSX.Element {
-  const onPressTag = () => {
-    console.log('tag 클릭');
-  };
+export default function Tag({
+  text,
+  isSelected,
+  onPressTag,
+}: TagPropsType): JSX.Element {
   return (
-    <Pressable style={styles.basicBox} onPress={onPressTag}>
+    <Pressable
+      style={StyleSheet.flatten([
+        styles.basicTag,
+        isSelected && styles.selectedTag,
+      ])}
+      onPress={onPressTag}
+    >
       <Text style={styles.text}>{text}</Text>
     </Pressable>
   );

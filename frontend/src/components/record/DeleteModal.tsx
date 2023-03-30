@@ -30,18 +30,18 @@ const styles = StyleSheet.create({
 });
 
 type DeleteModalPropsType = {
-  onToggleDelete: () => void;
+  onToggleModal: () => void;
 };
 
 export default function DeleteModal({
-  onToggleDelete,
+  onToggleModal,
 }: DeleteModalPropsType): JSX.Element {
   const onPressDelete = () => {
-    onToggleDelete();
+    onToggleModal();
     console.log('삭제 api');
   };
   return (
-    <ModalComp onCloseModal={onToggleDelete}>
+    <ModalComp onCloseModal={onToggleModal}>
       <View style={styles.wrapper}>
         <Text style={styles.title}>꿈 기록 삭제</Text>
         <Text style={styles.content}>정말 삭제하시겠습니까?</Text>
@@ -52,3 +52,4 @@ export default function DeleteModal({
     </ModalComp>
   );
 }
+

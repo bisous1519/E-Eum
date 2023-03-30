@@ -14,14 +14,21 @@ import useNav from '../../hooks/useNav';
 import { ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { postRecord } from '../../modules/apis/record/recordApis';
+import Tag from '../../components/record/Tag';
+import { useRecoilState } from 'recoil';
+import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
+import { tagsState } from '../../modules/apis/record/recordAtoms';
+import TagList from '../../components/record/TagList';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const styles = StyleSheet.create({
-  containerWrapper: {
-    // alignItems: 'center',
-    // backgroundColor: theme.background,
+  flexBox: {
     flex: 1,
+  },
+  containerWrapper: {
+    alignItems: 'center',
+    // backgroundColor: theme.background,
     backgroundColor: 'orange',
   },
   container: {
@@ -39,6 +46,7 @@ const styles = StyleSheet.create({
     // width: '100%',
     // color: theme.textColor.light,
     // flex: 1,
+    marginTop: 20,
     borderWidth: 3,
     borderColor: 'orange',
     flex: 1,
@@ -56,6 +64,8 @@ type RecordEditorPropsType = {
 export default function RecordEditor({
   route,
 }: RecordEditorPropsType): JSX.Element {
+  const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
+
   const navigation = useNav();
   const richText = useRef<RichEditor>(null);
   const [content, setContent] = useState<string>('');
@@ -83,16 +93,22 @@ export default function RecordEditor({
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.flexBox}>
       <KeyboardAwareScrollView
-        style={styles.containerWrapper}
+        style={styles.flexBox}
+        contentContainerStyle={styles.containerWrapper}
         keyboardShouldPersistTaps='handled'
       >
         <View style={styles.container}>
+          {/* 헤더 */}
           <View style={styles.header}>
             <Feather name='x' size={24} color='black' onPress={onPressBack} />
             <ButtonComp small={true} text='등록' onPressBtn={onPressSubmit} />
           </View>
+
+          {/* 태그 */}
+          {tags ? <TagList tags={tags} /> : <></>}
+
           {/* 에디터 */}
           <View style={styles.editorWrapper}>
             <RichEditor
@@ -130,3 +146,4 @@ export default function RecordEditor({
     </SafeAreaView>
   );
 }
+

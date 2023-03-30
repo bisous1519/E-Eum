@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 
 export default function useInputText() {
@@ -7,5 +7,6 @@ export default function useInputText() {
   const onChangeText = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setText(e.nativeEvent.text);
   };
+
   return { text, onChangeText };
 }

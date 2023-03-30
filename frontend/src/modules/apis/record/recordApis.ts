@@ -1,5 +1,6 @@
 import axios from 'axios';
 import PostRecordType from '../../../models/record/postRecordType';
+import PostTagType from '../../../models/record/postTagType';
 import {
   RecordsStateType,
   RecordStateType,
@@ -24,6 +25,19 @@ export async function getRecords(userId: number) {
   try {
     const { data } = await axios.get<RecordsStateType>(
       `http://j8a607.p.ssafy.io/api/dream/record/user/${userId}?tid=`
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 꿈기록 목록 조회 with 태그
+export async function getRecordsWithTag(userId: number, tagId: number) {
+  try {
+    const { data } = await axios.get<RecordsStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/record/user/${userId}?tid=${tagId}`
     );
     return data;
   } catch (error: unknown) {
@@ -58,3 +72,18 @@ export async function getTags(userId: number) {
     throw new Error(error as string);
   }
 }
+
+// 태그 생성
+export async function postTag(postData: PostTagType) {
+  try {
+    const { data } = await axios.post<TagStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/tag`,
+      postData
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+

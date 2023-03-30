@@ -23,6 +23,8 @@ import {
   RecordsStateType,
   TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
+import TagList from '../../components/record/TagList';
+import AddTagModal from '../../components/record/AddTagModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -114,50 +116,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const mockup: MockupDateGroupType[] = [
-  {
-    regTime: '23.03.11',
-    list: [
-      {
-        regTime: '23.03.11',
-        id: 0,
-        tag: '꿈',
-        content:
-          '구글 개발자 인터뷰를 봤다. 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-      {
-        regTime: '23.03.11',
-        id: 1,
-        tag: '꿈',
-        content: '안웅장하다',
-      },
-      {
-        regTime: '23.03.11',
-        id: 2,
-        tag: '꿈',
-        content: '멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-    ],
-  },
-  {
-    regTime: '23.03.10',
-    list: [
-      {
-        regTime: '23.03.11',
-        id: 0,
-        tag: '꿈',
-        content: '구글 개발자 인터뷰를 봤다.',
-      },
-      {
-        regTime: '23.03.11',
-        id: 1,
-        tag: '꿈',
-        content: '안웅장하다 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-    ],
-  },
-];
-
 export default function Record(): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
@@ -165,6 +123,7 @@ export default function Record(): JSX.Element {
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  const [addTagModal, setAddTagModal] = useState<boolean>(false);
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
 
@@ -184,8 +143,10 @@ export default function Record(): JSX.Element {
     navigation.push('RecordEditor', { itemId: 3 });
   };
   const onToggleDelete = (): void => {
-    console.log('삭제!!!!!');
     setDeleteModal((prev) => !prev);
+  };
+  const onToggleAddTagModal = (): void => {
+    setAddTagModal((prev) => !prev);
   };
 
   const fetchData = async () => {
@@ -276,18 +237,24 @@ export default function Record(): JSX.Element {
         ])}
         onLayout={onLayoutTag}
       >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={stylesTag.scrollBox}
-        >
-          <Tag text='전체' />
-          {tags && tags.map((tag) => <Tag key={tag.id} text={tag.name} />)}
-          <Tag text='+' />
-        </ScrollView>
+        {tags ? (
+          <TagList
+            tags={tags}
+            allTag={true}
+            onToggleAddTagModal={onToggleAddTagModal}
+          />
+        ) : (
+          <></>
+        )}
       </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
-      {deleteModal && <DeleteModal onToggleDelete={onToggleDelete} />}
+      {deleteModal ? <DeleteModal onToggleModal={onToggleDelete} /> : <></>}
+      {addTagModal ? (
+        <AddTagModal onToggleModal={onToggleAddTagModal} />
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
+
