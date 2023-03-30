@@ -48,6 +48,10 @@ public class SupportServiceImpl implements SupportService {
 	// 꿈 후원요청 작성
 	@Override
 	public ResponseDto.Read createSupport(final RequestDto.Create requestDto) {
+		// 목표 금액이 0이면 예외 발생
+		if (requestDto.getTargetAmount() == 0){
+			throw new CustomException(ErrorCode.INVALID_TARGET_AMOUNT);
+		}
 		// 이미지가 존재하면 FireBase에 저장 후 경로 반환
 		String imagePath = null;
 		if (requestDto.getImage() != null) {
@@ -223,6 +227,14 @@ public class SupportServiceImpl implements SupportService {
 	// 꿈 후원요청 삭제
 	@Override
 	public void deleteSupport(final Long sid) {
+		// 꿈 후원요청에 관련된 후원 기록 취소처리
+		Support support = supportRepository.findById(sid).orElseThrow(()->new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
+		List<SupportUser> supportUsers = supportUserRepository.findAllBySupport(support);
+		for(SupportUser supportUser : supportUsers){
+			deleteSupportUser(supportUser.getSupport().getId(), supportUser.getWriterId());
+		}
+
+		// 꿈 후원요청 글 삭제
 		supportRepository.delete(
 			supportRepository.findById(sid).orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND)));
 	}
