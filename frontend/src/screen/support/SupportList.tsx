@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Text,
   View,
@@ -12,6 +12,10 @@ import theme from '../../utils/theme';
 import * as Progress from 'react-native-progress';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
+import { getSupports } from '../../modules/apis/support/supportApis';
+import { useRecoilState } from 'recoil';
+import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
+import { supportsState } from '../../modules/apis/support/supportAtoms';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -74,102 +78,77 @@ const styles = StyleSheet.create({
 // 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
 const DATA = [
   {
-    id: 1,
-    nick: '1싸피',
+    uid: 1,
+    userNickname: '1싸피',
     title: '개발자가 되고싶어요 길어지면 어케되누',
-    goal: 110000,
+    achievementRate: 110000,
   },
   {
-    id: 2,
-    nick: '2싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
+    uid: 2,
+    userNickname: '2싸피',
+    title: '개발자가 되고싶어요 길어지면 어케되누',
+    achievementRate: 110000,
   },
   {
-    id: 3,
-    nick: '3싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
+    uid: 3,
+    userNickname: '3싸피',
+    title: '개발자가 되고싶어요 길어지면 어케되누',
+    achievementRate: 110000,
   },
   {
-    id: 4,
-    nick: '4싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
+    uid: 4,
+    userNickname: '4싸피',
+    title: '개발자가 되고싶어요 길어지면 어케되누',
+    achievementRate: 110000,
   },
   {
-    id: 5,
-    nick: '5싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
+    uid: 5,
+    userNickname: '5싸피',
+    title: '개발자가 되고싶어요 길어지면 어케되누',
+    achievementRate: 110000,
   },
   {
-    id: 6,
-    nick: '6싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
+    uid: 6,
+    userNickname: '6싸피',
+    title: '개발자가 되고싶어요 길어지면 어케되누',
+    achievementRate: 110000,
   },
   {
-    id: 7,
-    nick: '7싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 8,
-    nick: '8싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 9,
-    nick: '9싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 10,
-    nick: '10싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 11,
-    nick: '11싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
+    uid: 7,
+    userNickname: '7싸피',
+    title: '개발자가 되고싶어요 길어지면 어케되누',
+    achievementRate: 110000,
   },
 ];
 
 // 각 아이템(목록 데이터) 요소의 타입 지정
 type ItemProps = {
-  id: number;
-  nick: string;
+  uid: number;
+  userNickname: string;
   title: string;
-  goal: number;
+  achievementRate: number;
 };
 
 // 각 카드를 어떻게 보여줄지 설정
-const Item = ({ id, nick, title, goal }: ItemProps) => (
+const Item = ({ uid, userNickname, title, achievementRate }: ItemProps) => (
   <TouchableOpacity
     style={styles.item}
     onPress={() => console.log('디테일 스크린이 까꿍')}
-    activeOpacity={0.6}
-  >
+    activeOpacity={0.6}>
     <View style={styles.container}>
       <View style={styles.profile}>
         <Image
           source={require('../../assets/images/sample.png')}
           style={styles.image}
         />
-        <Text>{nick}</Text>
+        <Text>{userNickname}</Text>
       </View>
       <View style={styles.titleBox}>
         <Text style={styles.title}>{title}</Text>
       </View>
       <View style={styles.goal}>
         <Text style={styles.lightTitle}>목표금액</Text>
-        <Text>{goal}원</Text>
+        <Text>{achievementRate}원</Text>
       </View>
       <View style={styles.progress}>
         <Text style={styles.lightTitle}>달성률</Text>
@@ -187,35 +166,47 @@ const Item = ({ id, nick, title, goal }: ItemProps) => (
 
 // 초기 꿈후원 목록 화면
 export default function SupportList(): JSX.Element {
+  const [support, setSupports] =
+    useRecoilState<SupportsStateType>(supportsState);
+
   const navigation = useNav();
 
   const onPressPlusBtn = () => {
     navigation.push('NewSupport');
   };
 
+  // const fetchData = async () => {
+  //   const { data } = await getSupports();
+  //   setSupports(data);
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.tempContainer}>
         <Text
           style={{ color: 'red' }}
-          onPress={() => navigation.push('SupportDetail')}
-        >
+          onPress={() => navigation.push('SupportDetail')}>
           게시물 상세
         </Text>
       </View>
+      {/* 흠... */}
       <FlatList
         data={DATA}
+        // data={support}
         renderItem={({ item }) => (
           <Item
-            id={item.id}
-            nick={item.nick}
+            uid={item.uid}
+            userNickname={item.userNickname}
             title={item.title}
-            goal={item.goal}
+            achievementRate={item.achievementRate}
           />
         )}
         numColumns={2}
-        keyExtractor={(item) => item.id.toString()}
-        // key={2} // 당신..뭔데..?ㅋㅋㅋ
+        keyExtractor={(item) => item.uid.toString()}
       />
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </View>

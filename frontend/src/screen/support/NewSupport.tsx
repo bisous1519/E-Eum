@@ -30,6 +30,7 @@ import useDimension from '../../hooks/useDimension';
 import Tag from '../../components/record/Tag';
 import SubmitButton from '../../components/support/SubmitButton';
 import TextEditor from '../../components/common/editor/TextEditor';
+import { addSupport } from '../../modules/apis/support/supportApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -120,7 +121,7 @@ const dateFormat = (date: any) => {
 export default function NewSupport(): JSX.Element {
   // 체크된 태그를 표시 =========================================
   const [checked, setChecked] = useState<string>('');
-  const [tag, setTag] = useState<string>('');
+  const [tag, setTag] = useState<number>(0);
   // ===========================================================
   const [title, setTitle] = useState<string>('');
   // TextEditor의 input
@@ -131,6 +132,16 @@ export default function NewSupport(): JSX.Element {
   // 모집 기한 ==================================================
   const [due, setDue] = useState<string>(dateFormat(new Date()));
 
+  const [text, setText] = useState<string>('');
+
+  // 배송지 주소
+  const [mainAddress, setMainAddress] = useState<string>('');
+  const [detailAddress, setDetailAddress] = useState<string>('');
+  const [isAddress, setIsAddress] = useState<boolean>(false);
+
+  const [addImage, setAddImage] = useState<string[]>([]);
+
+  // ===========================================================
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
 
@@ -147,16 +158,6 @@ export default function NewSupport(): JSX.Element {
     setDue(dateFormat(date));
     hideDatePicker();
   };
-
-  const [text, setText] = useState<string>('');
-
-  // 배송지 주소
-  const [mainAddress, setMainAddress] = useState<string>('');
-  const [detailAddress, setDetailAddress] = useState<string>('');
-  const [isAddress, setIsAddress] = useState<boolean>(false);
-  // ===========================================================
-
-  const [addImage, setAddImage] = useState<string[]>([]);
 
   // ImagePicker 사용을 위한 부분
   const pickImage = async () => {
@@ -193,8 +194,20 @@ export default function NewSupport(): JSX.Element {
     setDetailAddress(e.nativeEvent.text);
   };
 
-  const onSubmitBtn = () => {
+  const onSubmitBtn = async () => {
     console.log('등록하기');
+    await addSupport({
+      userId: 1,
+      title: title,
+      tid: 1,
+      content: context,
+      purchaseLink: link,
+      purchaseLinkDetail: productName,
+      targetAmount: goal,
+      deadline: due,
+      roadAddress: mainAddress,
+      detailAddress: detailAddress,
+    });
   };
 
   return (
