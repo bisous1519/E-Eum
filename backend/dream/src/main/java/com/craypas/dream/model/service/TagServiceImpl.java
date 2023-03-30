@@ -1,6 +1,7 @@
 package com.craypas.dream.model.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -40,9 +41,9 @@ public class TagServiceImpl implements TagService {
 	// 태그 수정
 	@Override
 	@Transactional
-	public ResponseDto.Read updateTag(Long tid, String name) {
+	public ResponseDto.Read updateTag(Long tid, Map<String, String> requestMap) {
 		Tag tag = tagRepository.findById(tid).orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND));
-		tag.update(name);
+		tag.update(requestMap.get("name"));
 		return new ResponseDto.Read(tag);
 	}
 
