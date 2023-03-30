@@ -188,7 +188,7 @@ export default function BottleBlue(): JSX.Element {
     {
       id: 1,
       userReqBottleId: 1,
-      content: '힝 너무너무 슬프고 힘들어요 안아주세요',
+      content: '힝 너무너무 슬프고 힘들어요 안아주세요?',
       sentiment: -1,
       ttsPath: null,
       regTime: '2023-03-25 22:38:45',
@@ -227,6 +227,10 @@ export default function BottleBlue(): JSX.Element {
     status: number;
   };
 
+  const popupPaper = () => {
+    navigation.push('MessagePaper');
+  };
+
   const modalMessageItem = ({ item }: { item: messageDataType }) => {
     let messageBoxBackgroundColor = '';
 
@@ -237,36 +241,23 @@ export default function BottleBlue(): JSX.Element {
     } else {
       messageBoxBackgroundColor = theme.mainColor.main;
     }
-    // const [messageBoxBackgroundColor, setMessageBoxBackgroundColor] =
-    //   useState('');
 
-    // if (item.sentiment === -1) {
-    //   setMessageBoxBackgroundColor(theme.textColor.error);
-    // } else if (item.sentiment === 0) {
-    //   setMessageBoxBackgroundColor(theme.grayColor.lightGray);
-    // } else {
-    //   setMessageBoxBackgroundColor(theme.mainColor.main);
-    // }
-    // const messageBoxBackgroundColor =
-    //   item.sentiment === -1
-    //     ? theme.textColor.error
-    //     : item.sentiment === 0
-    //     ? theme.grayColor.lightGray
-    //     : theme.mainColor;
     return (
-      <View
-        style={[
-          modalstyles.messageBox,
-          { backgroundColor: messageBoxBackgroundColor },
-        ]}
-      >
-        <Text style={modalstyles.messageRegTime}>
-          작성 날짜 : {item.regTime}
-        </Text>
-        <View>
-          <Text>{item.content}</Text>
+      <Pressable onPress={popupPaper}>
+        <View
+          style={[
+            modalstyles.messageBox,
+            { backgroundColor: messageBoxBackgroundColor },
+          ]}
+        >
+          <Text style={modalstyles.messageRegTime}>
+            작성 날짜 : {item.regTime}
+          </Text>
+          <View>
+            <Text>{item.content}</Text>
+          </View>
         </View>
-      </View>
+      </Pressable>
     );
   };
 
