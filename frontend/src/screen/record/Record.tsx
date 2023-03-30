@@ -129,6 +129,7 @@ export default function Record(): JSX.Element {
   const [upDelTargetTag, setUpDelTargetTag] = useState<TagStateType>();
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
+  const [delTargetContentId, setDelTargetContentId] = useState<number>();
 
   const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
@@ -145,7 +146,10 @@ export default function Record(): JSX.Element {
   const onPressPlusBtn = (): void => {
     navigation.push('RecordEditor');
   };
-  const onToggleDelete = (): void => {
+  const onToggleDelete = (recordId?: number): void => {
+    if (recordId || recordId === 0) {
+      setDelTargetContentId(recordId);
+    }
     setDeleteModal((prev) => !prev);
   };
   const onToggleAddTagModal = (): void => {
@@ -258,7 +262,14 @@ export default function Record(): JSX.Element {
         )}
       </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
-      {deleteModal ? <DeleteModal onToggleModal={onToggleDelete} /> : <></>}
+      {deleteModal && delTargetContentId ? (
+        <DeleteModal
+          recordId={delTargetContentId}
+          onToggleModal={onToggleDelete}
+        />
+      ) : (
+        <></>
+      )}
       {addTagModal ? (
         <AddTagModal onToggleModal={onToggleAddTagModal} />
       ) : (
