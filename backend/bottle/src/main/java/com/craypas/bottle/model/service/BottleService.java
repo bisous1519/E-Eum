@@ -80,11 +80,6 @@ public class BottleService {
 			.map(UserReqBottle::toCreatedReqDto)
 			.collect(Collectors.toList());
 	}
-
-	public List<CreatedResBottleDto> findAllResBottleByReqWriterId(Long reqWriterId) {
-		return qBottleRepository.findAllResBottleByReqWriterId(reqWriterId);
-	}
-
 	public CreatedResBottleDto sendResBottles(CreateResBottleDto resBottleDto) {
 		if (!userReqBottleRepository.findById(resBottleDto.getUserReqBottleId()).isPresent()) {
 			throw new CustomException(ErrorCode.REQ_BOTTLE_NOT_FOUND);
