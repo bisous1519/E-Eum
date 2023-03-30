@@ -114,12 +114,7 @@ public class BottleController {
 	@GetMapping("/receiver/{uid}/list")
 	ResponseEntity<?> getReceivedBottles(@PathVariable("uid") Long receiverId) {
 		try {
-			List<ReceivedUserReqBottleDto> userReqBottleDtos = bottleService.findAllUserReqBottleByReceiverId(receiverId);
-			List<CreatedResBottleDto> resBottleDtos = bottleService.findAllResBottleByReqWriterId(receiverId);
-			Map<String, List> receivedBottles = new HashMap<>();
-			receivedBottles.put("reqBottles", userReqBottleDtos);
-			receivedBottles.put("resBottles", resBottleDtos);
-			return new ResponseEntity<>(receivedBottles, HttpStatus.OK);
+			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverId(receiverId), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
