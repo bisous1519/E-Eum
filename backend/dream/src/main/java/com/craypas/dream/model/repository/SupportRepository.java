@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.craypas.dream.model.entity.Support;
+import com.craypas.dream.model.entity.Tag;
 
 @Repository
 public interface SupportRepository extends JpaRepository<Support, Long> {
 	Page<Support> findAll(Pageable pageable);
 	List<Support> findAllByTitleContainingOrderByRegTimeDesc(String title);
 	List<Support> findAllByStatus(Integer status);
+	List<Support> findAllByTag(Tag tag);
 }

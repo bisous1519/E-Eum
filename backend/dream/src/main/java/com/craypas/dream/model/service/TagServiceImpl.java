@@ -11,8 +11,11 @@ import com.craypas.dream.exception.CustomException;
 import com.craypas.dream.exception.ErrorCode;
 import com.craypas.dream.model.dto.tag.RequestDto;
 import com.craypas.dream.model.dto.tag.ResponseDto;
+import com.craypas.dream.model.entity.Support;
 import com.craypas.dream.model.entity.Tag;
 import com.craypas.dream.model.repository.RecordRepository;
+import com.craypas.dream.model.repository.SupportRepository;
+import com.craypas.dream.model.repository.SupportUserRepository;
 import com.craypas.dream.model.repository.TagRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class TagServiceImpl implements TagService {
 	private final TagRepository tagRepository;
 	private final RecordRepository recordRepository;
+	private final SupportRepository supportRepository;
+	private final SupportService supportService;
 
 	// 태그 생성
 	@Override
@@ -53,8 +58,13 @@ public class TagServiceImpl implements TagService {
 	public void deleteTag(Long tid) {
 		// 1. tid로 태그 객체 조회
 		Tag tag = tagRepository.findById(tid).orElseThrow(() -> new CustomException(ErrorCode.TAG_NOT_FOUND));
-		// 2. 해당 태그가 포함된 게시글 삭제
+		// 2. 해당 태그가 포함된 게시글, 후원요청 삭제
 		recordRepository.deleteAllByTag(tag);
+		List<Support> supports = supportRepository.findAllByTag(tag);
+		for(Support support : supports){
+			supportService.deleteSupport(support.getId());
+		}
+
 		// 3. 태그 삭제
 		tagRepository.delete(tag);
 	}
