@@ -56,13 +56,10 @@ export default function ItemContainer({
         ></View>
         <View style={stylesFeed.contents}>
           {list &&
-            list.map((item) => (
+            list.map((item: RecordStateType) => (
               <SwipeableItem
                 key={item.id}
-                id={item.id}
-                regTime={item.regTime}
-                tag={item.tagName}
-                content={item.content}
+                item={item}
                 onToggleDelete={onToggleDelete}
               />
             ))}
@@ -71,3 +68,4 @@ export default function ItemContainer({
     </View>
   );
 }
+

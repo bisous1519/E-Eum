@@ -18,6 +18,7 @@ import Tag from '../../components/record/Tag';
 import { useRecoilState } from 'recoil';
 import {
   RecordsStateType,
+  RecordStateType,
   TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
 import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
 
 type RecordEditorPropsType = {
   route: {
-    params: { itemId?: number };
+    params: { item: RecordStateType };
   };
 };
 
@@ -74,6 +75,7 @@ export default function RecordEditor({
   const richText = useRef<RichEditor>(null);
   const [content, setContent] = useState<string>('');
   const [selectedTag, setSelectedTag] = useState<TagStateType>();
+  const [selectedIdx, setSelectedIdx] = useState<number>();
 
   const onChangeContext = (e: string) => {
     setContent(e);
@@ -101,12 +103,17 @@ export default function RecordEditor({
   };
 
   useEffect(() => {
-    // console.log(route.params);
-    // if (route.params) {
-    //   // 수정하러 넘어온 애
-    //   console.log('수정화면');
-    //   setContent('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
-    // }
+    if (route.params) {
+      const item: RecordStateType = route.params.item;
+      setContent(item.content);
+      tags.filter((tag: TagStateType, index: number) => {
+        if (tag.name === item.tagName) {
+          setSelectedTag({ id: tag.id, name: tag.name });
+          setSelectedIdx(index);
+          console.log({ id: tag.id, name: tag.name }, index);
+        }
+      });
+    }
   }, []);
 
   return (
@@ -124,12 +131,21 @@ export default function RecordEditor({
           </View>
 
           {/* 태그 */}
-          {tags ? <TagList tags={tags} onSelectTag={onSelectTag} /> : <></>}
+          {tags ? (
+            <TagList
+              tags={tags}
+              onSelectTag={onSelectTag}
+              selectedTag={selectedTag}
+              selectedIdx={selectedIdx}
+            />
+          ) : (
+            <></>
+          )}
 
           {/* 에디터 */}
           <View style={styles.editorWrapper}>
             <RichEditor
-              // initialContentHTML={context}
+              initialContentHTML={content}
               ref={richText}
               placeholder='내용을 입력하세요'
               initialFocus={false}

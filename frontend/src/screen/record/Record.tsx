@@ -143,7 +143,7 @@ export default function Record(): JSX.Element {
     console.log('bottomSheet changed', idx);
   };
   const onPressPlusBtn = (): void => {
-    navigation.push('RecordEditor', { itemId: 3 });
+    navigation.push('RecordEditor');
   };
   const onToggleDelete = (): void => {
     setDeleteModal((prev) => !prev);
