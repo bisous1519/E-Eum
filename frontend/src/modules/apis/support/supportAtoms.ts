@@ -25,9 +25,9 @@ const newSupportInitailState: NewSupportStateType = {
 };
 
 // 후원글 목록
-export const supportsState = atom<SupportsStateType>({
+export const supportsState = atom<SupportsStateType[]>({
   key: 'supportsState',
-  default: supportsInitialState,
+  default: [supportsInitialState],
 });
 
 // 신규 후원글 작성

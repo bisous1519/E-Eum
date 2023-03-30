@@ -10,6 +10,7 @@ export async function getSupports() {
     return data;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 }
 
@@ -17,9 +18,19 @@ export async function getSupports() {
 export async function addSupport(data: NewSupportStateType) {
   try {
     await axios.post(`http://j8a607.p.ssafy.io/api/dream/support/req`, {
-      data: data,
+      userId: data.userId,
+      title: data.title,
+      tid: data.tid,
+      content: data.content,
+      purchaseLink: data.purchaseLink,
+      purchaseLinkDetail: data.purchaseLinkDetail,
+      targetAmount: data.targetAmount,
+      deadline: data.deadline,
+      roadAddress: data.roadAddress,
+      detailAddress: data.detailAddress,
     });
   } catch (e) {
     console.error(e);
+    throw e;
   }
 }

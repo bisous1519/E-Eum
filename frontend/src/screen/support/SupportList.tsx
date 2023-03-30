@@ -134,7 +134,8 @@ const Item = ({ uid, userNickname, title, achievementRate }: ItemProps) => (
   <TouchableOpacity
     style={styles.item}
     onPress={() => console.log('디테일 스크린이 까꿍')}
-    activeOpacity={0.6}>
+    activeOpacity={0.6}
+  >
     <View style={styles.container}>
       <View style={styles.profile}>
         <Image
@@ -166,8 +167,8 @@ const Item = ({ uid, userNickname, title, achievementRate }: ItemProps) => (
 
 // 초기 꿈후원 목록 화면
 export default function SupportList(): JSX.Element {
-  const [support, setSupports] =
-    useRecoilState<SupportsStateType>(supportsState);
+  const [supports, setSupports] =
+    useRecoilState<SupportsStateType[]>(supportsState);
 
   const navigation = useNav();
 
@@ -175,28 +176,28 @@ export default function SupportList(): JSX.Element {
     navigation.push('NewSupport');
   };
 
-  // const fetchData = async () => {
-  //   const { data } = await getSupports();
-  //   setSupports(data);
-  // };
+  const fetchData = async () => {
+    const { data } = await getSupports();
+    setSupports(data);
+  };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.tempContainer}>
         <Text
           style={{ color: 'red' }}
-          onPress={() => navigation.push('SupportDetail')}>
+          onPress={() => navigation.push('SupportDetail')}
+        >
           게시물 상세
         </Text>
       </View>
-      {/* 흠... */}
       <FlatList
-        data={DATA}
-        // data={support}
+        // data={DATA}
+        data={supports}
         renderItem={({ item }) => (
           <Item
             uid={item.uid}
