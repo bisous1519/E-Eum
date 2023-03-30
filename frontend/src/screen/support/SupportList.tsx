@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -123,45 +123,46 @@ const DATA = [
 
 // 각 아이템(목록 데이터) 요소의 타입 지정
 type ItemProps = {
-  uid: number;
+  sid: number;
   userNickname: string;
   title: string;
+  targetAmount: number;
   achievementRate: number;
 };
 
 // 각 카드를 어떻게 보여줄지 설정
-const Item = ({ uid, userNickname, title, achievementRate }: ItemProps) => (
-  <TouchableOpacity
-    style={styles.item}
-    onPress={() => console.log('디테일 스크린이 까꿍')}
-    activeOpacity={0.6}
-  >
-    <View style={styles.container}>
-      <View style={styles.profile}>
-        <Image
-          source={require('../../assets/images/sample.png')}
-          style={styles.image}
-        />
-        <Text>{userNickname}</Text>
-      </View>
-      <View style={styles.titleBox}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      <View style={styles.goal}>
-        <Text style={styles.lightTitle}>목표금액</Text>
-        <Text>{achievementRate}원</Text>
-      </View>
-      <View style={styles.progress}>
-        <Text style={styles.lightTitle}>달성률</Text>
-        <Progress.Bar
-          progress={0.65}
-          width={null}
-          height={5}
-          color={theme.mainColor.main}
-        />
-      </View>
+const Item = ({
+  sid,
+  userNickname,
+  title,
+  targetAmount,
+  achievementRate,
+}: ItemProps) => (
+  <View style={styles.container}>
+    <View style={styles.profile}>
+      <Image
+        source={require('../../assets/images/sample.png')}
+        style={styles.image}
+      />
+      <Text>{userNickname}</Text>
     </View>
-  </TouchableOpacity>
+    <View style={styles.titleBox}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+    <View style={styles.goal}>
+      <Text style={styles.lightTitle}>목표금액</Text>
+      <Text>{targetAmount}원</Text>
+    </View>
+    <View style={styles.progress}>
+      <Text style={styles.lightTitle}>달성률</Text>
+      <Progress.Bar
+        progress={achievementRate}
+        width={null}
+        height={5}
+        color={theme.mainColor.main}
+      />
+    </View>
+  </View>
 );
 // ========================================================================
 
@@ -170,20 +171,29 @@ export default function SupportList(): JSX.Element {
   const [supports, setSupports] =
     useRecoilState<SupportsStateType[]>(supportsState);
 
+  // 정렬 기준
+  const [sortType, setSortType] = useState<number>(1);
+
   const navigation = useNav();
+
+  const onPressDetail = () => {
+    navigation.push('SupportDetail');
+    console.log('디테일로 가는데...sid(supportId) 값 가져가야해..');
+  };
 
   const onPressPlusBtn = () => {
     navigation.push('NewSupport');
   };
 
   const fetchData = async () => {
-    const { data } = await getSupports();
+    const { data } = await getSupports(sortType);
     setSupports(data);
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+    console.log(supports);
+  }, [sortType]);
 
   return (
     <View style={styles.container}>
@@ -196,15 +206,21 @@ export default function SupportList(): JSX.Element {
         </Text>
       </View>
       <FlatList
-        // data={DATA}
         data={supports}
         renderItem={({ item }) => (
-          <Item
-            uid={item.uid}
-            userNickname={item.userNickname}
-            title={item.title}
-            achievementRate={item.achievementRate}
-          />
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => console.log('디테일 스크린이 까꿍')}
+            activeOpacity={0.6}
+          >
+            <Item
+              sid={item.sid}
+              userNickname={item.userNickname}
+              title={item.title}
+              targetAmount={item.targetAmount}
+              achievementRate={item.achievementRate}
+            />
+          </TouchableOpacity>
         )}
         numColumns={2}
         keyExtractor={(item) => item.uid.toString()}
