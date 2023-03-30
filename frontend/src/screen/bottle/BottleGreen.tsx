@@ -94,7 +94,7 @@ export default function BottleBlue(): JSX.Element {
     // <View>
     <View style={styles.container}>
       <View style={styles.backgroundVideo}>
-        <Video
+        {/* <Video
           source={beachVideoGreen}
           rate={1.0}
           // volume={1.0}
@@ -103,7 +103,7 @@ export default function BottleBlue(): JSX.Element {
           shouldPlay
           isLooping={true}
           style={{ width: '100%', height: '100%' }}
-        />
+        /> */}
       </View>
       <View style={styles.popupFromBackground}>
         <View style={[styles.titleButtonBox, styles.tempBorderBlue]}>
