@@ -8,5 +8,6 @@ export default function useInputText() {
     setText(e.nativeEvent.text);
   };
 
-  return { text, onChangeText };
+  return { text, onChangeText, setText };
 }
+

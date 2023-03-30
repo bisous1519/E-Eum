@@ -13,11 +13,14 @@ import {
 import useNav from '../../hooks/useNav';
 import { ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { postRecord } from '../../modules/apis/record/recordApis';
+import { getRecords, postRecord } from '../../modules/apis/record/recordApis';
 import Tag from '../../components/record/Tag';
 import { useRecoilState } from 'recoil';
-import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
-import { tagsState } from '../../modules/apis/record/recordAtoms';
+import {
+  RecordsStateType,
+  TagStateType,
+} from '../../modules/apis/record/recordAtomTypes';
+import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
 import TagList from '../../components/record/TagList';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
@@ -64,11 +67,13 @@ type RecordEditorPropsType = {
 export default function RecordEditor({
   route,
 }: RecordEditorPropsType): JSX.Element {
+  const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
   const navigation = useNav();
   const richText = useRef<RichEditor>(null);
   const [content, setContent] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<TagStateType>();
 
   const onChangeContext = (e: string) => {
     setContent(e);
@@ -77,19 +82,31 @@ export default function RecordEditor({
     navigation.pop();
   };
   const onPressSubmit = () => {
-    console.log(content);
-    postRecord({ content, writerId: 1, tid: 2 }).then(() =>
-      navigation.popToTop()
-    );
+    if (content === '') {
+      console.log('content 가 비어있음');
+    } else if (!selectedTag) {
+      console.log('tag 선택 안함');
+    } else {
+      console.log(content, selectedTag);
+      postRecord({ content, writerId: 1, tid: selectedTag.id })
+        .then(() => getRecords(1))
+        .then((data: RecordsStateType) => {
+          setRecords(data);
+          navigation.popToTop();
+        });
+    }
+  };
+  const onSelectTag = (tag: TagStateType) => {
+    setSelectedTag(tag);
   };
 
   useEffect(() => {
-    console.log(route.params);
-    if (route.params) {
-      // 수정하러 넘어온 애
-      console.log('수정화면');
-      setContent('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
-    }
+    // console.log(route.params);
+    // if (route.params) {
+    //   // 수정하러 넘어온 애
+    //   console.log('수정화면');
+    //   setContent('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
+    // }
   }, []);
 
   return (
@@ -107,7 +124,7 @@ export default function RecordEditor({
           </View>
 
           {/* 태그 */}
-          {tags ? <TagList tags={tags} /> : <></>}
+          {tags ? <TagList tags={tags} onSelectTag={onSelectTag} /> : <></>}
 
           {/* 에디터 */}
           <View style={styles.editorWrapper}>

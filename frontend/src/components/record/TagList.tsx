@@ -24,12 +24,16 @@ type TagListPropsType = {
   tags: TagStateType[];
   allTag?: boolean;
   onToggleAddTagModal?: () => void;
+  onToggleUpDelTagModal?: (tag?: TagStateType) => void;
+  onSelectTag?: (tag: TagStateType) => void;
 };
 
 export default function TagList({
   tags,
   allTag,
   onToggleAddTagModal,
+  onToggleUpDelTagModal,
+  onSelectTag,
 }: TagListPropsType): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
 
@@ -41,7 +45,7 @@ export default function TagList({
     return arr;
   };
 
-  const onPressTag = (index: number): void => {
+  const onPressTag = (tag: TagStateType, index: number): void => {
     setIsSelectedAllTag(false);
 
     const arr = falseArr();
@@ -51,6 +55,10 @@ export default function TagList({
     // record 화면이면 그 태그만 보여주는 api 요청
     if (allTag) {
       fetchGetRecordsWithTag(index);
+    }
+    // recordEditor 화면이면 select된 tag 세팅
+    if (onSelectTag) {
+      onSelectTag(tag);
     }
   };
 
@@ -70,7 +78,16 @@ export default function TagList({
     if (onToggleAddTagModal) {
       onToggleAddTagModal();
     }
-    // 그러고나서 tag 새로가져오기
+  };
+
+  const onLongPressTag = (tag?: TagStateType) => {
+    if (onToggleUpDelTagModal) {
+      if (tag) {
+        onToggleUpDelTagModal!(tag);
+      } else {
+        onToggleUpDelTagModal!();
+      }
+    }
   };
 
   const fetchAllRecords = async () => {
@@ -91,7 +108,6 @@ export default function TagList({
   };
 
   useEffect(() => {
-    console.log('!!!!', tags);
     if (tags) {
       const arr = falseArr();
       setIsSelectedTag([...arr]);
@@ -106,7 +122,7 @@ export default function TagList({
     >
       {allTag ? (
         <Tag
-          text='전체'
+          tag={{ id: 0, name: '전체' }}
           isSelected={isSelectedAllTag}
           onPressTag={onPressAllTag}
         />
@@ -117,12 +133,17 @@ export default function TagList({
         tags.map((tag, index) => (
           <Tag
             key={tag.id}
-            text={tag.name}
+            tag={tag}
             isSelected={isSelectedTag[index]}
-            onPressTag={() => onPressTag(index)}
+            onPressTag={() => onPressTag(tag, index)}
+            onLongPressTag={onLongPressTag}
           />
         ))}
-      {allTag ? <Tag text='+' onPressTag={onPressAddTag} /> : <></>}
+      {allTag ? (
+        <Tag tag={{ id: 0, name: '+' }} onPressTag={onPressAddTag} />
+      ) : (
+        <></>
+      )}
     </ScrollView>
   );
 }

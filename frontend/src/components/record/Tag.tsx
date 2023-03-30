@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 import theme from '../../utils/theme';
 
 const styles = StyleSheet.create({
@@ -23,16 +24,23 @@ const styles = StyleSheet.create({
 });
 
 type TagPropsType = {
-  text: string;
+  tag: TagStateType;
   isSelected?: boolean;
   onPressTag: () => void;
+  onLongPressTag?: any;
 };
 
 export default function Tag({
-  text,
+  tag,
   isSelected,
   onPressTag,
+  onLongPressTag,
 }: TagPropsType): JSX.Element {
+  const onLongPress = () => {
+    if (onLongPressTag) {
+      onLongPressTag(tag);
+    }
+  };
   return (
     <Pressable
       style={StyleSheet.flatten([
@@ -40,8 +48,9 @@ export default function Tag({
         isSelected && styles.selectedTag,
       ])}
       onPress={onPressTag}
+      onLongPress={onLongPress}
     >
-      <Text style={styles.text}>{text}</Text>
+      <Text style={styles.text}>{tag.name}</Text>
     </Pressable>
   );
 }

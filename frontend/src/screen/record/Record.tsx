@@ -25,6 +25,7 @@ import {
 } from '../../modules/apis/record/recordAtomTypes';
 import TagList from '../../components/record/TagList';
 import AddTagModal from '../../components/record/AddTagModal';
+import UpDelTagModal from '../../components/record/UpDelTagModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -124,6 +125,8 @@ export default function Record(): JSX.Element {
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [addTagModal, setAddTagModal] = useState<boolean>(false);
+  const [upDelTagModal, setUpDelTagModal] = useState<boolean>(false);
+  const [upDelTargetTag, setUpDelTargetTag] = useState<TagStateType>();
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
 
@@ -147,6 +150,12 @@ export default function Record(): JSX.Element {
   };
   const onToggleAddTagModal = (): void => {
     setAddTagModal((prev) => !prev);
+  };
+  const onToggleUpDelTagModal = (tag?: TagStateType): void => {
+    if (tag) {
+      setUpDelTargetTag(tag);
+    }
+    setUpDelTagModal((prev) => !prev);
   };
 
   const fetchData = async () => {
@@ -242,6 +251,7 @@ export default function Record(): JSX.Element {
             tags={tags}
             allTag={true}
             onToggleAddTagModal={onToggleAddTagModal}
+            onToggleUpDelTagModal={onToggleUpDelTagModal}
           />
         ) : (
           <></>
@@ -251,6 +261,14 @@ export default function Record(): JSX.Element {
       {deleteModal ? <DeleteModal onToggleModal={onToggleDelete} /> : <></>}
       {addTagModal ? (
         <AddTagModal onToggleModal={onToggleAddTagModal} />
+      ) : (
+        <></>
+      )}
+      {upDelTagModal && upDelTargetTag ? (
+        <UpDelTagModal
+          tag={upDelTargetTag}
+          onToggleModal={onToggleUpDelTagModal}
+        />
       ) : (
         <></>
       )}

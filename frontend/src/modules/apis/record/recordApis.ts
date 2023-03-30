@@ -1,6 +1,7 @@
 import axios from 'axios';
 import PostRecordType from '../../../models/record/postRecordType';
 import PostTagType from '../../../models/record/postTagType';
+import PutDataType from '../../../models/record/putTagType';
 import {
   RecordsStateType,
   RecordStateType,
@@ -79,6 +80,33 @@ export async function postTag(postData: PostTagType) {
     const { data } = await axios.post<TagStateType>(
       `http://j8a607.p.ssafy.io/api/dream/tag`,
       postData
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 태그 수정
+export async function putTag(tagId: number, putData: PutDataType) {
+  try {
+    const { data } = await axios.put<TagStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/tag/${tagId}`,
+      putData
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 태그 삭제
+export async function deleteTag(tagId: number) {
+  try {
+    const { data } = await axios.delete<TagStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/tag/${tagId}`
     );
     return data;
   } catch (error: unknown) {
