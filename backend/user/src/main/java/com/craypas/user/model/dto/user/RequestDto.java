@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.craypas.user.model.entity.Sponsorship;
 import com.craypas.user.model.entity.User;
 
 import lombok.Builder;
@@ -43,5 +44,25 @@ public class RequestDto {
 		private String introduction;
 		private String groupName;
 
+	}
+
+	@Getter
+	public static class CreateSponsorship{
+		private Long sponsorId;
+		private Long uid;
+		private Integer point;
+		private Integer paymentDate;
+
+		@Builder
+		public Sponsorship toEntity(User user){
+			return Sponsorship.builder()
+				.user(user)
+				.sponsorId(this.sponsorId)
+				.point(this.point)
+				.paymentDate(this.paymentDate)
+				.countPayment(0)
+				.regTime(LocalDateTime.now())
+				.build();
+		}
 	}
 }

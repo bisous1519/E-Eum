@@ -1,5 +1,7 @@
 package com.craypas.user.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +58,7 @@ public class UserController {
 
 	// 꿈피드 회원정보 조회
 	@GetMapping("/dream/{uid}")
-	public ResponseEntity<?> getDreamFeedUser(@PathVariable final Long uid){
+	public ResponseEntity<?> getDreamFeedUser(@PathVariable final Long uid) {
 		return new ResponseEntity<>(userService.getDreamFeedUser(uid), HttpStatus.OK);
 	}
 
@@ -69,8 +71,9 @@ public class UserController {
 
 	// 비밀번호 재설정
 	@PutMapping("/findpw/{uid}")
-	public ResponseEntity<?> updatePassword(@PathVariable final Long uid, @RequestBody final String password) {
-		return new ResponseEntity<>(userService.updatePassword(uid, password), HttpStatus.OK);
+	public ResponseEntity<?> updatePassword(@PathVariable final Long uid,
+		@RequestBody final Map<String, String> requestMap) {
+		return new ResponseEntity<>(userService.updatePassword(uid, requestMap), HttpStatus.OK);
 	}
 
 	// 회원 정보 단일 조회(꿈 후원글)
@@ -107,20 +110,23 @@ public class UserController {
 
 	// 포인트 구매
 	@PutMapping("/point/buy/{uid}")
-	public ResponseEntity<?> buyPoint(@PathVariable final Long uid, @RequestBody final String point) {
-		return new ResponseEntity(userService.buyPoint(uid, point), HttpStatus.OK);
+	public ResponseEntity<?> buyPoint(@PathVariable final Long uid,
+		@RequestBody final Map<String, Integer> requestMap) {
+		return new ResponseEntity(userService.buyPoint(uid, requestMap), HttpStatus.OK);
 	}
 
 	// 포인트 사용
 	@PostMapping("/point/use/{uid}")
-	public ResponseEntity<?> usePoint(@PathVariable final Long uid, @RequestBody final String point) {
-		return new ResponseEntity<>(userService.usePoint(uid, point), HttpStatus.OK);
+	public ResponseEntity<?> usePoint(@PathVariable final Long uid,
+		@RequestBody final Map<String, Integer> requestMap) {
+		return new ResponseEntity<>(userService.usePoint(uid, requestMap), HttpStatus.OK);
 	}
 
 	// 포인트 환불
 	@PostMapping("/point/refund/{uid}")
-	public ResponseEntity<?> refundPoint(@PathVariable final Long uid, @RequestBody final String point) {
-		return new ResponseEntity<>(userService.refundPoint(uid, point), HttpStatus.OK);
+	public ResponseEntity<?> refundPoint(@PathVariable final Long uid,
+		@RequestBody final Map<String, Integer> requestMap) {
+		return new ResponseEntity<>(userService.refundPoint(uid, requestMap), HttpStatus.OK);
 	}
 
 	// 포인트 현금화 요청

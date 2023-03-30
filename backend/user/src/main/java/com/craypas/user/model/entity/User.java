@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.craypas.user.exception.CustomException;
+import com.craypas.user.exception.ErrorCode;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -103,7 +106,10 @@ public class User {
 		this.certificatePath = certificatePath;
 	}
 
-	public void updatePoint(Integer point){
+	public void updatePoint(Integer point) {
+		if (this.point + point < 0) {
+			throw new CustomException(ErrorCode.NOT_ENOUGH_POINT);
+		}
 		this.point += point;
 	}
 
