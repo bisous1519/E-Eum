@@ -13,7 +13,8 @@ import useNav from '../../hooks/useNav';
 import MockupItemType from '../../models/record/mockupItemType';
 import theme from '../../utils/theme';
 import DeleteModal from './DeleteModal';
-// import * as Clipboard from 'expo-clipboard';
+import RenderHTML from 'react-native-render-html';
+import { RecordStateType } from '../../modules/apis/record/recordAtomTypes';
 
 const stylesRenderLeft = StyleSheet.create({
   rec: {
@@ -44,25 +45,54 @@ const stylesFeed = StyleSheet.create({
     fontSize: theme.fontSize.small,
     color: theme.textColor.light,
   },
-  text: {
-    fontSize: theme.fontSize.regular,
+  contentWrapper: {
+    // fontSize: theme.fontSize.regular,
     marginTop: 10,
   },
 });
 
+const contentTagsStyles = {
+  div: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  ul: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  ol: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  li: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  strike: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  u: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  i: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+  b: {
+    color: theme.textColor.main,
+    fontSize: theme.fontSize.regular,
+  },
+};
+
 type SwipeablePropsType = {
-  id: number;
-  regTime: string;
-  tag: string;
-  content: string;
+  item: RecordStateType;
   onToggleDelete: () => void;
 };
 
 export default function SwipeableItem({
-  id,
-  regTime,
-  tag,
-  content,
+  item,
   onToggleDelete,
 }: SwipeablePropsType): JSX.Element {
   const navigation = useNav();
@@ -75,8 +105,8 @@ export default function SwipeableItem({
     setContentHeight(height);
   };
   const onPressUpdate = () => {
-    console.log('수정!!!!!');
     swipeableRef.current?.close();
+    navigation.push('RecordEditor', { item });
   };
   const onPressDelete = () => {
     swipeableRef.current?.close();
@@ -129,15 +159,6 @@ export default function SwipeableItem({
     );
   };
 
-  const convertHTML = async () => {
-    // await Clipboard.setStringAsync(content);
-    // const text = await Clipboard.getStringAsync({});
-    // setConvertedContent(text);
-  };
-
-  useEffect(() => {
-    convertHTML();
-  }, []);
   return (
     <Swipeable
       ref={swipeableRef}
@@ -149,9 +170,17 @@ export default function SwipeableItem({
       renderRightActions={renderRightActions}
     >
       <View onLayout={onLayout} style={stylesFeed.content}>
-        <Text style={stylesFeed.tag}># {tag.toString()}</Text>
-        <Text style={stylesFeed.text}>{content}</Text>
+        <Text style={stylesFeed.tag}># {item.tagName}</Text>
+        {/* <Text style={stylesFeed.text}>{content}</Text> */}
+        <View style={stylesFeed.contentWrapper}>
+          <RenderHTML
+            tagsStyles={contentTagsStyles}
+            source={{ html: item.content }}
+            contentWidth={300}
+          />
+        </View>
       </View>
     </Swipeable>
   );
 }
+
