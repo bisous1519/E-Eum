@@ -13,14 +13,26 @@ import {
 import useNav from '../../hooks/useNav';
 import { ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { getRecords, postRecord } from '../../modules/apis/record/recordApis';
+import Tag from '../../components/record/Tag';
+import { useRecoilState } from 'recoil';
+import {
+  RecordsStateType,
+  RecordStateType,
+  TagStateType,
+} from '../../modules/apis/record/recordAtomTypes';
+import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
+import TagList from '../../components/record/TagList';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const styles = StyleSheet.create({
-  containerWrapper: {
-    // alignItems: 'center',
-    // backgroundColor: theme.background,
+  flexBox: {
     flex: 1,
+  },
+  containerWrapper: {
+    alignItems: 'center',
+    // backgroundColor: theme.background,
     backgroundColor: 'orange',
   },
   container: {
@@ -38,6 +50,7 @@ const styles = StyleSheet.create({
     // width: '100%',
     // color: theme.textColor.light,
     // flex: 1,
+    marginTop: 20,
     borderWidth: 3,
     borderColor: 'orange',
     flex: 1,
@@ -48,51 +61,91 @@ const styles = StyleSheet.create({
 
 type RecordEditorPropsType = {
   route: {
-    params: { itemId?: number };
+    params: { item: RecordStateType };
   };
 };
 
 export default function RecordEditor({
   route,
 }: RecordEditorPropsType): JSX.Element {
-  const richText = useRef<RichEditor>(null);
+  const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+  const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
+
   const navigation = useNav();
-  const [context, setContext] = useState<string>('');
+  const richText = useRef<RichEditor>(null);
+  const [content, setContent] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<TagStateType>();
+  const [selectedIdx, setSelectedIdx] = useState<number>();
 
   const onChangeContext = (e: string) => {
-    setContext(e);
+    setContent(e);
   };
   const onPressBack = () => {
     navigation.pop();
   };
   const onPressSubmit = () => {
-    console.log(context);
+    if (content === '') {
+      console.log('content 가 비어있음');
+    } else if (!selectedTag) {
+      console.log('tag 선택 안함');
+    } else {
+      console.log(content, selectedTag);
+      postRecord({ content, writerId: 1, tid: selectedTag.id })
+        .then(() => getRecords(1))
+        .then((data: RecordsStateType) => {
+          setRecords(data);
+          navigation.popToTop();
+        });
+    }
+  };
+  const onSelectTag = (tag: TagStateType) => {
+    setSelectedTag(tag);
   };
 
   useEffect(() => {
-    console.log(route.params);
     if (route.params) {
-      // 수정하러 넘어온 애
-      console.log('수정화면');
-      setContext('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
+      const item: RecordStateType = route.params.item;
+      setContent(item.content);
+      tags.filter((tag: TagStateType, index: number) => {
+        if (tag.name === item.tagName) {
+          setSelectedTag({ id: tag.id, name: tag.name });
+          setSelectedIdx(index);
+          console.log({ id: tag.id, name: tag.name }, index);
+        }
+      });
     }
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.flexBox}>
       <KeyboardAwareScrollView
-        style={styles.containerWrapper}
+        style={styles.flexBox}
+        contentContainerStyle={styles.containerWrapper}
         keyboardShouldPersistTaps='handled'
       >
         <View style={styles.container}>
+          {/* 헤더 */}
           <View style={styles.header}>
             <Feather name='x' size={24} color='black' onPress={onPressBack} />
             <ButtonComp small={true} text='등록' onPressBtn={onPressSubmit} />
           </View>
+
+          {/* 태그 */}
+          {tags ? (
+            <TagList
+              tags={tags}
+              onSelectTag={onSelectTag}
+              selectedTag={selectedTag}
+              selectedIdx={selectedIdx}
+            />
+          ) : (
+            <></>
+          )}
+
           {/* 에디터 */}
           <View style={styles.editorWrapper}>
             <RichEditor
-              // initialContentHTML={context}
+              initialContentHTML={content}
               ref={richText}
               placeholder='내용을 입력하세요'
               initialFocus={false}
@@ -126,3 +179,4 @@ export default function RecordEditor({
     </SafeAreaView>
   );
 }
+
