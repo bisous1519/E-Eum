@@ -1,5 +1,7 @@
 package com.craypas.dream.controller;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -38,8 +40,8 @@ public class TagController {
 	}
 
 	@PutMapping("/{tid}")
-	public ResponseEntity<?> updateTag(@PathVariable final Long tid, @RequestBody final String name) {
-		return new ResponseEntity<>(tagService.updateTag(tid, name), HttpStatus.OK);
+	public ResponseEntity<?> updateTag(@PathVariable final Long tid, @RequestBody final Map<String, String> requestMap) {
+		return new ResponseEntity<>(tagService.updateTag(tid, requestMap), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{tid}")
