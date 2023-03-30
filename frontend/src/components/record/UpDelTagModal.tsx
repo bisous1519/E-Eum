@@ -65,10 +65,16 @@ export default function UpDelTagModal({
 
   const { text, onChangeText, setText } = useInputText();
   const onPressUpdate = () => {
-    onToggleModal();
-    putTag(tag.id, { name: text })
-      .then(() => getTags(1))
-      .then((data) => setTags(data));
+    if (text === '') {
+      alert('태그명을 입력해주세요');
+    } else {
+      onToggleModal();
+      putTag(tag.id, { name: text })
+        .then(() => getTags(1))
+        .then((data: TagStateType[]) => setTags(data))
+        .then(() => getRecords(1))
+        .then((data: RecordsStateType) => setRecords(data));
+    }
   };
   const onPressDelete = () => {
     onToggleModal();

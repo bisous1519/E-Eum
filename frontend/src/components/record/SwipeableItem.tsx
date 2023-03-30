@@ -48,7 +48,7 @@ const stylesFeed = StyleSheet.create({
 
 type SwipeablePropsType = {
   item: RecordStateType;
-  onToggleDelete: () => void;
+  onToggleDelete: (recordId: number) => void;
 };
 
 export default function SwipeableItem({
@@ -70,7 +70,7 @@ export default function SwipeableItem({
   };
   const onPressDelete = () => {
     swipeableRef.current?.close();
-    onToggleDelete();
+    onToggleDelete(item.id);
   };
   const onPressSupport = () => {
     swipeableRef.current?.close();

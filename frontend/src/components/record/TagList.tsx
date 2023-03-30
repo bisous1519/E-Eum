@@ -50,6 +50,7 @@ export default function TagList({
   };
 
   const onPressTag = (tag: TagStateType, index: number): void => {
+    console.log('!!!!');
     setIsSelectedAllTag(false);
 
     const arr = falseArr();
@@ -84,13 +85,10 @@ export default function TagList({
     }
   };
 
-  const onLongPressTag = (tag?: TagStateType) => {
+  const onLongPressTag = (tag: TagStateType) => {
     if (onToggleUpDelTagModal) {
-      if (tag) {
-        onToggleUpDelTagModal!(tag);
-      } else {
-        onToggleUpDelTagModal!();
-      }
+      onToggleUpDelTagModal(tag);
+      onPressAllTag();
     }
   };
 

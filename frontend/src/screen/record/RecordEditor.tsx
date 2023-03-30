@@ -13,7 +13,11 @@ import {
 import useNav from '../../hooks/useNav';
 import { ScrollView } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { getRecords, postRecord } from '../../modules/apis/record/recordApis';
+import {
+  getRecords,
+  postRecord,
+  putRecord,
+} from '../../modules/apis/record/recordApis';
 import Tag from '../../components/record/Tag';
 import { useRecoilState } from 'recoil';
 import {
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
   containerWrapper: {
     alignItems: 'center',
     // backgroundColor: theme.background,
-    backgroundColor: 'orange',
+    // backgroundColor: 'orange',
   },
   container: {
     width: DEVICE_WIDTH * 0.9,
@@ -51,8 +55,8 @@ const styles = StyleSheet.create({
     // color: theme.textColor.light,
     // flex: 1,
     marginTop: 20,
-    borderWidth: 3,
-    borderColor: 'orange',
+    // borderWidth: 3,
+    // borderColor: 'orange',
     flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
@@ -76,6 +80,7 @@ export default function RecordEditor({
   const [content, setContent] = useState<string>('');
   const [selectedTag, setSelectedTag] = useState<TagStateType>();
   const [selectedIdx, setSelectedIdx] = useState<number>();
+  const [screenState, setScreenState] = useState<'등록' | '수정'>('등록');
 
   const onChangeContext = (e: string) => {
     setContent(e);
@@ -84,18 +89,39 @@ export default function RecordEditor({
     navigation.pop();
   };
   const onPressSubmit = () => {
-    if (content === '') {
-      console.log('content 가 비어있음');
-    } else if (!selectedTag) {
-      console.log('tag 선택 안함');
+    // 등록인 경우
+    if (screenState === '등록') {
+      if (content === '') {
+        console.log('content 가 비어있음');
+      } else if (!selectedTag) {
+        console.log('tag 선택 안함');
+      } else {
+        postRecord({ content, writerId: 1, tid: selectedTag.id })
+          .then(() => getRecords(1))
+          .then((data: RecordsStateType) => {
+            setRecords(data);
+            navigation.popToTop();
+          });
+      }
+
+      // 수정인 경우
     } else {
-      console.log(content, selectedTag);
-      postRecord({ content, writerId: 1, tid: selectedTag.id })
-        .then(() => getRecords(1))
-        .then((data: RecordsStateType) => {
-          setRecords(data);
-          navigation.popToTop();
-        });
+      if (content === '') {
+        console.log('content 가 비어있음');
+      } else if (!selectedTag) {
+        console.log('tag 선택 안함');
+      } else {
+        putRecord(route.params.item.id, {
+          content,
+          writerId: 1,
+          tid: selectedTag.id,
+        })
+          .then(() => getRecords(1))
+          .then((data: RecordsStateType) => {
+            setRecords(data);
+            navigation.popToTop();
+          });
+      }
     }
   };
   const onSelectTag = (tag: TagStateType) => {
@@ -104,6 +130,8 @@ export default function RecordEditor({
 
   useEffect(() => {
     if (route.params) {
+      // 꿈기록 수정인 경우
+      setScreenState('수정');
       const item: RecordStateType = route.params.item;
       setContent(item.content);
       tags.filter((tag: TagStateType, index: number) => {
@@ -127,7 +155,11 @@ export default function RecordEditor({
           {/* 헤더 */}
           <View style={styles.header}>
             <Feather name='x' size={24} color='black' onPress={onPressBack} />
-            <ButtonComp small={true} text='등록' onPressBtn={onPressSubmit} />
+            <ButtonComp
+              small={true}
+              text={screenState}
+              onPressBtn={onPressSubmit}
+            />
           </View>
 
           {/* 태그 */}
