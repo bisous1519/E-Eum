@@ -59,8 +59,9 @@ public class RequestDto {
 				.user(user)
 				.sponsorId(this.sponsorId)
 				.point(this.point)
-				.regTime(LocalDateTime.now())
+				.paymentDate(this.paymentDate)
 				.countPayment(0)
+				.regTime(LocalDateTime.now())
 				.build();
 		}
 	}

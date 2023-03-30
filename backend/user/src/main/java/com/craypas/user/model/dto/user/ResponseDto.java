@@ -1,16 +1,13 @@
 package com.craypas.user.model.dto.user;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.user.model.entity.Sponsorship;
 import com.craypas.user.model.entity.User;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 public class ResponseDto {
 	@Getter
@@ -72,28 +69,33 @@ public class ResponseDto {
 	}
 
 	@Getter
-	@NoArgsConstructor
-	public static class ReadSponsorship {
-		private Long sponsorshipId;
-		private Long sponsorId;
+	public static class GetProfileInfo {
 		private Long uid;
 		private String imagePath;
 		private String nickname;
-		private Integer point;
-		private LocalDate regDate;
+		private Boolean isConnected;
+		private Long sponsorId;
+		private Long sponsorshipId;
+		private Integer sponsorshipPoint;
+		private Integer sponsorshipPaymentDate;
 		private Long countFromRegDate;
-		private Integer buttonStatus;
+		private Integer myPoint;
 
-		public ReadSponsorship(Sponsorship sponsorship) {
-			this.sponsorshipId = sponsorship.getId();
+		@Builder
+		public GetProfileInfo(User user, Boolean isConnected, Integer myPoint) {
+			this.uid = user.getId();
+			this.imagePath = user.getImagePath();
+			this.nickname = user.getNickname();
+			this.isConnected = isConnected;
+			this.myPoint = myPoint;
+		}
+
+		public void updateSponsorshipInfo(Sponsorship sponsorship) {
 			this.sponsorId = sponsorship.getSponsorId();
-			this.uid = sponsorship.getUser().getId();
-			this.imagePath = sponsorship.getUser().getImagePath();
-			this.nickname = sponsorship.getUser().getNickname();
-			this.point = sponsorship.getPoint();
-			this.regDate = sponsorship.getRegTime().toLocalDate();
-			this.countFromRegDate = Duration.between(sponsorship.getRegTime().toLocalDate(), LocalDate.now()).toDays();
-			// this.buttonStatus = buttonStatus;
+			this.sponsorshipId = sponsorship.getSponsorId();
+			this.sponsorshipPoint = sponsorship.getPoint();
+			this.sponsorshipPaymentDate = sponsorship.getPaymentDate();
+			this.countFromRegDate = Duration.between(sponsorship.getRegTime(), LocalDateTime.now()).toDays() + 1;
 		}
 	}
 }

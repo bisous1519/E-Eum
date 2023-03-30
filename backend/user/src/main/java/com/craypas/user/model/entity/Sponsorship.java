@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Builder;
@@ -24,7 +24,7 @@ public class Sponsorship {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToMany
+	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -40,17 +40,30 @@ public class Sponsorship {
 	@Column(name = "count_payment")
 	private Integer countPayment;
 
+	@Column(name = "payment_date")
+	private Integer paymentDate;
+
 	@Builder
-	public Sponsorship(Long id, User user, Long sponsorId, LocalDateTime regTime, Integer point, Integer countPayment) {
+	public Sponsorship(Long id, User user, Long sponsorId, LocalDateTime regTime, Integer point,
+		Integer countPayment, Integer paymentDate) {
 		this.id = id;
 		this.user = user;
 		this.sponsorId = sponsorId;
 		this.regTime = regTime;
 		this.point = point;
 		this.countPayment = countPayment;
+		this.paymentDate = paymentDate;
 	}
 
-	public void updateCountPayment(){
+	public void updateCountPayment() {
 		this.countPayment++;
+	}
+
+	public void updatePoint(Integer point) {
+		this.point = point;
+	}
+
+	public void updatePaymentDate(Integer paymentDate) {
+		this.paymentDate = paymentDate;
 	}
 }

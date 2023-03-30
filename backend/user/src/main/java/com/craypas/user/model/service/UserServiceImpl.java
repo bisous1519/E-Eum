@@ -3,6 +3,7 @@ package com.craypas.user.model.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,9 +96,9 @@ public class UserServiceImpl implements UserService {
 	// 비밀번호 재설정
 	@Override
 	@Transactional
-	public ResponseDto.GetUser updatePassword(final Long uid, final String password) {
+	public ResponseDto.GetUser updatePassword(final Long uid, final Map<String, String> requestMap) {
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updatePassword(password);
+		user.updatePassword(requestMap.get("password"));
 		return new ResponseDto.GetUser(user);
 	}
 
@@ -163,27 +164,27 @@ public class UserServiceImpl implements UserService {
 	// 포인트 구매
 	@Override
 	@Transactional
-	public Integer buyPoint(Long uid, String point) {
+	public Integer buyPoint(Long uid, Map<String, Integer> requestMap) {
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updatePoint(Integer.parseInt(point));
+		user.updatePoint(requestMap.get("point"));
 		return user.getPoint();
 	}
 
 	// 포인트 사용
 	@Override
 	@Transactional
-	public Integer usePoint(Long uid, String point) {
+	public Integer usePoint(Long uid, Map<String, Integer> requestMap) {
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updatePoint((-1) * Integer.parseInt(point));
+		user.updatePoint((-1) * requestMap.get("point"));
 		return user.getPoint();
 	}
 
 	// 포인트 환불
 	@Override
 	@Transactional
-	public Integer refundPoint(Long uid, String point) {
+	public Integer refundPoint(Long uid, Map<String, Integer> requestMap) {
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updatePoint(Integer.parseInt(point));
+		user.updatePoint(requestMap.get("point"));
 		return user.getPoint();
 	}
 

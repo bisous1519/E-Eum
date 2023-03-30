@@ -1,6 +1,7 @@
 package com.craypas.user.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +25,7 @@ public interface UserService {
 	ResponseDto.GetUser updateUser(final Long uid, final RequestDto.UpdateUser requestDto);
 
 	// 비밀번호 재설정
-	ResponseDto.GetUser updatePassword(final Long uid, final String password);
+	ResponseDto.GetUser updatePassword(final Long uid, final Map<String, String> requestMap);
 
 	// 회원 정보 단일 조회(꿈 후원글)
 	ResponseDto.GetDreamSupportUser getDreamSupportUser(final Long uid);
@@ -42,13 +43,13 @@ public interface UserService {
 	void deleteUser(final Long uid);
 
 	// 포인트 구매
-	Integer buyPoint(final Long uid, final String point);
+	Integer buyPoint(final Long uid, final Map<String, Integer> requestMap);
 
 	// 포인트 사용
-	Integer usePoint(final Long uid, final String point);
+	Integer usePoint(final Long uid, final Map<String, Integer> requestMap);
 
 	// 포인트 환불
-	Integer refundPoint(final Long uid, final String point);
+	Integer refundPoint(final Long uid, final Map<String, Integer> requestMap);
 
 	// 포인트 현금화 요청
 	Integer encashPoint(final Long uid);
