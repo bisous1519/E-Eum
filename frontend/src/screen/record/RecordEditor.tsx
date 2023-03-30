@@ -27,6 +27,7 @@ import {
 } from '../../modules/apis/record/recordAtomTypes';
 import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
 import TagList from '../../components/record/TagList';
+import TextEditor from '../../components/common/editor/TextEditor';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -51,15 +52,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   editorWrapper: {
-    // width: '100%',
-    // color: theme.textColor.light,
-    // flex: 1,
     marginTop: 20,
-    // borderWidth: 3,
-    // borderColor: 'orange',
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
 });
 
@@ -80,6 +73,7 @@ export default function RecordEditor({
   const [content, setContent] = useState<string>('');
   const [selectedTag, setSelectedTag] = useState<TagStateType>();
   const [selectedIdx, setSelectedIdx] = useState<number>();
+  const [isSelectedTagArr, setIsSelectedTagArr] = useState<boolean[]>([]);
   const [screenState, setScreenState] = useState<'등록' | '수정'>('등록');
 
   const onChangeContext = (e: string) => {
@@ -132,13 +126,19 @@ export default function RecordEditor({
     if (route.params) {
       // 꿈기록 수정인 경우
       setScreenState('수정');
+
       const item: RecordStateType = route.params.item;
       setContent(item.content);
+
       tags.filter((tag: TagStateType, index: number) => {
         if (tag.name === item.tagName) {
-          setSelectedTag({ id: tag.id, name: tag.name });
-          setSelectedIdx(index);
-          console.log({ id: tag.id, name: tag.name }, index);
+          const arr: boolean[] = [...new Array(tags.length)].map(
+            (_, arrIdx: number) => {
+              if (index === arrIdx) return true;
+              else return false;
+            }
+          );
+          setIsSelectedTagArr([...arr]);
         }
       });
     }
@@ -167,8 +167,7 @@ export default function RecordEditor({
             <TagList
               tags={tags}
               onSelectTag={onSelectTag}
-              selectedTag={selectedTag}
-              selectedIdx={selectedIdx}
+              isSelectedTagArr={isSelectedTagArr}
             />
           ) : (
             <></>
@@ -176,35 +175,7 @@ export default function RecordEditor({
 
           {/* 에디터 */}
           <View style={styles.editorWrapper}>
-            <RichEditor
-              initialContentHTML={content}
-              ref={richText}
-              placeholder='내용을 입력하세요'
-              initialFocus={false}
-              // useContainer={true}
-              style={{ flex: 1, height: DEVICE_HEIGHT }}
-              editorStyle={{
-                backgroundColor: theme.background,
-                color: theme.textColor.main,
-                placeholderColor: theme.grayColor.lightGray,
-              }}
-              initialHeight={500}
-              androidHardwareAccelerationDisabled={true}
-              onChange={onChangeContext}
-            />
-            <RichToolbar
-              editor={richText}
-              actions={[
-                actions.insertImage,
-                actions.setBold,
-                actions.setItalic,
-                actions.insertBulletsList,
-                actions.insertOrderedList,
-                actions.setStrikethrough,
-                actions.setUnderline,
-              ]}
-              onPressAddImage={() => {}}
-            />
+            <TextEditor onChangeContext={onChangeContext} context={content} />
           </View>
         </View>
       </KeyboardAwareScrollView>

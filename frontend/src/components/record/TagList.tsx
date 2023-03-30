@@ -26,8 +26,7 @@ type TagListPropsType = {
   onToggleAddTagModal?: () => void;
   onToggleUpDelTagModal?: (tag?: TagStateType) => void;
   onSelectTag?: (tag: TagStateType) => void;
-  selectedTag?: TagStateType;
-  selectedIdx?: number;
+  isSelectedTagArr?: boolean[];
 };
 
 export default function TagList({
@@ -36,8 +35,7 @@ export default function TagList({
   onToggleAddTagModal,
   onToggleUpDelTagModal,
   onSelectTag,
-  selectedTag,
-  selectedIdx,
+  isSelectedTagArr,
 }: TagListPropsType): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
 
@@ -50,7 +48,6 @@ export default function TagList({
   };
 
   const onPressTag = (tag: TagStateType, index: number): void => {
-    console.log('!!!!');
     setIsSelectedAllTag(false);
 
     const arr = falseArr();
@@ -110,10 +107,10 @@ export default function TagList({
   };
 
   useEffect(() => {
-    if (selectedTag) {
-      onPressTag(selectedTag, selectedIdx!);
+    if (isSelectedTagArr) {
+      setIsSelectedTag([...isSelectedTagArr]);
     }
-  }, [selectedTag, selectedIdx]);
+  }, [isSelectedTagArr]);
 
   useEffect(() => {
     if (tags) {

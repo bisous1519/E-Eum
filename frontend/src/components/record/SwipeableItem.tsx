@@ -74,7 +74,7 @@ export default function SwipeableItem({
   };
   const onPressSupport = () => {
     swipeableRef.current?.close();
-    navigation.push('RecordEditor');
+    navigation.push('NewSupport');
   };
 
   const renderRightActions = (): JSX.Element => {
