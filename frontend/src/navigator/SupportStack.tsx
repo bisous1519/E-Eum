@@ -10,7 +10,7 @@ const SupportStack = () => {
   return (
     <Stack.Navigator initialRouteName='SupportList'>
       <Stack.Screen
-        name='꿈후원'
+        name='SupportList'
         component={SupportList}
         options={{ headerTitle: '', header: () => <CustomHeader /> }}
       />
@@ -29,3 +29,10 @@ const SupportStack = () => {
 };
 
 export default SupportStack;
+
+// 각 화면으로 넘어갈 때 어떤 데이터를 넘겨줄 것인지 지정
+export type RootStackParamList = {
+  SupportList: undefined;
+  SupportDetail: { sid: number };
+  NewSupport: undefined;
+};

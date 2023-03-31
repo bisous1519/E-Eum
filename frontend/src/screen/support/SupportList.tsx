@@ -16,6 +16,9 @@ import { getSupports } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
 import { supportsState } from '../../modules/apis/support/supportAtoms';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigator/SupportStack';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -175,9 +178,11 @@ export default function SupportList(): JSX.Element {
   const [sortType, setSortType] = useState<number>(1);
 
   const navigation = useNav();
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const onPressDetail = () => {
-    navigation.push('SupportDetail');
+    // navigation.push('SupportDetail');
+    nav.navigate('SupportDetail', { sid: 21 });
     console.log('디테일로 가는데...가서 sid 가져와');
   };
 
@@ -197,20 +202,21 @@ export default function SupportList(): JSX.Element {
 
   return (
     <View style={styles.container}>
-      <View style={styles.tempContainer}>
+      {/* <View style={styles.tempContainer}>
         <Text
           style={{ color: 'red' }}
           onPress={() => navigation.push('SupportDetail')}
         >
           게시물 상세
         </Text>
-      </View>
+      </View> */}
       <FlatList
         data={supports}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={() => console.log('디테일 스크린이 까꿍')}
+            // onPress={onPressDetail(item.sid)}
+            onPress={onPressDetail}
             activeOpacity={0.6}
           >
             <Item

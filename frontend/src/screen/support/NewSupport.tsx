@@ -117,7 +117,7 @@ export default function NewSupport(): JSX.Element {
   // 모집 기한 ==================================================
   const [due, setDue] = useState<string>(dateFormat(new Date()));
 
-  const [text, setText] = useState<string>('');
+  // const [text, setText] = useState<string>('');
 
   // 배송지 주소
   const [mainAddress, setMainAddress] = useState<string>('');
@@ -239,10 +239,10 @@ export default function NewSupport(): JSX.Element {
                 </Text>
               </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Tag text='학업' />
+                {/* <Tag text='학업' />
                 <Tag text='여행' />
                 <Tag text='나무꾼' />
-                <Tag text='+' />
+                <Tag text='+' /> */}
               </ScrollView>
             </View>
             {/* 2-1. 후원 요청 내용 */}
