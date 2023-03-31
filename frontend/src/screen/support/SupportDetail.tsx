@@ -164,33 +164,8 @@ const styles = StyleSheet.create({
 export default function SupportDetail(): JSX.Element {
   // SupportDetail 화면이 params를 받아올 화면이니까 요녀석을 작성
   const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
-  const sid = route.params?.sid;
-
-  // const [imagePath, setImagePath] = useState<string | null>(
-  //   // '../../assets/images/sample.png'
-  //   ''
-  // );
-  // const [title, setTitle] = useState<string>('');
-  // const [purchaseLink, setPurchaseLink] = useState<string>(
-  //   'https://www.naver.com'
-  // );
-  // const [purchaseLinkDetail, setPurchaseLinkDetail] = useState<string>('');
-  // const [regTime, setRegTime] = useState<string>('2023-04-07');
-  // const [deadline, setDeadline] = useState<string>('2023-04-07');
-  // const [targetAmount, setTargetAmount] = useState<number>(1);
-  // const [currentAmount, setCurrentAmount] = useState<number>(0);
-  // const [achievementRate, setAchievementRate] = useState<number>(0);
-  // const [sponsorIdList, setSponsorIdList] = useState<number[]>([]);
-  // const [sponsorImagePathList, setSponsorImagePathList] = useState<string[]>(
-  //   []
-  // );
-  // const [uid, setUid] = useState<number>(1);
-  // const [userNickName, setUserNickName] = useState<string>('');
-  // const [userIntroduction, setUserIntroduction] = useState<string>('');
-  // const [userImagePath, setUserImagePath] = useState<string>('');
-  // const [tid, setTid] = useState<number>(1);
-  // const [tagName, setTagName] = useState<string>('');
-  // const [content, setContent] = useState<string>('');
+  // const sid = route.params?.sid;
+  const sid = 22;
 
   const [detailData, setDetailData] =
     useRecoilState<SupportDetailStateType>(supportDetailState);

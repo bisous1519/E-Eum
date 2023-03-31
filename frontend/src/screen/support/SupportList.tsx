@@ -202,14 +202,14 @@ export default function SupportList(): JSX.Element {
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.tempContainer}>
+      <View style={styles.tempContainer}>
         <Text
           style={{ color: 'red' }}
           onPress={() => navigation.push('SupportDetail')}
         >
           게시물 상세
         </Text>
-      </View> */}
+      </View>
       <FlatList
         data={supports}
         renderItem={({ item }) => (
