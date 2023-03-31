@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.craypas.dream.exception.CustomException;
@@ -251,7 +253,24 @@ public class SupportServiceImpl implements SupportService {
 	// 꿈 후원하기
 	@Override
 	public ResponseDto.Read createSupportUser(final Long sid, final Long uid, final Integer point) {
-		// 1. 관계테이블에 정보 추가
+		// 1. 후원자의 포인트 검사 후 차감
+		// Header set
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		// Message
+		Map<String, Integer> map = new HashMap<>();
+		map.put("point", point);
+		HttpEntity<?> requestMessage = new HttpEntity<>(map, httpHeaders);
+		// Request
+		RestTemplate restTemplate = new RestTemplate();
+		String url = PROJECT_USER_URL + "/point/use/" + uid.toString();
+		try {
+			ResponseEntity<String> result2 = restTemplate.postForEntity(url, requestMessage, String.class);
+		} catch (HttpClientErrorException e) {
+			throw new CustomException(ErrorCode.NOT_ENOUGH_POINT);
+		}
+
+		// 2. 관계테이블에 정보 추가
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
 		supportUserRepository.save(SupportUser.builder()
@@ -260,17 +279,6 @@ public class SupportServiceImpl implements SupportService {
 			.point(point)
 			.regTime(LocalDateTime.now())
 			.build());
-
-		// 2. 후원자의 포인트 차감
-		RestTemplate restTemplate = new RestTemplate();
-		String url = PROJECT_USER_URL + "/point/use/" + uid.toString();
-		// Header set
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		// Message
-		HttpEntity<?> requestMessage = new HttpEntity<>(point, httpHeaders);
-		// Request
-		ResponseEntity<String> result2 = restTemplate.postForEntity(url, requestMessage, String.class);
 
 		// 3. 후원글의 현재 모금액 수정
 		support.updateCurrAmount(point);
