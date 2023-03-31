@@ -159,7 +159,7 @@ export default function SupportDetail(): JSX.Element {
   // SupportDetail 화면이 params를 받아올 화면이니까 요녀석을 작성
   const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
   // const sid = route.params?.sid;
-  const sid = 22;
+  const sid = 24;
 
   const [detailData, setDetailData] =
     useRecoilState<SupportDetailStateType>(supportDetailState);

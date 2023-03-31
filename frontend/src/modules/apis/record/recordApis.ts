@@ -61,6 +61,33 @@ export async function postRecord(postData: PostRecordType) {
   }
 }
 
+// 꿈기록 수정
+export async function putRecord(recordId: number, putData: PostRecordType) {
+  try {
+    const { data } = await axios.put<RecordStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/record/${recordId}`,
+      putData
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 꿈기록 삭제
+export async function deleteRecord(recordId: number) {
+  try {
+    const { data } = await axios.delete<RecordStateType>(
+      `http://j8a607.p.ssafy.io/api/dream/record/${recordId}`
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
 // 태그 목록 조회
 export async function getTags(userId: number) {
   try {

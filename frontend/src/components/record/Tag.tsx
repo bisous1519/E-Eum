@@ -27,7 +27,7 @@ type TagPropsType = {
   tag: TagStateType;
   isSelected?: boolean;
   onPressTag: () => void;
-  onLongPressTag?: any;
+  onLongPressTag?: (tag: TagStateType) => void;
 };
 
 export default function Tag({

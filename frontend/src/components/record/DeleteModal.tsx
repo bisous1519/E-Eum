@@ -1,5 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useRecoilState } from 'recoil';
+import { deleteRecord, getRecords } from '../../modules/apis/record/recordApis';
+import { recordsState } from '../../modules/apis/record/recordAtoms';
+import { RecordsStateType } from '../../modules/apis/record/recordAtomTypes';
 import theme from '../../utils/theme';
 import ModalComp from '../common/ModalComp';
 
@@ -30,15 +34,21 @@ const styles = StyleSheet.create({
 });
 
 type DeleteModalPropsType = {
+  recordId: number;
   onToggleModal: () => void;
 };
 
 export default function DeleteModal({
+  recordId,
   onToggleModal,
 }: DeleteModalPropsType): JSX.Element {
+  const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+
   const onPressDelete = () => {
     onToggleModal();
-    console.log('삭제 api');
+    deleteRecord(recordId)
+      .then(() => getRecords(1))
+      .then((data: RecordsStateType) => setRecords(data));
   };
   return (
     <ModalComp onCloseModal={onToggleModal}>
