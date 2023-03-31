@@ -47,9 +47,25 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH,
     alignItems: 'stretch',
   },
+  titleWithTag: {
+    flexDirection: 'row',
+  },
   title: {
     fontSize: theme.fontSize.big,
     fontWeight: '700',
+    marginRight: 10,
+  },
+  tagBox: {
+    backgroundColor: theme.mainColor.main,
+    width: DEVICE_WIDTH * 0.2,
+    padding: 5,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tag: {
+    color: theme.textColor.white,
+    fontSize: theme.fontSize.small,
   },
   productLink: {
     backgroundColor: theme.mainColor.main,
@@ -65,6 +81,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontSize: theme.fontSize.small,
+    color: theme.textColor.white,
   },
   content: {
     fontWeight: '400',
@@ -134,6 +151,22 @@ export default function SupportDetail(): JSX.Element {
     Linking.openURL('https://www.naver.com/');
   };
 
+  const [imagePath, setImagePath] = useState<string | null>(
+    '../../assets/images/sample.png'
+  );
+  const [title, setTitle] = useState<string>('');
+  const [purchaseLink, setPurchaseLink] = useState<string>('');
+  const [purchaseLinkDetail, setPurchaseLinkDetail] = useState<string>('');
+  const [regTime, setRegTime] = useState<string>('');
+  const [deadline, setDeadline] = useState<string>('');
+  const [targetAmount, setTargetAmount] = useState<number>(1);
+  const [currentAmount, setCurrentAmount] = useState<number>(0);
+  const [achievementRate, setAchievementRate] = useState<number>(0);
+  const [sponsorIdList, setSponsorIdList] = useState<number[]>([]);
+  const [sponsorImagePathList, setSponsorImagePathList] = useState<string[]>(
+    []
+  );
+
   const handleSupporterClick = () => {
     console.log('후원자 프로필로 푸슝');
   };
@@ -171,7 +204,12 @@ export default function SupportDetail(): JSX.Element {
           resizeMode='cover'
         />
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>개발자가 되고 싶어요</Text>
+          <View style={styles.titleWithTag}>
+            <Text style={styles.title}>개발자가 되고 싶어요</Text>
+            <View style={styles.tagBox}>
+              <Text style={styles.tag}>알고리즘</Text>
+            </View>
+          </View>
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원 요청 내용</Text>
             <Text style={styles.content}>인강사이트 개발자 강의 수강권</Text>
