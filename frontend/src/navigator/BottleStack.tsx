@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottleBlue from '../screen/bottle/BottleBlue';
 import BottleGreen from '../screen/bottle/BottleGreen';
 import MessagePaper from '../screen/bottle/MessagePaper';
+import WritingPaper from '../screen/bottle/WritingPaper';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const BottleStack = () => {
         component={MessagePaper}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name='WritingPaper' component={WritingPaper} />
     </Stack.Navigator>
   );
 };
