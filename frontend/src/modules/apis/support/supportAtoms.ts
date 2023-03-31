@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { v1 } from 'uuid';
 import {
   NewSupportStateType,
   SupportDetailStateType,
@@ -51,18 +52,18 @@ const newSupportInitailState: NewSupportStateType = {
 
 // 후원글 목록
 export const supportsState = atom<SupportsStateType[]>({
-  key: 'supportsState',
+  key: 'supportsState${v1}',
   default: [supportsInitialState],
 });
 
 // 후원 상세 정보
 export const supportDetailState = atom<SupportDetailStateType>({
-  key: 'supportDetailState',
+  key: 'supportDetailState${v1}',
   default: supportDetailInitialState,
 });
 
 // 신규 후원글 작성
 export const newSupportState = atom<NewSupportStateType>({
-  key: 'newSupportState',
+  key: 'newSupportState${v1}',
   default: newSupportInitailState,
 });
