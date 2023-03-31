@@ -228,7 +228,7 @@ export default function BottleBlue(): JSX.Element {
   };
 
   const popupPaper = () => {
-    navigation.push('MessagePaper');
+    // navigation.push('MessagePaper');
   };
 
   const modalMessageItem = ({ item }: { item: messageDataType }) => {
