@@ -1,0 +1,17 @@
+
+server:
+  port:
+    1818
+
+spark:
+  app:
+    name: abuseCountingApp
+  master:
+    uri: spark://hadoop-virtual-machine:7077
+  worker:
+    memory: 1g
+  executor:
+    cores: 2
+    memory: 1g
+  num:
+    executors: 2
