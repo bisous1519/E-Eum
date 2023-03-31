@@ -178,7 +178,7 @@ export default function SupportList(): JSX.Element {
 
   const onPressDetail = () => {
     navigation.push('SupportDetail');
-    console.log('디테일로 가는데...sid(supportId) 값 가져가야해..');
+    console.log('디테일로 가는데...가서 sid 가져와');
   };
 
   const onPressPlusBtn = () => {

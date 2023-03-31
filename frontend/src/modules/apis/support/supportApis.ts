@@ -15,10 +15,10 @@ export async function getSupports(sortType: number) {
 }
 
 // 꿈후원 게시물 상세 조회
-export async function supportDetail(id: number) {
+export async function supportDetail(sid: number) {
   try {
     const { data } = await axios.get(
-      `http://j8a607.p.ssafy.io/api/dream/support/req/${id}`
+      `http://j8a607.p.ssafy.io/api/dream/support/req/${sid}`
     );
     return data;
   } catch (e) {
