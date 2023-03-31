@@ -34,7 +34,7 @@ public interface UserService {
 	List<String> getDreamSupportSponsor(final String uidList);
 
 	// 회원 프리뷰 목록 조회
-	List<ResponseDto.UserPreview> getUserPreviewList(final String uidList);
+	List<ResponseDto.GetUserPreview> getUserPreviewList(final String uidList);
 
 	// 회원 탈퇴
 	void removeUser(final Long uid);
@@ -63,5 +63,12 @@ public interface UserService {
 	// 증명 파일 업로드
 	String updateCertificateFile(final Long uid, final MultipartFile file);
 
+	// 해류병 발송시 수신 회원 조회
+	List<Long> getRandomUserList(final Long uid);
+
+	// 뱃지 획득 정보 생성
+	ResponseDto.GetUserBadge createUserBadge(final Long uid, final Long bid);
+
 	// 뱃지 상세 조회
+	ResponseDto.GetUserBadgeInfo getBadgeList(final Long uid);
 }

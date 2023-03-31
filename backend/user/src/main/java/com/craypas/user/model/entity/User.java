@@ -107,9 +107,6 @@ public class User {
 	}
 
 	public void updatePoint(Integer point) {
-		if (this.point + point < 0) {
-			throw new CustomException(ErrorCode.NOT_ENOUGH_POINT);
-		}
 		this.point += point;
 	}
 

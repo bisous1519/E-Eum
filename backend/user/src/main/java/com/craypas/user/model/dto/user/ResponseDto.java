@@ -2,12 +2,15 @@ package com.craypas.user.model.dto.user;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.craypas.user.model.entity.Badge;
 import com.craypas.user.model.entity.Sponsorship;
 import com.craypas.user.model.entity.User;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class ResponseDto {
 	@Getter
@@ -56,12 +59,12 @@ public class ResponseDto {
 	}
 
 	@Getter
-	public static class UserPreview {
+	public static class GetUserPreview {
 		private Long uid;
 		private String nickname;
 		private String imagePath;
 
-		public UserPreview(User user) {
+		public GetUserPreview(User user) {
 			this.uid = user.getId();
 			this.nickname = user.getNickname();
 			this.imagePath = user.getImagePath();
@@ -96,6 +99,51 @@ public class ResponseDto {
 			this.sponsorshipPoint = sponsorship.getPoint();
 			this.sponsorshipPaymentDate = sponsorship.getPaymentDate();
 			this.countFromRegDate = Duration.between(sponsorship.getRegTime(), LocalDateTime.now()).toDays() + 1;
+		}
+	}
+
+	@Getter
+	public static class GetBadge {
+		private Long id;
+		private String name;
+		private String description;
+		private String imagePath;
+
+		public GetBadge(Badge badge) {
+			this.id = badge.getId();
+			this.name = badge.getName();
+			this.description = badge.getDescription();
+			this.imagePath = badge.getImagePath();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor
+	public static class GetUserBadge {
+		private Long infoId;
+		private GetUserPreview user;
+		private GetBadge badge;
+		private LocalDateTime regTime;
+
+		@Builder
+		public GetUserBadge(Long infoId, GetUserPreview user, GetBadge badge, LocalDateTime regTime) {
+			this.infoId = infoId;
+			this.user = user;
+			this.badge = badge;
+			this.regTime = regTime;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor
+	public static class GetUserBadgeInfo {
+		private String userNickname;
+		List<GetBadge> badgeList;
+
+		@Builder
+		public GetUserBadgeInfo(String userNickname, List<GetBadge> badgeList) {
+			this.userNickname = userNickname;
+			this.badgeList = badgeList;
 		}
 	}
 }
