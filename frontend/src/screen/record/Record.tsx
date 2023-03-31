@@ -23,6 +23,9 @@ import {
   RecordsStateType,
   TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
+import TagList from '../../components/record/TagList';
+import AddTagModal from '../../components/record/AddTagModal';
+import UpDelTagModal from '../../components/record/UpDelTagModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -114,50 +117,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const mockup: MockupDateGroupType[] = [
-  {
-    regTime: '23.03.11',
-    list: [
-      {
-        regTime: '23.03.11',
-        id: 0,
-        tag: '꿈',
-        content:
-          '구글 개발자 인터뷰를 봤다. 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-      {
-        regTime: '23.03.11',
-        id: 1,
-        tag: '꿈',
-        content: '안웅장하다',
-      },
-      {
-        regTime: '23.03.11',
-        id: 2,
-        tag: '꿈',
-        content: '멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-    ],
-  },
-  {
-    regTime: '23.03.10',
-    list: [
-      {
-        regTime: '23.03.11',
-        id: 0,
-        tag: '꿈',
-        content: '구글 개발자 인터뷰를 봤다.',
-      },
-      {
-        regTime: '23.03.11',
-        id: 1,
-        tag: '꿈',
-        content: '안웅장하다 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-    ],
-  },
-];
-
 export default function Record(): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
@@ -165,8 +124,12 @@ export default function Record(): JSX.Element {
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  const [addTagModal, setAddTagModal] = useState<boolean>(false);
+  const [upDelTagModal, setUpDelTagModal] = useState<boolean>(false);
+  const [upDelTargetTag, setUpDelTargetTag] = useState<TagStateType>();
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
+  const [delTargetContentId, setDelTargetContentId] = useState<number>();
 
   const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
@@ -181,11 +144,22 @@ export default function Record(): JSX.Element {
     console.log('bottomSheet changed', idx);
   };
   const onPressPlusBtn = (): void => {
-    navigation.push('RecordEditor', { itemId: 3 });
+    navigation.push('RecordEditor');
   };
-  const onToggleDelete = (): void => {
-    console.log('삭제!!!!!');
+  const onToggleDelete = (recordId?: number): void => {
+    if (recordId || recordId === 0) {
+      setDelTargetContentId(recordId);
+    }
     setDeleteModal((prev) => !prev);
+  };
+  const onToggleAddTagModal = (): void => {
+    setAddTagModal((prev) => !prev);
+  };
+  const onToggleUpDelTagModal = (tag?: TagStateType): void => {
+    if (tag) {
+      setUpDelTargetTag(tag);
+    }
+    setUpDelTagModal((prev) => !prev);
   };
 
   const fetchData = async () => {
@@ -276,18 +250,40 @@ export default function Record(): JSX.Element {
         ])}
         onLayout={onLayoutTag}
       >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={stylesTag.scrollBox}
-        >
-          <Tag text='전체' />
-          {tags && tags.map((tag) => <Tag key={tag.id} text={tag.name} />)}
-          <Tag text='+' />
-        </ScrollView>
+        {tags ? (
+          <TagList
+            tags={tags}
+            allTag={true}
+            onToggleAddTagModal={onToggleAddTagModal}
+            onToggleUpDelTagModal={onToggleUpDelTagModal}
+          />
+        ) : (
+          <></>
+        )}
       </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
-      {deleteModal && <DeleteModal onToggleDelete={onToggleDelete} />}
+      {deleteModal && delTargetContentId ? (
+        <DeleteModal
+          recordId={delTargetContentId}
+          onToggleModal={onToggleDelete}
+        />
+      ) : (
+        <></>
+      )}
+      {addTagModal ? (
+        <AddTagModal onToggleModal={onToggleAddTagModal} />
+      ) : (
+        <></>
+      )}
+      {upDelTagModal && upDelTargetTag ? (
+        <UpDelTagModal
+          tag={upDelTargetTag}
+          onToggleModal={onToggleUpDelTagModal}
+        />
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
+

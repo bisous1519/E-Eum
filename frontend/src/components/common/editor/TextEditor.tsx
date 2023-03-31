@@ -11,10 +11,12 @@ import theme from '../../../utils/theme';
 type TextEditorInputType = {
   // input type이 뭔지 모르니..일단 any
   onChangeContext: (data: any) => void;
+  context?: string;
 };
 
 export default function TextEditor({
   onChangeContext,
+  context = '',
 }: TextEditorInputType): JSX.Element {
   const richText = useRef<RichEditor>(null);
   return (
@@ -22,6 +24,7 @@ export default function TextEditor({
       <RichEditor
         ref={richText}
         placeholder='내용을 입력하세요'
+        initialContentHTML={context}
         initialFocus={false}
         initialHeight={500}
         editorStyle={{ backgroundColor: theme.background }}
@@ -41,7 +44,9 @@ export default function TextEditor({
           actions.setUnderline,
         ]}
         style={{ backgroundColor: theme.background }}
+        onPressAddImage={() => {}}
       />
     </View>
   );
 }
+
