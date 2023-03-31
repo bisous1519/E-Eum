@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.mainColor.main,
+    // backgroundColor: theme.mainColor.main,
+    backgroundColor: 'gray',
     // backgroundColor: theme.background,
     // flex: 1,
     // alignItems: 'center',
@@ -75,16 +76,21 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
   },
-  titleButtonBox: {
-    marginTop: 20,
-    marginLeft: 10,
-  },
+  headerButtonLeft: { width: '55%' },
+  headerButtonRight: { width: '40%' },
   ackgroundVideo: {
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  headerButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingTop: 20,
+    width: DEVICE_WIDTH * 0.94,
+    justifyContent: 'space-between',
   },
 });
 
@@ -230,6 +236,9 @@ export default function BottleBlue(): JSX.Element {
   const popupPaper = () => {
     // navigation.push('MessagePaper');
   };
+  const moveToWritingPaper = () => {
+    navigation.push('WritingPaper');
+  };
 
   const modalMessageItem = ({ item }: { item: messageDataType }) => {
     let messageBoxBackgroundColor = '';
@@ -339,11 +348,24 @@ export default function BottleBlue(): JSX.Element {
         /> */}
       </View>
       <View style={styles.popupFromBackground}>
-        <View style={[styles.titleButtonBox, styles.tempBorderBlue]}>
-          <ButtonComp
-            text={'고민상담 해류병'}
-            onPressBtn={convertBottle}
-          ></ButtonComp>
+        <View
+          style={StyleSheet.flatten([
+            styles.headerButtons,
+            styles.tempBorderRed,
+          ])}
+        >
+          <View style={[styles.headerButtonLeft, styles.tempBorderBlue]}>
+            <ButtonComp
+              text={'고민상담 해류병'}
+              onPressBtn={convertBottle}
+            ></ButtonComp>
+          </View>
+          <View style={[styles.headerButtonRight, styles.tempBorderBlue]}>
+            <ButtonComp
+              text={'고민 보내기'}
+              onPressBtn={moveToWritingPaper}
+            ></ButtonComp>
+          </View>
         </View>
         <Pressable
           style={styles.leftPagePressableLocation}
