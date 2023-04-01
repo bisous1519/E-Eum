@@ -79,50 +79,50 @@ const styles = StyleSheet.create({
 
 // 나중에 다 분리하자.. ===================================================
 // 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
-const DATA = [
-  {
-    uid: 1,
-    userNickname: '1싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 2,
-    userNickname: '2싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 3,
-    userNickname: '3싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 4,
-    userNickname: '4싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 5,
-    userNickname: '5싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 6,
-    userNickname: '6싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 7,
-    userNickname: '7싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-];
+// const DATA = [
+//   {
+//     uid: 1,
+//     userNickname: '1싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 2,
+//     userNickname: '2싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 3,
+//     userNickname: '3싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 4,
+//     userNickname: '4싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 5,
+//     userNickname: '5싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 6,
+//     userNickname: '6싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 7,
+//     userNickname: '7싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+// ];
 
 // 각 아이템(목록 데이터) 요소의 타입 지정
 type ItemProps = {
@@ -181,8 +181,7 @@ export default function SupportList(): JSX.Element {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const onPressDetail = () => {
-    // navigation.push('SupportDetail');
-    nav.navigate('SupportDetail', { sid: 21 });
+    nav.navigate('SupportDetail', { sid: 24 });
     console.log('디테일로 가는데...가서 sid 가져와');
   };
 
@@ -215,7 +214,6 @@ export default function SupportList(): JSX.Element {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            // onPress={onPressDetail(item.sid)}
             onPress={onPressDetail}
             activeOpacity={0.6}
           >
