@@ -18,7 +18,8 @@ type RootStackParamList = {
   BottleGreen?: undefined;
   BottleBlue?: undefined;
   MessagePaper?: undefined;
-  WritingPaper?: undefined;
+  WritingPaperBlue?: undefined;
+  WritingPaperGreen?: undefined;
 };
 
 // type RootStackParamList = {
