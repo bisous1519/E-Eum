@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -16,6 +16,9 @@ import { getSupports } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
 import { supportsState } from '../../modules/apis/support/supportAtoms';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigator/SupportStack';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -76,137 +79,152 @@ const styles = StyleSheet.create({
 
 // 나중에 다 분리하자.. ===================================================
 // 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
-const DATA = [
-  {
-    uid: 1,
-    userNickname: '1싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 2,
-    userNickname: '2싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 3,
-    userNickname: '3싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 4,
-    userNickname: '4싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 5,
-    userNickname: '5싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 6,
-    userNickname: '6싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-  {
-    uid: 7,
-    userNickname: '7싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    achievementRate: 110000,
-  },
-];
+// const DATA = [
+//   {
+//     uid: 1,
+//     userNickname: '1싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 2,
+//     userNickname: '2싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 3,
+//     userNickname: '3싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 4,
+//     userNickname: '4싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 5,
+//     userNickname: '5싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 6,
+//     userNickname: '6싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+//   {
+//     uid: 7,
+//     userNickname: '7싸피',
+//     title: '개발자가 되고싶어요 길어지면 어케되누',
+//     achievementRate: 110000,
+//   },
+// ];
 
 // 각 아이템(목록 데이터) 요소의 타입 지정
 type ItemProps = {
-  uid: number;
+  sid: number;
   userNickname: string;
   title: string;
+  targetAmount: number;
   achievementRate: number;
 };
 
 // 각 카드를 어떻게 보여줄지 설정
-const Item = ({ uid, userNickname, title, achievementRate }: ItemProps) => (
-  <TouchableOpacity
-    style={styles.item}
-    onPress={() => console.log('디테일 스크린이 까꿍')}
-    activeOpacity={0.6}>
-    <View style={styles.container}>
-      <View style={styles.profile}>
-        <Image
-          source={require('../../assets/images/sample.png')}
-          style={styles.image}
-        />
-        <Text>{userNickname}</Text>
-      </View>
-      <View style={styles.titleBox}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      <View style={styles.goal}>
-        <Text style={styles.lightTitle}>목표금액</Text>
-        <Text>{achievementRate}원</Text>
-      </View>
-      <View style={styles.progress}>
-        <Text style={styles.lightTitle}>달성률</Text>
-        <Progress.Bar
-          progress={0.65}
-          width={null}
-          height={5}
-          color={theme.mainColor.main}
-        />
-      </View>
+const Item = ({
+  sid,
+  userNickname,
+  title,
+  targetAmount,
+  achievementRate,
+}: ItemProps) => (
+  <View style={styles.container}>
+    <View style={styles.profile}>
+      <Image
+        source={require('../../assets/images/sample.png')}
+        style={styles.image}
+      />
+      <Text>{userNickname}</Text>
     </View>
-  </TouchableOpacity>
+    <View style={styles.titleBox}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+    <View style={styles.goal}>
+      <Text style={styles.lightTitle}>목표금액</Text>
+      <Text>{targetAmount}원</Text>
+    </View>
+    <View style={styles.progress}>
+      <Text style={styles.lightTitle}>달성률</Text>
+      <Progress.Bar
+        progress={achievementRate}
+        width={null}
+        height={5}
+        color={theme.mainColor.main}
+      />
+    </View>
+  </View>
 );
 // ========================================================================
 
 // 초기 꿈후원 목록 화면
 export default function SupportList(): JSX.Element {
-  const [support, setSupports] =
+  const [supports, setSupports] =
     useRecoilState<SupportsStateType>(supportsState);
 
+  // 정렬 기준
+  const [sortType, setSortType] = useState<number>(1);
+
   const navigation = useNav();
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const onPressDetail = () => {
+    console.log(supports.sid);
+
+    // nav.navigate('SupportDetail', { sid: supports.sid });
+  };
 
   const onPressPlusBtn = () => {
     navigation.push('NewSupport');
   };
 
-  // const fetchData = async () => {
-  //   const { data } = await getSupports();
-  //   setSupports(data);
-  // };
+  const fetchData = async () => {
+    const supportsData: SupportsStateType | undefined = await getSupports(
+      sortType
+    );
+    if (supportsData) {
+      setSupports(supportsData);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    fetchData();
+    console.log(supports);
+  }, [sortType]);
 
   return (
     <View style={styles.container}>
-      <View style={styles.tempContainer}>
-        <Text
-          style={{ color: 'red' }}
-          onPress={() => navigation.push('SupportDetail')}>
-          게시물 상세
-        </Text>
-      </View>
-      {/* 흠... */}
       <FlatList
-        data={DATA}
-        // data={support}
+        data={supports}
         renderItem={({ item }) => (
-          <Item
-            uid={item.uid}
-            userNickname={item.userNickname}
-            title={item.title}
-            achievementRate={item.achievementRate}
-          />
+          <TouchableOpacity
+            style={styles.item}
+            onPress={onPressDetail}
+            activeOpacity={0.6}
+            key={item.sid}>
+            <Item
+              sid={item.sid}
+              userNickname={item.userNickname}
+              title={item.title}
+              targetAmount={item.targetAmount}
+              achievementRate={item.achievementRate / 100}
+              key={item.sid}
+            />
+          </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item) => item.uid.toString()}
       />
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </View>
