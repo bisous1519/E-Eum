@@ -1,6 +1,6 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React from 'react';
+import { RecordStateType } from '../modules/apis/record/recordAtomTypes';
 
 type RootStackParamList = {
   BottleStack?: undefined;
@@ -8,13 +8,17 @@ type RootStackParamList = {
   SupportStack?: undefined;
   MypageStack?: undefined;
   Notice?: undefined;
-  RecordEditor?: { itemId: number } | undefined;
+  RecordEditor?: { item: RecordStateType } | undefined;
   Signup?: undefined;
   SupportDetail?: undefined;
   NewSupport?: undefined;
   JoinPW?: undefined;
   SetNewPW?: undefined;
   Signin?: undefined;
+  BottleGreen?: undefined;
+  BottleBlue?: undefined;
+  MessagePaper?: undefined;
+  WritingPaper?: undefined;
 };
 
 // type RootStackParamList = {

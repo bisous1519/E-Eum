@@ -11,108 +11,175 @@ import {
   RichToolbar,
 } from 'react-native-pell-rich-editor';
 import useNav from '../../hooks/useNav';
+import { ScrollView } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  getRecords,
+  postRecord,
+  putRecord,
+} from '../../modules/apis/record/recordApis';
+import Tag from '../../components/record/Tag';
+import { useRecoilState } from 'recoil';
+import {
+  RecordsStateType,
+  RecordStateType,
+  TagStateType,
+} from '../../modules/apis/record/recordAtomTypes';
+import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
+import TagList from '../../components/record/TagList';
+import TextEditor from '../../components/common/editor/TextEditor';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const styles = StyleSheet.create({
+  flexBox: {
+    flex: 1,
+  },
   containerWrapper: {
     alignItems: 'center',
+    // backgroundColor: theme.background,
+    // backgroundColor: 'orange',
   },
   container: {
     width: DEVICE_WIDTH * 0.9,
+    // backgroundColor: 'orange',
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 20,
   },
-  editor: {
-    // width: '100%',
-    // color: theme.textColor.light,
-    flex: 1,
+  editorWrapper: {
     marginTop: 20,
-  },
-  editorInner: {
-    backgroundColor: 'red',
-    // color: theme.textColor.main,
-    // height: 500,
   },
 });
 
 type RecordEditorPropsType = {
   route: {
-    params: { itemId?: number };
+    params: { item: RecordStateType };
   };
 };
 
 export default function RecordEditor({
   route,
 }: RecordEditorPropsType): JSX.Element {
-  const richText = useRef<RichEditor>(null);
+  const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+  const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
+
   const navigation = useNav();
-  const [context, setContext] = useState<string>('');
+  const richText = useRef<RichEditor>(null);
+  const [content, setContent] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<TagStateType>();
+  const [selectedIdx, setSelectedIdx] = useState<number>();
+  const [isSelectedTagArr, setIsSelectedTagArr] = useState<boolean[]>([]);
+  const [screenState, setScreenState] = useState<'등록' | '수정'>('등록');
 
   const onChangeContext = (e: string) => {
-    setContext(e);
+    setContent(e);
   };
   const onPressBack = () => {
     navigation.pop();
   };
-  const onPressSubmit = () => {};
+  const onPressSubmit = () => {
+    // 등록인 경우
+    if (screenState === '등록') {
+      if (content === '') {
+        console.log('content 가 비어있음');
+      } else if (!selectedTag) {
+        console.log('tag 선택 안함');
+      } else {
+        postRecord({ content, writerId: 1, tid: selectedTag.id })
+          .then(() => getRecords(1))
+          .then((data: RecordsStateType) => {
+            setRecords(data);
+            navigation.popToTop();
+          });
+      }
+
+      // 수정인 경우
+    } else {
+      if (content === '') {
+        console.log('content 가 비어있음');
+      } else if (!selectedTag) {
+        console.log('tag 선택 안함');
+      } else {
+        putRecord(route.params.item.id, {
+          content,
+          writerId: 1,
+          tid: selectedTag.id,
+        })
+          .then(() => getRecords(1))
+          .then((data: RecordsStateType) => {
+            setRecords(data);
+            navigation.popToTop();
+          });
+      }
+    }
+  };
+  const onSelectTag = (tag: TagStateType) => {
+    setSelectedTag(tag);
+  };
 
   useEffect(() => {
-    console.log(route.params);
     if (route.params) {
-      // 수정하러 넘어온 애
-      console.log('수정화면');
-      setContext('원래이런내용이 써있는거고 이거 이제 수정하는거얌얌');
+      // 꿈기록 수정인 경우
+      setScreenState('수정');
+
+      const item: RecordStateType = route.params.item;
+      setContent(item.content);
+
+      tags.filter((tag: TagStateType, index: number) => {
+        if (tag.name === item.tagName) {
+          const arr: boolean[] = [...new Array(tags.length)].map(
+            (_, arrIdx: number) => {
+              if (index === arrIdx) return true;
+              else return false;
+            }
+          );
+          setIsSelectedTagArr([...arr]);
+        }
+      });
     }
   }, []);
 
   return (
-    <SafeAreaView style={styles.containerWrapper}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Feather name='x' size={24} color='black' onPress={onPressBack} />
-          <ButtonComp small={true} text='등록' onPressBtn={onPressSubmit} />
+    <SafeAreaView style={styles.flexBox}>
+      <KeyboardAwareScrollView
+        style={styles.flexBox}
+        contentContainerStyle={styles.containerWrapper}
+        keyboardShouldPersistTaps='handled'
+      >
+        <View style={styles.container}>
+          {/* 헤더 */}
+          <View style={styles.header}>
+            <Feather name='x' size={24} color='black' onPress={onPressBack} />
+            <ButtonComp
+              small={true}
+              text={screenState}
+              onPressBtn={onPressSubmit}
+            />
+          </View>
+
+          {/* 태그 */}
+          {tags ? (
+            <TagList
+              tags={tags}
+              onSelectTag={onSelectTag}
+              isSelectedTagArr={isSelectedTagArr}
+            />
+          ) : (
+            <></>
+          )}
+
+          {/* 에디터 */}
+          <View style={styles.editorWrapper}>
+            <TextEditor onChangeContext={onChangeContext} context={content} />
+          </View>
         </View>
-        {/* 에디터 */}
-        <View style={styles.editor}>
-          <RichEditor
-            // initialContentHTML={context}
-            ref={richText}
-            placeholder='내용을 입력하세요'
-            initialFocus={false}
-            useContainer={true}
-            // containerStyle={styles.editorInner}
-            containerStyle={{
-              backgroundColor: theme.background,
-              // color: theme.textColor.main,
-              // placeholderColor: theme.grayColor.lightGray,
-            }}
-            editorStyle={{
-              backgroundColor: theme.background,
-              color: theme.textColor.main,
-              placeholderColor: theme.grayColor.lightGray,
-            }}
-            initialHeight={500}
-            androidHardwareAccelerationDisabled={true}
-            onChange={onChangeContext}
-          />
-          <RichToolbar
-            editor={richText}
-            actions={[
-              actions.insertImage,
-              actions.setBold,
-              actions.setItalic,
-              actions.insertBulletsList,
-              actions.insertOrderedList,
-              actions.setStrikethrough,
-              actions.setUnderline,
-            ]}
-          />
-        </View>
-      </View>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }
+

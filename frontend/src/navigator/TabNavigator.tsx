@@ -22,7 +22,7 @@ export default function TabNavigator() {
       <Tab.Screen
         name='RecordStack'
         component={RecordStack}
-        options={{ title: '꿈피드' }}
+        options={{ title: '꿈피드', unmountOnBlur: true }}
       />
       <Tab.Screen
         name='SupportStack'

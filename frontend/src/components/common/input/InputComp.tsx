@@ -73,8 +73,8 @@ export default function InputComp({
   // TextInput이 쓰일 용도에 따라 아래 주석 확인하고 프롭스로 추가하면됩니다람쥐
   // ex) <InputComp name='EMAIL' check={true} isValid={isValid} errorMsg='어쩌고 형식 맞지않습 어쩌고' />
   name, // **필수** input 타이틀!
-  text, // **필수**
-  onChangeText, // **필수**
+  text, // **필수** input의 value
+  onChangeText, // **필수** input value를 바꾸는 onChange함수
   check, // 오른쪽에 체크모양 있는 input (isValid도 같이 넘겨줘야함)
   isValid, // check 색깔 결정하는애. input에 작성한 내용이 유효한지 검사한 값 (useState로 isValid, setIsValid 만들고 isValid만 여기로 넘겨주세여)
   errorMsg, // error 상황일 때 input 하단에 뜰 메세지
@@ -136,6 +136,12 @@ export default function InputComp({
   useEffect(() => {
     inputEventState === 'onFocus' ? moveTitleTop() : moveTitleBottom();
   }, [inputEventState]);
+
+  useEffect(() => {
+    if (text !== '') {
+      setInputEventState('onFocus');
+    }
+  }, [text]);
 
   return (
     <View style={{ width: '100%' }}>
@@ -215,3 +221,4 @@ export default function InputComp({
     </View>
   );
 }
+

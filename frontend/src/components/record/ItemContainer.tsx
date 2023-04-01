@@ -3,8 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import theme from '../../utils/theme';
 import SwipeableItem from './SwipeableItem';
-import MockupDateGroupType from '../../models/record/mockupDateGroupType';
-import MockupItemType from '../../models/record/mockupItemType';
+import { RecordStateType } from '../../modules/apis/record/recordAtomTypes';
 
 const stylesFeed = StyleSheet.create({
   dateContainer: {},
@@ -36,7 +35,7 @@ const stylesFeed = StyleSheet.create({
 
 type ItemContainerPropsType = {
   regTime: string;
-  list: MockupItemType[];
+  list: RecordStateType[];
   onToggleDelete: () => void;
 };
 
@@ -57,13 +56,10 @@ export default function ItemContainer({
         ></View>
         <View style={stylesFeed.contents}>
           {list &&
-            list.map((item) => (
+            list.map((item: RecordStateType) => (
               <SwipeableItem
                 key={item.id}
-                id={item.id}
-                regTime={item.regTime}
-                tag={item.tag}
-                content={item.content}
+                item={item}
                 onToggleDelete={onToggleDelete}
               />
             ))}
@@ -72,3 +68,4 @@ export default function ItemContainer({
     </View>
   );
 }
+

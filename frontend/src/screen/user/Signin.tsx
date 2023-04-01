@@ -145,6 +145,7 @@ export default function Signin(): JSX.Element {
 
   const handleSubmit = () => {
     console.log(userEmail + ', ' + userPW);
+    navigation.push('BottleStack');
   };
 
   return (

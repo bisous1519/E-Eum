@@ -1,17 +1,16 @@
-import React, { RefObject, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   LayoutChangeEvent,
   Pressable,
   StyleSheet,
   Text,
   View,
-  ViewComponent,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import useNav from '../../hooks/useNav';
-import MockupItemType from '../../models/record/mockupItemType';
 import theme from '../../utils/theme';
-import DeleteModal from './DeleteModal';
+import { RecordStateType } from '../../modules/apis/record/recordAtomTypes';
+import TextRender from '../common/editor/TextRender';
 
 const stylesRenderLeft = StyleSheet.create({
   rec: {
@@ -42,46 +41,40 @@ const stylesFeed = StyleSheet.create({
     fontSize: theme.fontSize.small,
     color: theme.textColor.light,
   },
-  text: {
-    fontSize: theme.fontSize.regular,
+  contentWrapper: {
     marginTop: 10,
   },
 });
 
 type SwipeablePropsType = {
-  id: number;
-  regTime: string;
-  tag: string;
-  content: string;
-  onToggleDelete: () => void;
+  item: RecordStateType;
+  onToggleDelete: (recordId: number) => void;
 };
 
 export default function SwipeableItem({
-  id,
-  regTime,
-  tag,
-  content,
+  item,
   onToggleDelete,
 }: SwipeablePropsType): JSX.Element {
   const navigation = useNav();
   const swipeableRef = useRef<Swipeable>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
+  const [convertedContent, setConvertedContent] = useState('');
 
   const onLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
     setContentHeight(height);
   };
   const onPressUpdate = () => {
-    console.log('수정!!!!!');
     swipeableRef.current?.close();
+    navigation.push('RecordEditor', { item });
   };
   const onPressDelete = () => {
     swipeableRef.current?.close();
-    onToggleDelete();
+    onToggleDelete(item.id);
   };
   const onPressSupport = () => {
     swipeableRef.current?.close();
-    navigation.push('RecordEditor');
+    navigation.push('NewSupport');
   };
 
   const renderRightActions = (): JSX.Element => {
@@ -125,6 +118,7 @@ export default function SwipeableItem({
       </View>
     );
   };
+
   return (
     <Swipeable
       ref={swipeableRef}
@@ -136,8 +130,10 @@ export default function SwipeableItem({
       renderRightActions={renderRightActions}
     >
       <View onLayout={onLayout} style={stylesFeed.content}>
-        <Text style={stylesFeed.tag}># {tag.toString()}</Text>
-        <Text style={stylesFeed.text}>{content.toString()}</Text>
+        <Text style={stylesFeed.tag}># {item.tagName}</Text>
+        <View style={stylesFeed.contentWrapper}>
+          <TextRender content={item.content} />
+        </View>
       </View>
     </Swipeable>
   );

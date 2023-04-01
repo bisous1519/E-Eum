@@ -1,35 +1,31 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Image,
   StyleSheet,
   Text,
   View,
   ScrollView,
-  Pressable,
   LayoutChangeEvent,
 } from 'react-native';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import InputComp from '../../components/common/input/InputComp';
-import TextComp from '../../components/common/TextComp';
 import theme from '../../utils/theme';
 import ItemContainer from '../../components/record/ItemContainer';
 import Tag from '../../components/record/Tag';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
 import useDimension from '../../hooks/useDimension';
-import ModalComp from '../../components/common/ModalComp';
 import DeleteModal from '../../components/record/DeleteModal';
 import MockupDateGroupType from '../../models/record/mockupDateGroupType';
 import { useRecoilState } from 'recoil';
-import {
-  recordsState,
-  recordState,
-} from '../../modules/apis/record/recordAtoms';
-import { getRecords } from '../../modules/apis/record/recordApis';
+import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
+import { getRecords, getTags } from '../../modules/apis/record/recordApis';
 import {
   RecordsStateType,
-  RecordStateType,
+  TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
+import TagList from '../../components/record/TagList';
+import AddTagModal from '../../components/record/AddTagModal';
+import UpDelTagModal from '../../components/record/UpDelTagModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -121,58 +117,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const mockup: MockupDateGroupType[] = [
-  {
-    regTime: '23.03.11',
-    list: [
-      {
-        regTime: '23.03.11',
-        id: 0,
-        tag: '꿈',
-        content:
-          '구글 개발자 인터뷰를 봤다. 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-      {
-        regTime: '23.03.11',
-        id: 1,
-        tag: '꿈',
-        content: '안웅장하다',
-      },
-      {
-        regTime: '23.03.11',
-        id: 2,
-        tag: '꿈',
-        content: '멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-    ],
-  },
-  {
-    regTime: '23.03.10',
-    list: [
-      {
-        regTime: '23.03.11',
-        id: 0,
-        tag: '꿈',
-        content: '구글 개발자 인터뷰를 봤다.',
-      },
-      {
-        regTime: '23.03.11',
-        id: 1,
-        tag: '꿈',
-        content: '안웅장하다 멋있다. 웅장하다!!!!! 안웅장하다 웅장하다!!!',
-      },
-    ],
-  },
-];
-
 export default function Record(): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+  const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  const [addTagModal, setAddTagModal] = useState<boolean>(false);
+  const [upDelTagModal, setUpDelTagModal] = useState<boolean>(false);
+  const [upDelTargetTag, setUpDelTargetTag] = useState<TagStateType>();
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
+  const [delTargetContentId, setDelTargetContentId] = useState<number>();
 
   const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
@@ -187,16 +144,33 @@ export default function Record(): JSX.Element {
     console.log('bottomSheet changed', idx);
   };
   const onPressPlusBtn = (): void => {
-    navigation.push('RecordEditor', { itemId: 3 });
+    navigation.push('RecordEditor');
   };
-  const onToggleDelete = (): void => {
-    console.log('삭제!!!!!');
+  const onToggleDelete = (recordId?: number): void => {
+    if (recordId || recordId === 0) {
+      setDelTargetContentId(recordId);
+    }
     setDeleteModal((prev) => !prev);
+  };
+  const onToggleAddTagModal = (): void => {
+    setAddTagModal((prev) => !prev);
+  };
+  const onToggleUpDelTagModal = (tag?: TagStateType): void => {
+    if (tag) {
+      setUpDelTargetTag(tag);
+    }
+    setUpDelTagModal((prev) => !prev);
   };
 
   const fetchData = async () => {
-    const { data } = await getRecords(1); // userId 넣어야됨
-    setRecords(data);
+    const recordsData: RecordsStateType | undefined = await getRecords(1); // userId 넣어야됨
+    const tagsData: TagStateType[] | undefined = await getTags(1);
+    if (recordsData) {
+      setRecords(recordsData);
+    }
+    if (tagsData) {
+      setTags(tagsData);
+    }
   };
 
   useEffect(() => {
@@ -215,7 +189,9 @@ export default function Record(): JSX.Element {
           />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
-              <Text style={stylesProfile.infoContent}>11개</Text>
+              <Text style={stylesProfile.infoContent}>
+                {records ? records.recordCnt + '개' : '-'}
+              </Text>
               <Text style={stylesProfile.infoCaption}>꿈피드</Text>
             </View>
             <View style={stylesProfile.infoItem}>
@@ -242,18 +218,22 @@ export default function Record(): JSX.Element {
             ]}
             onChange={handleSheetChange}
             style={{ alignItems: 'center' }}>
-            {/* <BottomSheetFlatList
-              contentContainerStyle={styles.contentContainer}
-              showsVerticalScrollIndicator={false}
-              data={records.recordList}
-              renderItem={({ item, index }) => (
-                <ItemContainer
-                  regTime={item.regTime}
-                  list={item.content}
-                  onToggleDelete={onToggleDelete}
-                />
-              )}
-            /> */}
+            {records ? (
+              <BottomSheetFlatList
+                contentContainerStyle={styles.contentContainer}
+                showsVerticalScrollIndicator={false}
+                data={records.recordList}
+                renderItem={({ item, index }) => (
+                  <ItemContainer
+                    regTime={records.dateList[index]}
+                    list={item}
+                    onToggleDelete={onToggleDelete}
+                  />
+                )}
+              />
+            ) : (
+              <></>
+            )}
           </BottomSheet>
         ) : (
           <></>
@@ -267,22 +247,39 @@ export default function Record(): JSX.Element {
           { top: profileHeight },
         ])}
         onLayout={onLayoutTag}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={stylesTag.scrollBox}>
-          <Tag text='전체' />
-          <Tag text='전체전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='전체' />
-          <Tag text='+' />
-        </ScrollView>
+        {tags ? (
+          <TagList
+            tags={tags}
+            allTag={true}
+            onToggleAddTagModal={onToggleAddTagModal}
+            onToggleUpDelTagModal={onToggleUpDelTagModal}
+          />
+        ) : (
+          <></>
+        )}
       </View>
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
-      {deleteModal && <DeleteModal onToggleDelete={onToggleDelete} />}
+      {deleteModal && delTargetContentId ? (
+        <DeleteModal
+          recordId={delTargetContentId}
+          onToggleModal={onToggleDelete}
+        />
+      ) : (
+        <></>
+      )}
+      {addTagModal ? (
+        <AddTagModal onToggleModal={onToggleAddTagModal} />
+      ) : (
+        <></>
+      )}
+      {upDelTagModal && upDelTargetTag ? (
+        <UpDelTagModal
+          tag={upDelTargetTag}
+          onToggleModal={onToggleUpDelTagModal}
+        />
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
