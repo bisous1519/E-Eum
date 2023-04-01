@@ -253,7 +253,7 @@ export default function SupportDetail(): JSX.Element {
             <Text style={styles.contentTitle}>달성률</Text>
             <View style={styles.goalBar}>
               <Progress.Bar
-                progress={detailData?.achievementRate}
+                progress={detailData?.achievementRate / 100}
                 width={DEVICE_WIDTH * 0.8}
                 height={DEVICE_HEIGHT * 0.025}
                 color={theme.mainColor.main}

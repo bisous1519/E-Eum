@@ -180,10 +180,8 @@ export default function SupportList(): JSX.Element {
   const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const onPressDetail = () => {
-    console.log(supports.sid);
-
-    // nav.navigate('SupportDetail', { sid: supports.sid });
+  const onPressDetail = (sid: number) => {
+    nav.navigate('SupportDetail', { sid: sid });
   };
 
   const onPressPlusBtn = () => {
@@ -211,7 +209,7 @@ export default function SupportList(): JSX.Element {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.item}
-            onPress={onPressDetail}
+            onPress={() => onPressDetail(item.sid)}
             activeOpacity={0.6}
             key={item.sid}>
             <Item
