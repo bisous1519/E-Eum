@@ -54,3 +54,10 @@ export type SupportPointStateType = {
   uid: number;
   point: number;
 };
+
+export type RegularSupportStateType = {
+  sponsorId: number;
+  uid: number;
+  point: number;
+  paymentDate: number;
+};

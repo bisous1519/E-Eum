@@ -2,6 +2,7 @@ import { atom } from 'recoil';
 import { v1 } from 'uuid';
 import {
   NewSupportStateType,
+  RegularSupportStateType,
   SupportDetailStateType,
   SupportPointStateType,
   SupportProfileStateType,
@@ -65,6 +66,13 @@ const supportPointInitialState: SupportPointStateType = {
   point: 1,
 };
 
+const regularSupportInitialState: RegularSupportStateType = {
+  sponsorId: 1,
+  uid: 1,
+  point: 0,
+  paymentDate: 5,
+};
+
 // 후원글 목록
 export const supportsState = atom<SupportsStateType>({
   key: 'supportsState${v1}',
@@ -89,8 +97,14 @@ export const supportProfileState = atom<SupportProfileStateType>({
   default: supportProfileInitailState,
 });
 
-// 포인트 후원하기
+// 일회성 후원하기
 export const supportPointState = atom<SupportPointStateType>({
   key: 'supportPointState${v1}',
   default: supportPointInitialState,
+});
+
+// 정기 후원하기
+export const regularSupportState = atom<RegularSupportStateType>({
+  key: 'regularSupportState${v1}',
+  default: regularSupportInitialState,
 });
