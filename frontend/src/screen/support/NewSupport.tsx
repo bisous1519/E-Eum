@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -17,6 +17,11 @@ import Tag from '../../components/record/Tag';
 import SubmitButton from '../../components/support/SubmitButton';
 import TextEditor from '../../components/common/editor/TextEditor';
 import { addSupport } from '../../modules/apis/support/supportApis';
+import { useRecoilState } from 'recoil';
+import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
+import { getTags } from '../../modules/apis/record/recordApis';
+import { tagsState } from '../../modules/apis/record/recordAtoms';
+import TagList from '../../components/record/TagList';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -105,8 +110,12 @@ const dateFormat = (date: any) => {
 
 export default function NewSupport(): JSX.Element {
   // 체크된 태그를 표시 =========================================
+  // 이거 다 버리고 useRecoil로 가져온 녀석들 쓰자
   const [checked, setChecked] = useState<string>('');
   const [tag, setTag] = useState<number>(5);
+
+  const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
+  const [isSelectedTag, setIsSelectedTag] = useState<boolean[]>([]);
   // ===========================================================
   const [title, setTitle] = useState<string>('');
   // TextEditor의 input
@@ -164,6 +173,10 @@ export default function NewSupport(): JSX.Element {
     setContext(data);
   };
 
+  const handleSelectTag = (index: number): void => {
+    setTag(index);
+  };
+
   // 카카오 API로 받아온 주소 데이터 = 메인 데이터
   const handleSelectedAddress = (data: any) => {
     if (isAddress) {
@@ -180,19 +193,6 @@ export default function NewSupport(): JSX.Element {
   };
 
   const onSubmitBtn = async () => {
-    console.log('등록하기');
-    // 입력 확인용 콘솔 출력
-    console.log('제목: ', title);
-    console.log('태그: ', tag);
-    console.log('내용: ', context);
-    console.log('링크: ', link);
-    console.log('링크설명: ', productName);
-    console.log('목표: ', goal);
-    console.log('마감기한: ', due);
-    console.log('메인 주소: ', mainAddress);
-    console.log('상세 주소: ', detailAddress);
-    // ====================
-
     await addSupport({
       userId: 1,
       title: title,
@@ -206,6 +206,17 @@ export default function NewSupport(): JSX.Element {
       detailAddress: detailAddress,
     });
   };
+
+  const fetchData = async () => {
+    const tagsData: TagStateType[] | undefined = await getTags(1); // userId를 넣어줘야 함
+    if (tagsData) {
+      setTags(tagsData);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -238,12 +249,21 @@ export default function NewSupport(): JSX.Element {
                   * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
                 </Text>
               </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {/* <Tag text='학업' />
+              {tags &&
+                tags.map((tag, index) => (
+                  <Tag
+                    key={tag.id}
+                    tag={tag}
+                    isSelected={isSelectedTag[index]}
+                    onPressTag={() => handleSelectTag(index)}
+                  />
+                ))}
+              {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <Tag text='학업' />
                 <Tag text='여행' />
                 <Tag text='나무꾼' />
-                <Tag text='+' /> */}
-              </ScrollView>
+                <Tag text='+' />
+              </ScrollView> */}
             </View>
             {/* 2-1. 후원 요청 내용 */}
             <View style={styles.write}>
