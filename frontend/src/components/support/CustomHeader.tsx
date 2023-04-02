@@ -4,6 +4,10 @@ import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { searchSupports } from '../../modules/apis/support/supportApis';
+import { useRecoilState } from 'recoil';
+import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
+import { supportsState } from '../../modules/apis/support/supportAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -56,6 +60,9 @@ const styles = StyleSheet.create({
 });
 
 export default function CustomHeader(): JSX.Element {
+  const [supports, setSupports] =
+    useRecoilState<SupportsStateType>(supportsState);
+
   const [sortPressed, setSortPressed] = useState<boolean>(false);
   const [supportPressed, setSupportPressed] = useState<boolean>(false);
 
@@ -69,7 +76,13 @@ export default function CustomHeader(): JSX.Element {
   };
 
   // 검색 API를 푸슝
-  const handleSearch = () => {
+  const handleSearch = async () => {
+    const searchData: SupportsStateType | undefined = await searchSupports(
+      keyword
+    );
+    if (searchData) {
+      setSupports(searchData);
+    }
     console.log('검색 API로 결과 목록 가져오기');
   };
 

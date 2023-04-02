@@ -14,6 +14,19 @@ export async function getSupports(sortType: number) {
   }
 }
 
+// 꿈후원 검색 목록 조회
+export async function searchSupports(keyword: string) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/dream/support/req/search?keyword=${keyword}`
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
 // 꿈후원 게시물 상세 조회
 export async function supportDetail(sid: number) {
   try {

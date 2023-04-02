@@ -11,16 +11,14 @@ import {
   Pressable,
 } from 'react-native';
 import theme from '../../utils/theme';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import ModifyButton from '../../components/common/ModifyButton';
-import useNav from '../../hooks/useNav';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { SupportProfileStateType } from '../../modules/apis/support/supportAtomTypes';
 import { checkProfile } from '../../modules/apis/support/supportApis';
 import { supportProfileState } from '../../modules/apis/support/supportAtoms';
 import { useRecoilState } from 'recoil';
+import ModalComp from '../../components/common/ModalComp';
+import RegularSupportModal from '../../components/support/RegularSupportModal';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -47,6 +45,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 10,
   },
   profileImage: {
     height: DEVICE_WIDTH * 0.3,
@@ -59,20 +58,24 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: DEVICE_HEIGHT * 0.01,
   },
-  pointBox: {
+  supportBox: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: DEVICE_HEIGHT * 0.01,
   },
-  pointCount: {
-    fontSize: theme.fontSize.regular,
+  supportGuide: {
+    fontSize: theme.fontSize.small,
     marginLeft: 5,
   },
-  chargePoint: {
+  support: {
     backgroundColor: theme.mainColor.main,
-    width: DEVICE_WIDTH * 0.1,
+    width: DEVICE_WIDTH * 0.2,
     borderRadius: 10,
     alignItems: 'center',
+    paddingVertical: DEVICE_WIDTH * 0.01,
+  },
+  supportText: {
+    color: theme.textColor.white,
   },
   // ====================================
   // 뱃지 스타일 적용 ===================
@@ -167,6 +170,12 @@ export default function SupportProfile(): JSX.Element {
   // 뱃지 정보
   const [profileBadge, setProfileBadge] = useState<number>();
 
+  // 정기후원 여부 검사
+  const [onSupport, setOnSupport] = useState<boolean>(false);
+
+  // 후원정보 입력 모달
+  const [modal, setModal] = useState<boolean>(false);
+
   const getProfileData = async () => {
     const supportProfileData: SupportProfileStateType | undefined =
       await checkProfile(uid);
@@ -175,50 +184,77 @@ export default function SupportProfile(): JSX.Element {
     }
   };
 
+  const handleSupportPress = () => {
+    setOnSupport((prop) => !prop);
+    if (!onSupport) {
+      setModal(true);
+    }
+  };
+
+  const handleToggleDelete = () => {
+    setModal(false);
+  };
+
+  const handleSupportDone = () => {
+    setOnSupport((prop) => !prop);
+  };
+
   useEffect(() => {
     getProfileData();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <View style={styles.profileBox}>
-          <Image
-            style={styles.profileImage}
-            source={require('../../assets/images/sample.png')}
-            // source={
-            //   profileData.imagePath ? require(profileData.imagePath) : null
-            // }
-          />
-          <Text style={styles.nickname}>{profileData?.nickname}</Text>
-          <View style={styles.pointBox}>
-            <MaterialIcons
-              name='copyright'
-              size={24}
-              color={theme.mainColor.dark}
+    <>
+      <View style={styles.container}>
+        <View style={styles.profileContainer}>
+          <View style={styles.profileBox}>
+            <Image
+              style={styles.profileImage}
+              source={require('../../assets/images/sample.png')}
+              // source={
+              //   profileData.imagePath ? require(profileData.imagePath) : null
+              // }
             />
-            <Text style={styles.pointCount}>300,000</Text>
+            <Text style={styles.nickname}>{profileData?.nickname}</Text>
+            {onSupport ? (
+              <>
+                <View style={styles.supportBox}>
+                  <Text style={styles.supportGuide}>
+                    꿈을 응원한 지 N일째 😀
+                  </Text>
+                </View>
+                <Pressable style={styles.support} onPress={handleSupportPress}>
+                  <Text style={styles.supportText}>후원중</Text>
+                </Pressable>
+              </>
+            ) : (
+              <>
+                <View style={styles.supportBox}>
+                  <Text style={styles.supportGuide}>
+                    정기후원으로 {profileData.nickname}님의 꿈을 응원해주세요 🎉
+                  </Text>
+                </View>
+                <Pressable style={styles.support} onPress={handleSupportPress}>
+                  <Text style={styles.supportText}>후원하기</Text>
+                </Pressable>
+              </>
+            )}
           </View>
-          <Pressable
-            style={styles.chargePoint}
-            onPress={() => console.log('포인트 충전으로 푸슝')}
-          >
-            <Ionicons name='add' size={20} color={theme.mainColor.dark} />
-          </Pressable>
         </View>
+        <FlatList
+          ListHeaderComponent={
+            <Text style={styles.userIntro}>{profileData?.introduction}</Text>
+          }
+          contentContainerStyle={styles.badgeContainer}
+          data={badgeData}
+          renderItem={({ item }) => <Badge id={item.id} num={item.num} />}
+          numColumns={3}
+          keyExtractor={(item) => item.id.toString()}
+        />
       </View>
-      <FlatList
-        ListHeaderComponent={
-          <Text style={styles.userIntro}>{profileData?.introduction}</Text>
-        }
-        contentContainerStyle={styles.badgeContainer}
-        data={badgeData}
-        renderItem={({ item }) => (
-          <Badge style={styles.uniBadge} id={item.id} num={item.num} />
-        )}
-        numColumns={3}
-        keyExtractor={(item) => item.id.toString()}
-      />
-    </View>
+      {modal ? (
+        <RegularSupportModal onToggleDelete={handleToggleDelete} />
+      ) : null}
+    </>
   );
 }

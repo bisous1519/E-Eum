@@ -22,7 +22,6 @@ import * as Linking from 'expo-linking';
 // 후원하기 버튼
 import SupportButton from '../../components/support/SupportButton';
 // 후원금 잔액 부족 모달 - DeleteModal로 테스트 =============
-import DeleteModal from '../../components/record/DeleteModal';
 import ChargeAlertModal from '../../components/support/ChargeAlertModal';
 import SupportModal from '../../components/support/SupportModal';
 import { RootStackParamList } from '../../navigator/SupportStack';
@@ -284,7 +283,12 @@ export default function SupportDetail(): JSX.Element {
                 {/* sponsorList의 길이만큼 목록을 표시 */}
                 {detailData?.sponsorIdList.map((idx: number) => {
                   return (
-                    <Pressable key={idx} onPress={handleSupporterClick}>
+                    <Pressable
+                      key={idx}
+                      onPress={() =>
+                        handleSupporterClick(detailData.sponsorIdList[idx])
+                      }
+                    >
                       {/* 주석 풀어야해 */}
                       <Image
                         // source={require(detailData?.sponsorImagePathList[idx])}
@@ -298,7 +302,7 @@ export default function SupportDetail(): JSX.Element {
             ) : (
               <View>
                 <Text style={styles.supporterText}>
-                  {detailData?.userNickname}님의 첫 번째 후원자가 되어보세요!
+                  {detailData?.userNickname}님의 첫 번째 후원자가 되어보세요 🎉
                 </Text>
               </View>
             )}
