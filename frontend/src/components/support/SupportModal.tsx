@@ -63,14 +63,17 @@ const styles = StyleSheet.create({
 
 type SupportModalPropsType = {
   onToggleDelete: () => void;
+  targetAmount: number;
+  sid: number;
+  uid: number;
 };
 
 export default function SupportModal({
   onToggleDelete,
+  targetAmount,
+  sid,
+  uid,
 }: SupportModalPropsType): JSX.Element {
-  // 걍 잠시 넣을 값
-  const tempNum: number = 120000;
-
   // 입력되는 숫자 값
   const [pay, setPay] = useState<string>('');
 
@@ -93,7 +96,7 @@ export default function SupportModal({
   // 후원해주기
   const onPressSupport = () => {
     onToggleDelete();
-    supportPoint(0, 0, Number(pay));
+    supportPoint(sid, uid, Number(pay));
     console.log('포인트 차감하고 후원해주는 API');
   };
 
@@ -105,7 +108,7 @@ export default function SupportModal({
           <TextInput style={styles.inputNumber}>{pay}</TextInput>
         </View>
         <View>
-          <Text style={styles.goal}>목표까지 {tempNum}원</Text>
+          <Text style={styles.goal}>목표까지 {targetAmount}원</Text>
         </View>
         <NumberPad
           onNumberPress={onPressNumber}

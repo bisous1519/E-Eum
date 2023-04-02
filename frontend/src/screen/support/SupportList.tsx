@@ -152,7 +152,7 @@ export default function SupportList(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-  }, [sortType]);
+  }, [sortType, supports]);
 
   return (
     <View style={styles.container}>

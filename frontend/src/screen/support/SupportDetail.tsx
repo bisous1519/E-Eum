@@ -172,7 +172,8 @@ export default function SupportDetail(): JSX.Element {
     console.log('이 태그와 관련된 꿈피드로 푸슝~');
   };
 
-  const handleSupporterClick = () => {
+  const handleSupporterClick = (uid: number) => {
+    nav.navigate('SupportProfile', { uid: uid });
     console.log('후원자(sponsorId) 프로필로 푸슝~');
   };
 
@@ -216,7 +217,7 @@ export default function SupportDetail(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [detailData]);
 
   return (
     <>
@@ -340,7 +341,14 @@ export default function SupportDetail(): JSX.Element {
       </ScrollView>
       <SupportButton onPressSupportBtn={onPressSupportBtn} />
       {chargeModal && <ChargeAlertModal onToggleDelete={onToggleDelete} />}
-      {supportModal && <SupportModal onToggleDelete={onToggleDelete} />}
+      {supportModal && (
+        <SupportModal
+          onToggleDelete={onToggleDelete}
+          targetAmount={detailData?.targetAmount}
+          sid={sid}
+          uid={1}
+        />
+      )}
     </>
   );
 }
