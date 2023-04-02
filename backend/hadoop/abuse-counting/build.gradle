@@ -40,6 +40,10 @@ dependencies {
 	implementation 'org.apache.hadoop:hadoop-common:3.3.2'
 	implementation 'org.apache.hadoop:hadoop-hdfs:3.3.2'
 	implementation('org.apache.hadoop:hadoop-mapreduce-client-core:3.3.2')
+
+	implementation ('group:name:version') {
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+	}
 }
 
 tasks.named('test') {
