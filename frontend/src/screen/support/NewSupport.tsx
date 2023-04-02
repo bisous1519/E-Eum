@@ -21,7 +21,7 @@ import { useRecoilState } from 'recoil';
 import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 import { getTags } from '../../modules/apis/record/recordApis';
 import { tagsState } from '../../modules/apis/record/recordAtoms';
-import TagList from '../../components/record/TagList';
+import useNav from '../../hooks/useNav';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -52,6 +52,9 @@ const styles = StyleSheet.create({
   tagBox: {
     marginVertical: 5,
     marginHorizontal: 20,
+  },
+  tagList: {
+    flexDirection: 'row',
   },
   title: {
     fontSize: theme.fontSize.regular,
@@ -109,13 +112,19 @@ const dateFormat = (date: any) => {
 };
 
 export default function NewSupport(): JSX.Element {
-  // 체크된 태그를 표시 =========================================
-  // 이거 다 버리고 useRecoil로 가져온 녀석들 쓰자
-  const [checked, setChecked] = useState<string>('');
-  const [tag, setTag] = useState<number>(5);
+  const navigation = useNav();
 
+  // 체크된 태그를 표시 =========================================
+  const [tag, setTag] = useState<number>(0);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
   const [isSelectedTag, setIsSelectedTag] = useState<boolean[]>([]);
+  const [isSelectedAllTag, setIsSelectedAllTag] = useState<boolean>(true);
+
+  const falseArr = (): boolean[] => {
+    const arr: boolean[] = [...new Array(tags.length)].map(() => false);
+    return arr;
+  };
+
   // ===========================================================
   const [title, setTitle] = useState<string>('');
   // TextEditor의 input
@@ -125,8 +134,6 @@ export default function NewSupport(): JSX.Element {
   const [goal, setGoal] = useState<number>(1);
   // 모집 기한 ==================================================
   const [due, setDue] = useState<string>(dateFormat(new Date()));
-
-  // const [text, setText] = useState<string>('');
 
   // 배송지 주소
   const [mainAddress, setMainAddress] = useState<string>('');
@@ -173,8 +180,15 @@ export default function NewSupport(): JSX.Element {
     setContext(data);
   };
 
-  const handleSelectTag = (index: number): void => {
-    setTag(index);
+  const handleSelectTag = (tid: number): void => {
+    setIsSelectedAllTag(false);
+
+    const arr = falseArr();
+    arr[tid] = true;
+    setIsSelectedTag([...arr]);
+
+    setTag(tid);
+    console.log(tid);
   };
 
   // 카카오 API로 받아온 주소 데이터 = 메인 데이터
@@ -205,6 +219,7 @@ export default function NewSupport(): JSX.Element {
       roadAddress: mainAddress,
       detailAddress: detailAddress,
     });
+    navigation.popToTop();
   };
 
   const fetchData = async () => {
@@ -249,21 +264,22 @@ export default function NewSupport(): JSX.Element {
                   * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
                 </Text>
               </View>
-              {tags &&
-                tags.map((tag, index) => (
-                  <Tag
-                    key={tag.id}
-                    tag={tag}
-                    isSelected={isSelectedTag[index]}
-                    onPressTag={() => handleSelectTag(index)}
-                  />
-                ))}
-              {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Tag text='학업' />
-                <Tag text='여행' />
-                <Tag text='나무꾼' />
-                <Tag text='+' />
-              </ScrollView> */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.tagList}
+              >
+                {tags
+                  ? tags.map((tag, index) => (
+                      <Tag
+                        key={tag.id}
+                        tag={tag}
+                        isSelected={isSelectedTag[index]}
+                        onPressTag={() => handleSelectTag(tag.id)}
+                      />
+                    ))
+                  : null}
+              </ScrollView>
             </View>
             {/* 2-1. 후원 요청 내용 */}
             <View style={styles.write}>

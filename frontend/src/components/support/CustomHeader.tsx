@@ -71,8 +71,7 @@ export default function CustomHeader(): JSX.Element {
 
   // input에 입력된 값을 search에 저장
   const handleInput = (e: any) => {
-    console.log(e.nativeEvent.text);
-    setKeyword(e);
+    setKeyword(e.nativeEvent.text);
   };
 
   // 검색 API를 푸슝

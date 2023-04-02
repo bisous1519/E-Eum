@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NewSupportStateType, SupportPointStateType } from './supportAtomTypes';
+import { NewSupportStateType } from './supportAtomTypes';
 
 // 꿈후원 목록 조회
 export async function getSupports(sortType: number) {
@@ -14,7 +14,7 @@ export async function getSupports(sortType: number) {
   }
 }
 
-// 꿈후원 검색 목록 조회
+// 꿈후원 검색 조회
 export async function searchSupports(keyword: string) {
   try {
     const { data } = await axios.get(
