@@ -49,6 +49,7 @@ export default function TextRender({
       tagsStyles={contentTagsStyles}
       source={{ html: content }}
       contentWidth={300}
+      baseStyle={{ lineHeight: 23 }}
     />
   );
 }

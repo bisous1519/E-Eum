@@ -183,6 +183,10 @@ export default function BottleBlue(): JSX.Element {
     navigation.push('BottleGreen');
   };
 
+  const navigateToMyBottle = () => {
+    navigation.push('MyBottle');
+  };
+
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const handleModalPop = () => {
@@ -357,7 +361,31 @@ export default function BottleBlue(): JSX.Element {
           style={styles.leftPageBottlesLocation}
           onPress={handleModalPop}
         />
+        {/* > */}
+        {/* <Pressable
+            style={StyleSheet.flatten([
+              styles.tempBorderBlue,
+              styles.bluePageRedPressable,
+            ])}
+          ></Pressable>
+          <Pressable
+            style={StyleSheet.flatten([
+              styles.tempBorderBlue,
+              styles.bluePageBlackPressable,
+            ])}
+          ></Pressable>
+          <Pressable
+            style={StyleSheet.flatten([
+              styles.tempBorderBlue,
+              styles.bluePageGreenPressable,
+            ])}
+          ></Pressable> */}
+        {/* </Pressable> */}
+        <Pressable onPress={navigateToMyBottle}>
+          <Text>마이보틀목록</Text>
+        </Pressable>
       </View>
     </View>
   );
 }
+
