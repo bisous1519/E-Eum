@@ -4,6 +4,7 @@ import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 // 후원금액 입력 숫자패드
 import NumberPad from '../../components/support/NumberPad';
+import { supportPoint } from '../../modules/apis/support/supportApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.small,
   },
   confirm: {
+    width: DEVICE_WIDTH * 0.8,
     paddingVertical: 20,
     borderTopWidth: 1,
     borderColor: theme.grayColor.lightGray,
@@ -74,7 +76,6 @@ export default function SupportModal({
 
   // 후원하기 컴포넌트 외부 -> 후원 중지
   const onPressOuter = () => {
-    // setPay('');
     onToggleDelete();
   };
 
@@ -92,6 +93,7 @@ export default function SupportModal({
   // 후원해주기
   const onPressSupport = () => {
     onToggleDelete();
+    supportPoint(0, 0, Number(pay));
     console.log('포인트 차감하고 후원해주는 API');
   };
 
@@ -99,7 +101,6 @@ export default function SupportModal({
     <View style={styles.layer}>
       <Pressable style={styles.emptySpace} onPress={onPressOuter} />
       <View style={styles.modal}>
-        {/* 이 부분에 TextInput, NumberPad 삽입 */}
         <View style={styles.input}>
           <TextInput style={styles.inputNumber}>{pay}</TextInput>
         </View>

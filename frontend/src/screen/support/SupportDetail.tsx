@@ -10,7 +10,7 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import theme from '../../utils/theme';
 // Progress Bar
@@ -30,6 +30,7 @@ import { supportDetail } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { supportDetailState } from '../../modules/apis/support/supportAtoms';
 import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 // ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
   },
   titleWithTag: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
     fontSize: theme.fontSize.big,
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   tagBox: {
     backgroundColor: theme.mainColor.main,
     width: DEVICE_WIDTH * 0.2,
-    padding: 5,
+    paddingVertical: DEVICE_HEIGHT * 0.007,
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -75,10 +77,11 @@ const styles = StyleSheet.create({
   },
   productLink: {
     backgroundColor: theme.mainColor.main,
-    borderRadius: 15,
-    paddingVertical: DEVICE_HEIGHT * 0.007,
     width: DEVICE_WIDTH * 0.25,
+    paddingVertical: DEVICE_HEIGHT * 0.007,
+    borderRadius: 15,
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 3,
   },
   contentTitle: {
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
     color: theme.textColor.white,
   },
   supporterText: {
-    fontSize: theme.fontSize.regular,
+    fontSize: theme.fontSize.small,
   },
   content: {
     fontWeight: '400',
@@ -156,23 +159,31 @@ const styles = StyleSheet.create({
 
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
-  // SupportDetail 화면이 params를 받아올 화면이니까 요녀석을 작성
   const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
   const sid = route.params?.sid;
-  console.log(sid);
 
   const [detailData, setDetailData] =
     useRecoilState<SupportDetailStateType>(supportDetailState);
 
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  // API 작업 필요
+  const handleTagPress = () => {
+    console.log('이 태그와 관련된 꿈피드로 푸슝~');
+  };
+
   const handleSupporterClick = () => {
-    console.log('후원자 프로필로 푸슝');
+    console.log('후원자(sponsorId) 프로필로 푸슝~');
+  };
+
+  const handleProfilePress = (uid: number) => {
+    nav.navigate('SupportProfile', { uid: uid });
   };
   // ============================================================================
-
   // 1. writer 정보 중 point 정보를 받아와서 if (point === 0) 충전화면
   // 2. else인 경우 후원금액 입력 bottom sheet
 
-  // 실제 후원을 할 수 있는 모달
+  // 후원금액 입력 모달
   const [supportModal, setSupportModal] = useState<boolean>(false);
 
   // 잔액이 부족할 때 뜨는 모달
@@ -183,20 +194,18 @@ export default function SupportDetail(): JSX.Element {
     // 사용자 포인트 잔고가 있으면 setSupportModal(true);
     // 사용자 포인트 잔고가 없으면 setChargeModal(true);
     setSupportModal(true);
-    console.log('후원금액을 입력받는 모달이 푸슝~');
   };
 
   // 모달 밖의 화면을 눌렀을 때의 작업
   const onToggleDelete = () => {
     setSupportModal(false); // 요건 후원화면
-    setChargeModal(false); // 요건 충전권고화면
+    setChargeModal(false); // 요건 충전알람화면
   };
 
   const link = () => {
     Linking.openURL(`${detailData.purchaseLink}`);
   };
 
-  // 여기 작업하자
   const fetchData = async () => {
     const supportDetailData: SupportDetailStateType | undefined =
       await supportDetail(sid);
@@ -207,7 +216,6 @@ export default function SupportDetail(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-    console.log(detailData);
   }, []);
 
   return (
@@ -222,9 +230,13 @@ export default function SupportDetail(): JSX.Element {
         <View style={styles.innerContainer}>
           <View style={styles.titleWithTag}>
             <Text style={styles.title}>{detailData?.title}</Text>
-            <View style={styles.tagBox}>
+            <TouchableOpacity
+              style={styles.tagBox}
+              onPress={handleTagPress}
+              activeOpacity={0.6}
+            >
               <Text style={styles.tag}>{detailData?.tagName}</Text>
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원 요청 내용</Text>
@@ -232,7 +244,8 @@ export default function SupportDetail(): JSX.Element {
             <TouchableOpacity
               onPress={() => link()}
               activeOpacity={0.6}
-              style={styles.productLink}>
+              style={styles.productLink}
+            >
               <Text style={styles.linkText}>참고링크</Text>
             </TouchableOpacity>
           </View>
@@ -272,9 +285,11 @@ export default function SupportDetail(): JSX.Element {
                   return (
                     <Pressable key={idx} onPress={handleSupporterClick}>
                       {/* 주석 풀어야해 */}
-                      {/* <Image
-                        source={require(detailData.sponsorImagePathList[idx])}
-                      /> */}
+                      <Image
+                        // source={require(detailData?.sponsorImagePathList[idx])}
+                        source={require('../../assets/images/sample.png')}
+                        style={styles.profilePicture}
+                      />
                     </Pressable>
                   );
                 })}
@@ -291,8 +306,9 @@ export default function SupportDetail(): JSX.Element {
           {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
           <View style={styles.group}>
             <TouchableOpacity
-              onPress={() => console.log('프로필이 까꿍')}
-              activeOpacity={0.6}>
+              onPress={() => handleProfilePress(detailData.uid)}
+              activeOpacity={0.6}
+            >
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image

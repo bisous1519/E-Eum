@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NewSupportStateType } from './supportAtomTypes';
+import { NewSupportStateType, SupportPointStateType } from './supportAtomTypes';
 
 // 꿈후원 목록 조회
 export async function getSupports(sortType: number) {
@@ -42,6 +42,31 @@ export async function addSupport(data: NewSupportStateType) {
       roadAddress: data.roadAddress,
       detailAddress: data.detailAddress,
     });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+// 후원글 프로필 조회
+export async function checkProfile(uid: number) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/user/support/${uid}`
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+// 포인트 후원
+export async function supportPoint(sid: number, uid: number, point: number) {
+  try {
+    await axios.post(
+      `http://j8a607.p.ssafy.io/api/dream/support/res?sid=${sid}&uid=${uid}&point=${point}`
+    );
   } catch (e) {
     console.error(e);
     throw e;

@@ -22,4 +22,3 @@ const RecordStack = () => {
 };
 
 export default RecordStack;
-

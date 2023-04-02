@@ -16,7 +16,7 @@ import { getSupports } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
 import { supportsState } from '../../modules/apis/support/supportAtoms';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigator/SupportStack';
 
@@ -76,53 +76,6 @@ const styles = StyleSheet.create({
     marginVertical: DEVICE_HEIGHT * 0.015,
   },
 });
-
-// 나중에 다 분리하자.. ===================================================
-// 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
-// const DATA = [
-//   {
-//     uid: 1,
-//     userNickname: '1싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-//   {
-//     uid: 2,
-//     userNickname: '2싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-//   {
-//     uid: 3,
-//     userNickname: '3싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-//   {
-//     uid: 4,
-//     userNickname: '4싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-//   {
-//     uid: 5,
-//     userNickname: '5싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-//   {
-//     uid: 6,
-//     userNickname: '6싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-//   {
-//     uid: 7,
-//     userNickname: '7싸피',
-//     title: '개발자가 되고싶어요 길어지면 어케되누',
-//     achievementRate: 110000,
-//   },
-// ];
 
 // 각 아이템(목록 데이터) 요소의 타입 지정
 type ItemProps = {
@@ -199,7 +152,6 @@ export default function SupportList(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-    console.log(supports);
   }, [sortType]);
 
   return (
@@ -211,7 +163,8 @@ export default function SupportList(): JSX.Element {
             style={styles.item}
             onPress={() => onPressDetail(item.sid)}
             activeOpacity={0.6}
-            key={item.sid}>
+            key={item.sid}
+          >
             <Item
               sid={item.sid}
               userNickname={item.userNickname}

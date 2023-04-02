@@ -3,6 +3,8 @@ import { v1 } from 'uuid';
 import {
   NewSupportStateType,
   SupportDetailStateType,
+  SupportPointStateType,
+  SupportProfileStateType,
   SupportsStateType,
 } from './supportAtomTypes';
 
@@ -18,19 +20,19 @@ const supportsInitialState: SupportsStateType = {
 
 const supportDetailInitialState: SupportDetailStateType = {
   imagePath: null,
-  title: '제목',
-  purchaseLink: '경로',
-  purchaseLinkDetail: '링크설명',
-  regTime: '2023-04-07',
-  deadline: '2023-04-07',
-  targetAmount: 1000,
+  title: '',
+  purchaseLink: '',
+  purchaseLinkDetail: '',
+  regTime: '',
+  deadline: '',
+  targetAmount: 1,
   currentAmount: 0,
   achievementRate: 0,
   sponsorIdList: [],
   sponsorImagePathList: [],
   uid: 1,
-  userNickname: '작성자',
-  userIntroduction: '작성자 소개',
+  userNickname: '',
+  userIntroduction: '',
   userImagePath: null,
   tid: 1,
   tagName: '',
@@ -50,6 +52,19 @@ const newSupportInitailState: NewSupportStateType = {
   detailAddress: '',
 };
 
+const supportProfileInitailState: SupportProfileStateType = {
+  uid: 1,
+  nickname: '',
+  introduction: null,
+  imagePath: null,
+};
+
+const supportPointInitialState: SupportPointStateType = {
+  sid: 1,
+  uid: 1,
+  point: 1,
+};
+
 // 후원글 목록
 export const supportsState = atom<SupportsStateType>({
   key: 'supportsState${v1}',
@@ -66,4 +81,16 @@ export const supportDetailState = atom<SupportDetailStateType>({
 export const newSupportState = atom<NewSupportStateType>({
   key: 'newSupportState${v1}',
   default: newSupportInitailState,
+});
+
+// 후원글에 연결된 프로필
+export const supportProfileState = atom<SupportProfileStateType>({
+  key: 'supportProfileState${v1}',
+  default: supportProfileInitailState,
+});
+
+// 포인트 후원하기
+export const supportPointState = atom<SupportPointStateType>({
+  key: 'supportPointState${v1}',
+  default: supportPointInitialState,
 });

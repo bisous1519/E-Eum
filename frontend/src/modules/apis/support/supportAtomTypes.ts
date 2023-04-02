@@ -41,3 +41,16 @@ export type NewSupportStateType = {
   roadAddress: string;
   detailAddress: string;
 };
+
+export type SupportProfileStateType = {
+  uid: number;
+  nickname: string;
+  introduction: string | null;
+  imagePath: string | null;
+};
+
+export type SupportPointStateType = {
+  sid: number;
+  uid: number;
+  point: number;
+};
