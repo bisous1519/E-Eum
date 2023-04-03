@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -9,12 +9,15 @@ import {
   View,
   Image,
   Pressable,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import theme from '../../utils/theme';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import ModifyButton from '../../components/common/ModifyButton';
 import useNav from '../../hooks/useNav';
+import ConfirmButton from '../../components/common/ConfirmButton';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -67,20 +70,23 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH * 0.1,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 8,
   },
-  // ====================================
-  // 뱃지 스타일 적용 ===================
   badgeContainer: {
     backgroundColor: theme.mainColor.main,
     width: DEVICE_WIDTH,
+    height: DEVICE_HEIGHT * 0.65,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: DEVICE_HEIGHT * 0.15,
   },
   userIntro: {
     fontSize: theme.fontSize.regular,
     marginTop: DEVICE_HEIGHT * 0.05,
+    position: 'absolute',
+    bottom: DEVICE_HEIGHT * 0.54,
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
@@ -99,11 +105,12 @@ const styles = StyleSheet.create({
 
 // 이것도...나중에 분리해야 하는 badge임.. ==============
 type BadgeProps = {
+  style?: StyleProp<ViewStyle>;
   id: number;
   num: number;
 };
 
-const Badge = ({ id, num }: BadgeProps) => (
+const Badge = ({ style, id, num }: BadgeProps) => (
   <TouchableOpacity
     style={styles.uniBadge}
     onPress={() => console.log('뱃지 디테일이 까꿍')}
@@ -151,50 +158,97 @@ const badgeData = [
 // ======================================================
 
 export default function Mypage(): JSX.Element {
+  // 유저 아이디
+  const loginUser: number = 1;
+
   const navigation = useNav();
 
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
+
   const onPressBtn = () => {
-    navigation.push('UpdateMypage');
+    setIsUpdate((props) => !props);
   };
 
+  const handleChargePoint = () => {
+    console.log('포인트 충전 화면으로 푸슝');
+    // navigation.push('PointCharge');
+  };
+
+  useEffect(() => {});
+
   return (
-    <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <View style={styles.profileBox}>
-          <Image
-            source={require('../../assets/images/sample.png')}
-            style={styles.profileImage}
-          />
-          <Text style={styles.nickname}>민초현</Text>
-          <View style={styles.pointBox}>
-            <MaterialIcons
-              name='copyright'
-              size={24}
-              color={theme.mainColor.dark}
-            />
-            <Text style={styles.pointCount}>300,000</Text>
+    <>
+      {isUpdate ? (
+        <View style={styles.container}>
+          <View style={styles.profileContainer}>
+            <View style={styles.profileBox}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profileImage}
+              />
+              <Text style={styles.nickname}>김더미</Text>
+              <View style={styles.pointBox}>
+                <MaterialIcons
+                  name='copyright'
+                  size={24}
+                  color={theme.mainColor.dark}
+                />
+                <Text style={styles.pointCount}>300,000</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.chargePoint}
+                onPress={handleChargePoint}
+                activeOpacity={0.6}
+              >
+                <Ionicons name='add' size={20} color={theme.mainColor.dark} />
+              </TouchableOpacity>
+            </View>
           </View>
-          <Pressable
-            style={styles.chargePoint}
-            onPress={() => console.log('포인트 충전으로 푸슝')}
-          >
-            <Ionicons name='add' size={20} color={theme.mainColor.dark} />
-          </Pressable>
+          <View style={styles.badgeContainer}>
+            <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 #몰루</Text>
+          </View>
+          <ConfirmButton onPressConfirmBtn={onPressBtn} />
         </View>
-      </View>
-      <FlatList
-        ListHeaderComponent={
-          <Text style={styles.userIntro}>저는 하루에 세 번 헤헤</Text>
-        }
-        contentContainerStyle={styles.badgeContainer}
-        data={badgeData}
-        renderItem={({ item }) => (
-          <Badge style={styles.uniBadge} id={item.id} num={item.num} />
-        )}
-        numColumns={3}
-        keyExtractor={(item) => item.id.toString()}
-      />
-      <ModifyButton onPressModifyBtn={onPressBtn} />
-    </View>
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.profileContainer}>
+            <View style={styles.profileBox}>
+              <Image
+                source={require('../../assets/images/sample.png')}
+                style={styles.profileImage}
+              />
+              <Text style={styles.nickname}>김더미</Text>
+              <View style={styles.pointBox}>
+                <MaterialIcons
+                  name='copyright'
+                  size={24}
+                  color={theme.mainColor.dark}
+                />
+                <Text style={styles.pointCount}>300,000</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.chargePoint}
+                onPress={handleChargePoint}
+                activeOpacity={0.6}
+              >
+                <Ionicons name='add' size={20} color={theme.mainColor.dark} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.badgeContainer}>
+            <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 # 몰루</Text>
+            <FlatList
+              data={badgeData}
+              renderItem={({ item }) => (
+                <Badge style={styles.uniBadge} id={item.id} num={item.num} />
+              )}
+              numColumns={3}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </View>
+          <ModifyButton onPressModifyBtn={onPressBtn} />
+        </View>
+      )}
+    </>
   );
 }
