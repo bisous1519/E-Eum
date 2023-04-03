@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   containerBackgroundImage: {
     width: LETTER_WIDTH,
     height: LETTER_HEIGHT,
-    padding: 15,
+    padding: 20,
   },
   container: {
     width: '100%',

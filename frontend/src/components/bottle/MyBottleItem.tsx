@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { MyBottleStateType } from '../../modules/apis/bottle/bottleAtomTypes';
 import theme from '../../utils/theme';
+import dayjs from 'dayjs';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,25 +53,40 @@ const styles = StyleSheet.create({
 });
 
 type MyBottleItemPropsType = {
+  item: MyBottleStateType;
   onPressItem: () => void;
 };
 
 export default function MyBottleItem({
+  item,
   onPressItem,
 }: MyBottleItemPropsType): JSX.Element {
+  const [date, setDate] = useState<string>();
+  const [type, setType] = useState<'고민 상담' | '전문가 상담'>();
+
+  useEffect(() => {
+    if (item) {
+      // 날짜 형식 세팅
+      setDate(
+        dayjs(item.regTime.toString(), 'YYYY-MM-DD HH:mm:ss').format('YY.MM.DD')
+      );
+      // 타입 세팅
+      item.type === 1 ? setType('고민 상담') : setType('전문가 상담');
+    }
+  }, [item]);
   return (
     <Pressable style={styles.container} onPress={onPressItem}>
       <View style={styles.leftWrapper}>
         <View style={styles.header}>
-          <Text style={styles.date}>23.03.11</Text>
+          {date ? <Text style={styles.date}>{date}</Text> : <></>}
           <Text style={styles.headerDivider}>.</Text>
-          <Text style={styles.kindof}>전문가 상담</Text>
+          <Text style={styles.kindof}>{type}</Text>
         </View>
         <Text
           style={styles.content}
           // numberOfLines={2}
         >
-          그 제가 고민이 있는데 있잖아요? 그게 말입니다 그런건데요 아휴
+          {item.content}
         </Text>
       </View>
       <View style={styles.countWrapper}>
