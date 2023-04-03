@@ -6,5 +6,5 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class AbuseResultDto {
-    private Boolean isAbuse;
+    private Boolean prediction;
 }
