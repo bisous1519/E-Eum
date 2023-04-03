@@ -9,6 +9,9 @@ import com.craypas.user.model.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	List<User> findAllByEmail(String email);
 	List<User> findAllByNameAndEmail(String name, String email);
+
+	Integer countByEmail(String email);
+
+	User findByEmail(String email);
 }

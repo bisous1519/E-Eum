@@ -65,4 +65,10 @@ public class RequestDto {
 				.build();
 		}
 	}
+
+	@Getter
+	public static class LoginUser {
+		private String email;
+		private String password;
+	}
 }

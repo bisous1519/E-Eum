@@ -71,4 +71,7 @@ public interface UserService {
 
 	// 뱃지 상세 조회
 	ResponseDto.GetUserBadgeInfo getBadgeList(final Long uid);
+
+	// 회원 로그인
+	ResponseDto.GetUserPreview loginUser(final RequestDto.LoginUser requestDto);
 }
