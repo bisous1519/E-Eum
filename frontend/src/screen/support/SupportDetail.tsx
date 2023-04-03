@@ -167,19 +167,16 @@ export default function SupportDetail(): JSX.Element {
 
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // API 작업 필요
-  const handleTagPress = () => {
-    console.log('이 태그와 관련된 꿈피드로 푸슝~');
-  };
-
   const handleSupporterClick = (uid: number) => {
     nav.navigate('SupportProfile', { uid: uid });
     console.log('후원자(sponsorId) 프로필로 푸슝~');
   };
 
-  const handleProfilePress = (uid: number) => {
-    nav.navigate('SupportProfile', { uid: uid });
+  const handleFeedPress = (uid: number, tid: number) => {
+    nav.navigate('SupportRecord', { uid: uid, tid: tid });
+    console.log('작성자 꿈피드로 푸슝~');
   };
+
   // ============================================================================
   // 1. writer 정보 중 point 정보를 받아와서 if (point === 0) 충전화면
   // 2. else인 경우 후원금액 입력 bottom sheet
@@ -305,10 +302,10 @@ export default function SupportDetail(): JSX.Element {
             )}
           </View>
 
-          {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
+          {/* 여기는 이제.. 글쓴이 꿈피드로 가는 버튼 */}
           <View style={styles.group}>
             <TouchableOpacity
-              onPress={() => handleProfilePress(detailData.uid)}
+              onPress={() => handleFeedPress(detailData.uid, detailData.tid)}
               activeOpacity={0.6}
             >
               <View style={styles.writerTag}>

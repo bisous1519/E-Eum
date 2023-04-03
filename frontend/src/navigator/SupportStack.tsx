@@ -4,6 +4,7 @@ import NewSupport from '../screen/support/NewSupport';
 import SupportDetail from '../screen/support/SupportDetail';
 import SupportList from '../screen/support/SupportList';
 import SupportProfile from '../screen/support/SupportProfile';
+import SupportRecord from '../screen/support/SupportRecord';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ const SupportStack = () => {
         component={SupportProfile}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name='SupportRecord'
+        component={SupportRecord}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -42,4 +48,5 @@ export type RootStackParamList = {
   SupportDetail: { sid: number };
   NewSupport: undefined;
   SupportProfile: { uid: number };
+  SupportRecord: { uid: number; tid: number };
 };
