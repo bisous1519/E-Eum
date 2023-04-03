@@ -1,5 +1,6 @@
 server:
   port: 8080
+  user-url: "http://j8a607.p.ssafy.io/api/user"
 
 spring:
   datasource:

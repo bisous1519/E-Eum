@@ -1,11 +1,12 @@
 package com.craypas.bottle.controller;
 
-import java.util.HashMap;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
@@ -24,7 +27,6 @@ import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
-import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -45,6 +47,9 @@ public class BottleController {
 	private final FireBaseService fireBaseService;
 
 	private final GoogleCloudService googleCloudService;
+
+	@Value("${server.user-url}")
+	private String userServiceUrl;
 
 
 	@PostMapping("/req")
@@ -74,8 +79,22 @@ public class BottleController {
 			// tts path 저장
 			reqBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
 
-			// 해류병 생성
-			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto);
+			// random user id 요청
+			URI uri = UriComponentsBuilder
+				.fromUriString(userServiceUrl)
+				.path("/random/"+reqBottleDto.getWriterId())
+				.build()
+				.toUri();
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<Object> resultMap = restTemplate.getForEntity(uri, Object.class);
+
+			Object body = resultMap.getBody();
+			List<Integer> resultList = null;
+			if (body instanceof ArrayList) {
+				resultList = (List<Integer>) body;
+			}
+
+			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto, resultList);
 			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
 		} catch (CustomException e) {
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
