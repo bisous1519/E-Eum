@@ -17,6 +17,7 @@ import { color } from 'react-native-reanimated';
 import * as Font from 'expo-font';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
+import { postEmailVerify } from '../../modules/apis/user/userApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -130,31 +131,74 @@ const stylesSignupInput = StyleSheet.create({
 });
 
 export default function Signup(): JSX.Element {
+  const [nameState, setNameState] = useState<boolean>(false);
+  const [emailState, setEmailState] = useState<boolean>(false);
+  const [pwState, setPwState] = useState<boolean>(false);
+  const [nickState, setNickState] = useState<boolean>(false);
+  const [genderState, setGenderState] = useState<boolean>(false);
+
+  console.log(nameState);
+  console.log(emailState);
+  console.log(pwState);
+  console.log(nickState);
+  console.log(genderState);
+  console.log('----');
+
   //이름
   const { text: userName, onChangeText: onChangeUserName } = useInputText();
+  useEffect(() => {
+    userName.length <= 5 && userName.length >= 2
+      ? setNameState(true)
+      : setNameState(false);
+  });
 
   //이메일 인증
   const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
-  const requestVerifCode = () => {
-    console.log('인증 버튼 눌림');
-  };
   const { text: verifCode, onChangeText: onChangeVerifCode } = useInputText();
   const [timerOn, setTimerOn] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState<number>(5);
+  const [timeLeft, setTimeLeft] = useState<number>(300);
+  const [codeFromEmail, setCodeFromEmail] = useState<string>();
+  const [checkCode, setCheckCode] = useState<boolean>(false);
+  const [notChecked, setNotChecked] = useState<boolean>(true);
+  const requestVerifCode = () => {
+    console.log('인증 버튼 눌림');
+    setTimerOn(true);
+    postEmailVerify(userEmail).then((output) => setCodeFromEmail(output)); //인증 코드 전송
+    setNotChecked(true);
+  };
+
   const checkVerifCode = () => {
     console.log('인증 확인 버튼 눌림');
-    setTimerOn(true);
+    setNotChecked(false);
+    verifCode === codeFromEmail
+      ? checkEmailStateTrue()
+      : checkEmailStateFalse();
   };
+
+  const checkEmailStateTrue = () => {
+    setCheckCode(true);
+    setTimerOn(false);
+    setEmailState(true);
+  };
+  const checkEmailStateFalse = () => {
+    setCheckCode(false);
+    setEmailState(false);
+  };
+
   useEffect(() => {
     let interval: any;
-    console.log('카운트다운');
+    // console.log('카운트다운');
+    // console.log('checkCode: ' + checkCode);
+    // console.log('notChecked: ' + notChecked);
+    // console.log(codeFromEmail);
+    // console.log(verifCode);
     if (timerOn && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
       }, 1000);
     } else {
       setTimerOn(false);
-      setTimeLeft(5);
+      setTimeLeft(300);
     }
     return () => clearInterval(interval);
   }, [timerOn, timeLeft]);
@@ -163,20 +207,35 @@ export default function Signup(): JSX.Element {
   const { text: userPW, onChangeText: onChangeUserText } = useInputText();
   const PWRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/;
   const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
+  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
+
   useEffect(() => {
     if (userPW !== '') {
       if (!PWRegex.test(userPW)) setCheckRegexPW(false);
-      else setCheckRegexPW(true);
+      else {
+        setCheckRegexPW(true);
+      }
+      setPwState(false);
       setCheckSamePW(false);
     }
   }, [userPW]);
+
   const { text: userVerifPW, onChangeText: onChangeUserVerifPW } =
     useInputText();
-  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
+
   useEffect(() => {
-    if (userPW === userVerifPW) setCheckSamePW(true);
-    else setCheckSamePW(false);
-  }, [userVerifPW]);
+    if (userPW !== '' && userPW === userVerifPW) checkPwStateTrue();
+    else checkPwStateFalse();
+  }, [userVerifPW, userPW]);
+
+  const checkPwStateTrue = () => {
+    setCheckSamePW(true);
+    setPwState(true);
+  };
+  const checkPwStateFalse = () => {
+    setCheckSamePW(false);
+    setPwState(false);
+  };
 
   //닉네임
   const { text: userNickName, onChangeText: onChangeUserNickName } =
@@ -184,9 +243,13 @@ export default function Signup(): JSX.Element {
   const [checkNickNameLength, setCheckNickNameLength] =
     useState<boolean>(false);
   useEffect(() => {
-    if (userNickName.length >= 3 && userNickName.length <= 10)
+    if (userNickName.length >= 3 && userNickName.length <= 10) {
       setCheckNickNameLength(true);
-    else setCheckNickNameLength(false);
+      setNickState(true);
+    } else {
+      setCheckNickNameLength(false);
+      setNickState(false);
+    }
   }, [userNickName]);
 
   const [userGender, setUserGender] = useState<string>('');
@@ -196,12 +259,15 @@ export default function Signup(): JSX.Element {
   // 성별 관련
   const handleGenderFemale = () => {
     setUserGender('Female');
+    setGenderState(true);
   };
   const handleGenderMale = () => {
     setUserGender('Male');
+    setGenderState(true);
   };
   const handleGenderNone = () => {
     setUserGender('None');
+    setGenderState(true);
   };
 
   //프로필 사진 관련
@@ -216,25 +282,9 @@ export default function Signup(): JSX.Element {
 
   return (
     <ScrollView style={stylesGlobalContainer.scrollContainer}>
-      <View
-        style={StyleSheet.flatten([
-          stylesTempBorder.Blue,
-          stylesGlobalContainer.container,
-        ])}
-      >
-        <View
-          testID='inner'
-          style={StyleSheet.flatten([
-            stylesTempBorder.Red,
-            stylesInnerContainer.container,
-          ])}
-        >
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.box,
-            ])}
-          >
+      <View style={stylesGlobalContainer.container}>
+        <View testID='inner' style={stylesInnerContainer.container}>
+          <View style={stylesSignupInput.box}>
             <InputComp
               name={'이름'}
               text={userName}
@@ -243,7 +293,6 @@ export default function Signup(): JSX.Element {
           </View>
           <View
             style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
               stylesSignupInput.box,
               { marginTop: 20 },
             ])}
@@ -253,21 +302,6 @@ export default function Signup(): JSX.Element {
               text={userEmail}
               onChangeText={onChangeUserEmail}
               btn={true}
-              btnText={'인증'}
-              onPressBtn={requestVerifCode}
-            />
-          </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.box,
-            ])}
-          >
-            <InputComp
-              name={'인증 코드'}
-              text={verifCode}
-              onChangeText={onChangeVerifCode}
-              btn={true}
               btnText={
                 timerOn
                   ? `${Math.floor(timeLeft / 60)
@@ -275,14 +309,25 @@ export default function Signup(): JSX.Element {
                       .padStart(2, '0')}:${(timeLeft % 60)
                       .toString()
                       .padStart(2, '0')}`
-                  : '확인'
+                  : '인증'
               }
+              onPressBtn={requestVerifCode}
+            />
+          </View>
+          <View style={stylesSignupInput.box}>
+            <InputComp
+              name={'인증 코드'}
+              text={verifCode}
+              onChangeText={onChangeVerifCode}
+              btn={true}
+              btnText={'확인'}
               onPressBtn={checkVerifCode}
+              isValid={checkCode || notChecked}
+              errorMsg={'인증되지 않은 코드입니다'}
             />
           </View>
           <View
             style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
               stylesSignupInput.box,
               { marginTop: 20 },
             ])}
@@ -297,12 +342,7 @@ export default function Signup(): JSX.Element {
               errorMsg={'영문자, 특수문자, 숫자 포함 8~16자'}
             />
           </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.box,
-            ])}
-          >
+          <View style={stylesSignupInput.box}>
             <InputComp
               name={'비밀번호 확인'}
               text={userVerifPW}
@@ -315,7 +355,6 @@ export default function Signup(): JSX.Element {
           </View>
           <View
             style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
               stylesSignupInput.box,
               { marginTop: 20 },
             ])}
@@ -329,19 +368,9 @@ export default function Signup(): JSX.Element {
               errorMsg={'3~10자'}
             />
           </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.noInputTextContainer,
-            ])}
-          >
+          <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>성별</Text>
-            <View
-              style={StyleSheet.flatten([
-                stylesTempBorder.Blue,
-                stylesSignupInput.noInputTextBox,
-              ])}
-            >
+            <View style={stylesSignupInput.noInputTextBox}>
               <Pressable
                 onPress={handleGenderFemale}
                 style={stylesSignupInput.noInputTextSelections}
@@ -401,35 +430,15 @@ export default function Signup(): JSX.Element {
               </Pressable>
             </View>
           </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.noInputTextContainer,
-            ])}
-          >
+          <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>프로필 사진</Text>
-            <Pressable
-              style={StyleSheet.flatten([
-                stylesTempBorder.Red,
-                stylesSignupInput.addProfileImageButton,
-              ])}
-            >
+            <Pressable style={stylesSignupInput.addProfileImageButton}>
               <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
             </Pressable>
           </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.noInputTextContainer,
-            ])}
-          >
+          <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>회원구분</Text>
-            <View
-              style={StyleSheet.flatten([
-                stylesTempBorder.Blue,
-                stylesSignupInput.noInputTextBox,
-              ])}
-            >
+            <View style={stylesSignupInput.noInputTextBox}>
               <Pressable
                 onPress={handleUserTypeYA}
                 style={stylesSignupInput.noInputTextSelections}
@@ -470,19 +479,9 @@ export default function Signup(): JSX.Element {
               </Pressable>
             </View>
           </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.noInputTextContainer,
-            ])}
-          >
+          <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>증빙 자료</Text>
-            <Pressable
-              style={StyleSheet.flatten([
-                stylesTempBorder.Red,
-                stylesSignupInput.addProfileImageButton,
-              ])}
-            >
+            <Pressable style={stylesSignupInput.addProfileImageButton}>
               <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
             </Pressable>
           </View>
