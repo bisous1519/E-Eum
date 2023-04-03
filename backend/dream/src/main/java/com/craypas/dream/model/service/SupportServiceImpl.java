@@ -332,6 +332,7 @@ public class SupportServiceImpl implements SupportService {
 	}
 
 	// 후원했던 요청 목록 조회
+	@Override
 	public List<ResponseDto.Read> getUserSupportList(final Long uid) {
 		List<SupportUser> supportUserList = supportUserRepository.findAllByWriterIdOrderByRegTimeDesc(uid);
 		List<ResponseDto.Read> responseDto = new ArrayList<>(supportUserList.size());
@@ -342,6 +343,7 @@ public class SupportServiceImpl implements SupportService {
 	}
 
 	// 작성한 후원요청 목록 조회
+	@Override
 	public List<ResponseDto.Read> getMySupportList(final Long uid) {
 		List<Support> supportList = supportRepository.findAllByUserIdOrderByRegTimeDesc(uid);
 		return supportList.stream().map(ResponseDto.Read::new).collect(Collectors.toList());
