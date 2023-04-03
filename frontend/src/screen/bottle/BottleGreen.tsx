@@ -222,7 +222,7 @@ export default function BottleBlue(): JSX.Element {
   };
 
   const popupPaper = () => {
-    // navigation.push('MessagePaper');
+    if (!preventModalPopup) navigation.push('WritingResPaperGreen');
   };
   const moveToWritingPaper = () => {
     navigation.push('WritingPaperGreen');

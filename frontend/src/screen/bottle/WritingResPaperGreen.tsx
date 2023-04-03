@@ -6,7 +6,10 @@ import ButtonComp from '../../components/common/button/ButtonComp';
 import useDimension from '../../hooks/useDimension';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
-import { postWrittenMessage } from '../../modules/apis/bottle/bottleApis';
+import {
+  postWrittenMessage,
+  postWrittenResMessage,
+} from '../../modules/apis/bottle/bottleApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -124,7 +127,7 @@ const modalstyle = StyleSheet.create({
   },
 });
 
-export default function WritingPaperGreen(): JSX.Element {
+export default function WritingResPaperGreen(): JSX.Element {
   const navigation = useNav();
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
@@ -136,7 +139,7 @@ export default function WritingPaperGreen(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(true);
   const [sendingModal, setSendingModal] = useState<boolean>(false);
   const [sended, setSended] = useState<boolean>(false);
-  const sendingVideoPath = require('../../assets/videos/sendingbottle(long).mp4');
+  const sendingVideoPath = require('../../assets/videos/sendingbottle(round).mp4');
 
   const [userId, setUserId] = useState<number>(1);
 
@@ -147,11 +150,7 @@ export default function WritingPaperGreen(): JSX.Element {
     }
     // setWrittenTextValue('');
     setVisible(false);
-    postWrittenMessage({
-      writerId: userId,
-      content: writtenTextValue,
-      type: 2, //전문가 상담이 1
-    });
+    postWrittenResMessage(userId, writtenTextValue);
     setTimeout(() => {
       navigation.push('BottleGreen');
     }, 8600);

@@ -17,11 +17,11 @@ type RootStackParamList = {
   Signin?: undefined;
   BottleGreen?: undefined;
   BottleBlue?: undefined;
-  MessagePaper?: undefined;
   WritingPaperBlue?: undefined;
   WritingPaperGreen?: undefined;
   MyBottle?: undefined;
   WritingResPaperBlue?: undefined;
+  WritingResPaperGreen?: undefined;
 };
 
 // type RootStackParamList = {
