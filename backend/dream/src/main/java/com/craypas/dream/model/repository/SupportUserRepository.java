@@ -11,5 +11,10 @@ import com.craypas.dream.model.entity.SupportUser;
 @Repository
 public interface SupportUserRepository extends JpaRepository<SupportUser, Long> {
 	SupportUser findBySupportAndWriterId(Support support, Long writerId);
+
+	Integer countBySupportAndWriterId(Support support, Long writerId);
+
 	List<SupportUser> findAllBySupport(Support support);
+
+	List<SupportUser> findAllByWriterIdOrderByRegTimeDesc(Long uid);
 }

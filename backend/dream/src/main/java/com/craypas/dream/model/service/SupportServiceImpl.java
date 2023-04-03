@@ -273,12 +273,21 @@ public class SupportServiceImpl implements SupportService {
 		// 2. 관계테이블에 정보 추가
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
-		supportUserRepository.save(SupportUser.builder()
-			.support(support)
-			.writerId(uid)
-			.point(point)
-			.regTime(LocalDateTime.now())
-			.build());
+		// 2-1. 이미 존재하는 정보가 있으면 update
+		if (supportUserRepository.countBySupportAndWriterId(support, uid) > 0) {
+			SupportUser supportUser = supportUserRepository.findBySupportAndWriterId(support, uid);
+			supportUser.updatePoint(point);
+			supportUserRepository.save(supportUser);
+		}
+		// 2-2. 존재하지 않으면 create
+		else {
+			supportUserRepository.save(SupportUser.builder()
+				.support(support)
+				.writerId(uid)
+				.point(point)
+				.regTime(LocalDateTime.now())
+				.build());
+		}
 
 		// 3. 후원글의 현재 모금액 수정
 		support.updateCurrAmount(point);
@@ -289,9 +298,14 @@ public class SupportServiceImpl implements SupportService {
 	@Override
 	@Transactional
 	public ResponseDto.Read deleteSupportUser(Long sid, Long uid) {
-		// 1. 관계테이블에서 정보 삭제
+		// 1. 관계테이블에 정보가 존재하는지 검사하여 예외처리
 		Support support = supportRepository.findById(sid)
 			.orElseThrow(() -> new CustomException(ErrorCode.SUPPORT_NOT_FOUND));
+		if (supportUserRepository.countBySupportAndWriterId(support, uid) == 0) {
+			throw new CustomException(ErrorCode.SUPPORT_USER_NOT_FOUND);
+		}
+
+		// 2. 관계테이블에서 정보 삭제
 		SupportUser supportUser = supportUserRepository.findBySupportAndWriterId(support, uid);
 		Integer point = supportUser.getPoint();
 		if (supportUser == null) {
@@ -299,19 +313,37 @@ public class SupportServiceImpl implements SupportService {
 		}
 		supportUserRepository.delete(supportUser);
 
-		// 2. 후원자의 포인트 환불
+		// 3. 후원자의 포인트 환불
 		RestTemplate restTemplate = new RestTemplate();
 		String url = PROJECT_USER_URL + "/point/refund/" + uid.toString();
 		// Header set
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 		// Message
-		HttpEntity<?> requestMessage = new HttpEntity<>(point, httpHeaders);
+		Map<String, Integer> map = new HashMap<>();
+		map.put("point", point);
+		HttpEntity<?> requestMessage = new HttpEntity<>(map, httpHeaders);
 		// Request
 		ResponseEntity<String> result2 = restTemplate.postForEntity(url, requestMessage, String.class);
 
 		// 3. 후원글의 현재 모금액 수정
 		support.updateCurrAmount((-1) * point);
 		return new ResponseDto.Read(supportRepository.save(support));
+	}
+
+	// 후원했던 요청 목록 조회
+	public List<ResponseDto.Read> getUserSupportList(final Long uid) {
+		List<SupportUser> supportUserList = supportUserRepository.findAllByWriterIdOrderByRegTimeDesc(uid);
+		List<ResponseDto.Read> responseDto = new ArrayList<>(supportUserList.size());
+		for (SupportUser supportUser : supportUserList) {
+			responseDto.add(new ResponseDto.Read(supportUser.getSupport()));
+		}
+		return responseDto;
+	}
+
+	// 작성한 후원요청 목록 조회
+	public List<ResponseDto.Read> getMySupportList(final Long uid) {
+		List<Support> supportList = supportRepository.findAllByUserIdOrderByRegTimeDesc(uid);
+		return supportList.stream().map(ResponseDto.Read::new).collect(Collectors.toList());
 	}
 }

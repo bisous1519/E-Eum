@@ -13,7 +13,12 @@ import com.craypas.dream.model.entity.Tag;
 @Repository
 public interface SupportRepository extends JpaRepository<Support, Long> {
 	Page<Support> findAll(Pageable pageable);
+
 	List<Support> findAllByTitleContainingOrderByRegTimeDesc(String title);
+
 	List<Support> findAllByStatus(Integer status);
+
 	List<Support> findAllByTag(Tag tag);
+
+	List<Support> findAllByUserIdOrderByRegTimeDesc(Long uid);
 }

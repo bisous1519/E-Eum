@@ -32,4 +32,10 @@ public interface SupportService {
 
 	// 꿈 후원 취소하기
 	ResponseDto.Read deleteSupportUser(final Long sid, final Long uid);
+
+	// 후원했던 요청 목록 조회
+	List<ResponseDto.Read> getUserSupportList(final Long uid);
+
+	// 작성한 후원요청 목록 조회
+	List<ResponseDto.Read> getMySupportList(final Long uid);
 }
