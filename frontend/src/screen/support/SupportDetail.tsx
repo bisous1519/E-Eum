@@ -30,6 +30,7 @@ import { useRecoilState } from 'recoil';
 import { supportDetailState } from '../../modules/apis/support/supportAtoms';
 import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import TextRender from '../../components/common/editor/TextRender';
 // ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -230,13 +231,9 @@ export default function SupportDetail(): JSX.Element {
         <View style={styles.innerContainer}>
           <View style={styles.titleWithTag}>
             <Text style={styles.title}>{detailData?.title}</Text>
-            <TouchableOpacity
-              style={styles.tagBox}
-              onPress={handleTagPress}
-              activeOpacity={0.6}
-            >
+            <View style={styles.tagBox}>
               <Text style={styles.tag}>{detailData?.tagName}</Text>
-            </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원 요청 내용</Text>
@@ -339,7 +336,7 @@ export default function SupportDetail(): JSX.Element {
           </View>
 
           <View style={styles.group}>
-            <Text style={styles.mainContent}>{detailData?.content}</Text>
+            <TextRender content={detailData?.content} />
           </View>
         </View>
       </ScrollView>

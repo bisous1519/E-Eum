@@ -140,4 +140,3 @@ export default function Letter({ content }: LetterPropsType): JSX.Element {
     </ImageBackground>
   );
 }
-
