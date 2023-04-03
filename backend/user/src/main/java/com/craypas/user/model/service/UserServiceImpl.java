@@ -1,9 +1,12 @@
 package com.craypas.user.model.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +16,11 @@ import com.craypas.user.exception.CustomException;
 import com.craypas.user.exception.ErrorCode;
 import com.craypas.user.model.dto.user.RequestDto;
 import com.craypas.user.model.dto.user.ResponseDto;
+import com.craypas.user.model.entity.Badge;
 import com.craypas.user.model.entity.User;
+import com.craypas.user.model.entity.UserBadge;
+import com.craypas.user.model.repository.BadgeRepository;
+import com.craypas.user.model.repository.UserBadgeRepository;
 import com.craypas.user.model.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 	final private UserRepository userRepository;
+	final private BadgeRepository badgeRepository;
+	final private UserBadgeRepository userBadgeRepository;
 	final private FireBaseService fireBaseService;
 
 	// 회원정보 등록
@@ -131,13 +140,13 @@ public class UserServiceImpl implements UserService {
 
 	// 회원 프리뷰 목록 조회
 	@Override
-	public List<ResponseDto.UserPreview> getUserPreviewList(final String uidList) {
-		List<ResponseDto.UserPreview> userPreviewList = new ArrayList<>();
+	public List<ResponseDto.GetUserPreview> getUserPreviewList(final String uidList) {
+		List<ResponseDto.GetUserPreview> userPreviewList = new ArrayList<>();
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			List<Integer> list = mapper.readValue(uidList, List.class);
 			for (Integer uid : list) {
-				userPreviewList.add(new ResponseDto.UserPreview(userRepository.findById(uid.longValue())
+				userPreviewList.add(new ResponseDto.GetUserPreview(userRepository.findById(uid.longValue())
 					.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND))));
 			}
 		} catch (IOException e) {
@@ -174,8 +183,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public Integer usePoint(Long uid, Map<String, Integer> requestMap) {
+		// 사용 전에 포인트가 충분한지 검사
+		System.out.println("=============================");
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updatePoint((-1) * requestMap.get("point"));
+		Integer point = requestMap.get("point");
+		System.out.println(requestMap.toString());
+		System.out.println(point);
+		if(user.getPoint() < point){
+			throw new CustomException(ErrorCode.NOT_ENOUGH_POINT);
+		}
+		user.updatePoint((-1) * point);
 		return user.getPoint();
 	}
 
@@ -256,9 +273,53 @@ public class UserServiceImpl implements UserService {
 		return certificatePath;
 	}
 
+	// 해류병 발송시 수신 회원 조회
+	@Override
+	public List<Long> getRandomUserList(final Long uid) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		List<User> userList = userRepository.findAll();
+		userList.remove(user);
+		Set<Long> randomUsers = new HashSet<>();
+		while (randomUsers.size() < 3) {
+			int idx = (int)((Math.random() * 1000) % userList.size());
+			randomUsers.add(userList.get(idx).getId());
+		}
+		return new ArrayList<>(randomUsers);
+	}
 
+	// 뱃지 획득 정보 생성
+	@Override
+	public ResponseDto.GetUserBadge createUserBadge(final Long uid, final Long bid) {
+		// 뱃지 획득 정보가 미리 있는지 검사
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		Badge badge = badgeRepository.findById(bid).orElseThrow(() -> new CustomException(ErrorCode.BADGE_NOT_FOUND));
+		if (userBadgeRepository.countAllByUserAndBadge(user, badge) > 0) {
+			throw new CustomException(ErrorCode.USER_BADGE_ALREADY_EXIST);
+		}
 
-
+		// 뱃지 획득 정보 생성 후 저장
+		UserBadge userBadge = UserBadge.builder().user(user).badge(badge).regTime(LocalDateTime.now()).build();
+		userBadgeRepository.save(userBadge);
+		return ResponseDto.GetUserBadge.builder()
+			.infoId(userBadge.getId())
+			.user(new ResponseDto.GetUserPreview(userBadge.getUser()))
+			.badge(new ResponseDto.GetBadge(userBadge.getBadge()))
+			.regTime(userBadge.getRegTime())
+			.build();
+	}
 
 	// 뱃지 상세 조회
+	@Override
+	public ResponseDto.GetUserBadgeInfo getBadgeList(final Long uid) {
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		List<UserBadge> userBadgeList = userBadgeRepository.findAllByUser(user);
+		List<ResponseDto.GetBadge> badgeList = new ArrayList<>();
+		for (UserBadge userBadge : userBadgeList) {
+			badgeList.add(new ResponseDto.GetBadge(userBadge.getBadge()));
+		}
+		return ResponseDto.GetUserBadgeInfo.builder()
+			.userNickname(user.getNickname())
+			.badgeList(badgeList)
+			.build();
+	}
 }

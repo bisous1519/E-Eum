@@ -154,5 +154,21 @@ public class UserController {
 		return new ResponseEntity<>(userService.updateCertificateFile(uid, file), HttpStatus.OK);
 	}
 
+	// 해류병 발송시 수신 회원 조회
+	@GetMapping("/random/{uid}")
+	public ResponseEntity<?> getRandomUserList(@PathVariable final Long uid) {
+		return new ResponseEntity<>(userService.getRandomUserList(uid), HttpStatus.OK);
+	}
+
+	// 뱃지 획득 정보 생성
+	@PostMapping("/badge/{uid}")
+	public ResponseEntity<?> createUserBadge(@PathVariable final Long uid, @RequestParam("bid") final Long bid) {
+		return new ResponseEntity<>(userService.createUserBadge(uid, bid), HttpStatus.CREATED);
+	}
+
 	// 뱃지 상세 조회
+	@GetMapping("/badge/{uid}")
+	public ResponseEntity<?> getBadgeList(@PathVariable final Long uid) {
+		return new ResponseEntity<>(userService.getBadgeList(uid), HttpStatus.OK);
+	}
 }
