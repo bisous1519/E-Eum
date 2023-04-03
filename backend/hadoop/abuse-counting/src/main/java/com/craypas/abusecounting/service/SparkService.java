@@ -27,9 +27,9 @@ public class  SparkService {
             System.out.println(messageWord);
             boolean isContained = explodedDS.filter(expr("INSTR('" + messageWord + "', word) > 0")).count() > 0;
             if (isContained) {
-                return AbuseResultDto.builder().isAbuse(true).build();
+                return new AbuseResultDto(true);
             }
         }
-        return AbuseResultDto.builder().isAbuse(false).build();
+        return new AbuseResultDto(false);
     }
 }
