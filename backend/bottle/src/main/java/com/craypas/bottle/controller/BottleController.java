@@ -1,7 +1,5 @@
 package com.craypas.bottle.controller;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -15,9 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.craypas.bottle.exception.CustomException;
 import com.craypas.bottle.exception.ErrorCode;
@@ -25,8 +21,10 @@ import com.craypas.bottle.model.dto.request.CreateLikeDto;
 import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
+import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.service.ApiRequestService;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -48,8 +46,16 @@ public class BottleController {
 
 	private final GoogleCloudService googleCloudService;
 
-	@Value("${server.user-url}")
-	private String userServiceUrl;
+	private final ApiRequestService apiRequestService;
+
+	@Value("${server.url.user}")
+	private String userServerUrl;
+
+	@Value("${server.url.spark}")
+	private String sparkServerUrl;
+
+	@Value("${server.url.python}")
+	private String pythonServerUrl;
 
 
 	@PostMapping("/req")
@@ -57,10 +63,19 @@ public class BottleController {
 		String bucketFolder = "", saveFileName = "";
 		try {
 			String content = reqBottleDto.getContent();
-			
-			// 유해 탐지 ai 서버 요청
+
 			// 유해 탐지 분산 서버 요청
-			
+			AbuseResultDto isAbuse = apiRequestService.requestPostAPI(sparkServerUrl, "content", reqBottleDto.getContent()).getBody();
+			if(isAbuse.getPrediction()) {
+				return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+			} else {
+				// 유해 탐지 딥러닝 서버 요청
+				isAbuse = apiRequestService.requestPostAPI(pythonServerUrl, "input_data", reqBottleDto.getContent()).getBody();
+				if(isAbuse.getPrediction()) {
+					return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+				}
+			}
+
 			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
 
@@ -80,21 +95,13 @@ public class BottleController {
 			reqBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
 
 			// random user id 요청
-			URI uri = UriComponentsBuilder
-				.fromUriString(userServiceUrl)
-				.path("/random/"+reqBottleDto.getWriterId())
-				.build()
-				.toUri();
-			RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<Object> resultMap = restTemplate.getForEntity(uri, Object.class);
+			List<Integer> body = apiRequestService.requestGetAPI(userServerUrl, "/random/"+reqBottleDto.getWriterId()).getBody();
+			// List<Integer> resultList = null;
+			// if (body instanceof ArrayList) {
+			// 	resultList = (List<Integer>) body;
+			// }
 
-			Object body = resultMap.getBody();
-			List<Integer> resultList = null;
-			if (body instanceof ArrayList) {
-				resultList = (List<Integer>) body;
-			}
-
-			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto, resultList);
+			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto, body);
 			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
 		} catch (CustomException e) {
 			fireBaseService.deleteFile(bucketFolder, saveFileName);
