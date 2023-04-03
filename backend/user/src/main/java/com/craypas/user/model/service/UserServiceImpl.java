@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 	// 이메일 중복 확인(중복 시 예외 호출)
 	@Override
 	public void isEmailUnique(final String email) {
-		if (!userRepository.findAllByEmail(email).isEmpty()) {
+		if (userRepository.countByEmail(email) > 0) {
 			throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
 		}
 	}
@@ -321,5 +321,18 @@ public class UserServiceImpl implements UserService {
 			.userNickname(user.getNickname())
 			.badgeList(badgeList)
 			.build();
+	}
+
+	// 회원 로그인
+	@Override
+	public ResponseDto.GetUserPreview loginUser(final RequestDto.LoginUser requestDto) {
+		if (userRepository.countByEmail(requestDto.getEmail()) == 0) {
+			throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
+		}
+		User user = userRepository.findByEmail(requestDto.getEmail());
+		if (!user.getPassword().equals(requestDto.getPassword())) {
+			throw new CustomException(ErrorCode.LOGIN_FAILED);
+		}
+		return new ResponseDto.GetUserPreview(user);
 	}
 }

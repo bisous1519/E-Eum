@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.user.model.dto.user.RequestDto;
+import com.craypas.user.model.dto.user.ResponseDto;
 import com.craypas.user.model.service.EmailService;
 import com.craypas.user.model.service.UserService;
 
@@ -170,5 +171,11 @@ public class UserController {
 	@GetMapping("/badge/{uid}")
 	public ResponseEntity<?> getBadgeList(@PathVariable final Long uid) {
 		return new ResponseEntity<>(userService.getBadgeList(uid), HttpStatus.OK);
+	}
+
+	// 회원 로그인
+	@PostMapping("/login")
+	public ResponseEntity<?> loginUser(@RequestBody final RequestDto.LoginUser requestDto) {
+		return new ResponseEntity<>(userService.loginUser(requestDto), HttpStatus.OK);
 	}
 }
