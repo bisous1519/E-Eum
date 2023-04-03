@@ -28,3 +28,40 @@ export type ResBottleStateType = {
   status: number;
 };
 
+//작성한 질문 해류병
+export type WrittenMessageType = {
+  id: number;
+  writterId: number;
+  content: string;
+  type: number;
+  sentiment: number;
+  ttsPath: string;
+  regTime: string;
+  status: number;
+};
+
+//수신된 해류병 목록
+export type ReceivedMessagesType = {
+  user_req_bottle_id: number;
+  reqBottle: reqBottleType;
+};
+
+export type reqBottleType = {
+  id: number;
+  writterId: number;
+  content: string;
+  sentiment: number;
+  ttsPath: string;
+  regTime: string;
+  status: number;
+};
+
+export type WrittenResMessageType = {
+  id: number;
+  userReqBottlId: number;
+  content: string;
+  sentiment: number;
+  ttsPath: string;
+  regTime: string;
+  status: number;
+};

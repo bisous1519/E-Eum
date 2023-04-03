@@ -7,7 +7,10 @@ import ButtonComp from '../../components/common/button/ButtonComp';
 import useDimension from '../../hooks/useDimension';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
-import { postWrittenMessage } from '../../modules/apis/bottle/bottleApis';
+import {
+  postWrittenMessage,
+  postWrittenResMessage,
+} from '../../modules/apis/bottle/bottleApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -125,7 +128,7 @@ const modalstyle = StyleSheet.create({
   },
 });
 
-export default function WritingPaperBlue(): JSX.Element {
+export default function WritingResPaperBlue(): JSX.Element {
   const navigation = useNav();
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
@@ -148,11 +151,7 @@ export default function WritingPaperBlue(): JSX.Element {
     }
     // setWrittenTextValue('');
     setVisible(false);
-    postWrittenMessage({
-      writerId: userId,
-      content: writtenTextValue,
-      type: 1, //일반 상담이 1
-    });
+    postWrittenResMessage(userId, writtenTextValue);
     setTimeout(() => {
       navigation.push('BottleBlue');
     }, 8600);

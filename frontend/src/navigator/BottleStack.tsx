@@ -5,6 +5,7 @@ import MessagePaper from '../screen/bottle/MessagePaper';
 import WritingPaperBlue from '../screen/bottle/WritingPaperBlue';
 import WritingPaperGreen from '../screen/bottle/WritingPaperGreen';
 import MyBottle from '../screen/bottle/MyBottle';
+import WritingResPaperBlue from '../screen/bottle/WritingResPaperBlue';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,11 @@ const BottleStack = () => {
       <Stack.Screen name='WritingPaperBlue' component={WritingPaperBlue} />
       <Stack.Screen name='WritingPaperGreen' component={WritingPaperGreen} />
       <Stack.Screen
+        name='WritingResPaperBlue'
+        component={WritingResPaperBlue}
+      />
+      {/* <Stack.Screen name='WritingResPaperGreen' component={WritingResPaperGreen} /> */}
+      <Stack.Screen
         name='MyBottle'
         component={MyBottle}
         options={{ headerShown: false }}
@@ -30,4 +36,3 @@ const BottleStack = () => {
 };
 
 export default BottleStack;
-

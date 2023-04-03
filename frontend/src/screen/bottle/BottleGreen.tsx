@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 // import Video from 'react-native-video';
+import { FontAwesome } from '@expo/vector-icons';
 import { Video } from 'expo-av';
+import { FlatList } from 'react-native-gesture-handler';
+import { useRecoilState } from 'recoil';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import useNav from '../../hooks/useNav';
-import { FontAwesome } from '@expo/vector-icons';
-import { FlatList } from 'react-native-gesture-handler';
+import { ReceivedMessagesType } from '../../modules/apis/bottle/bottleAtomTypes';
+import { receivedMessagesListState } from '../../modules/apis/bottle/bottleAtoms';
+import { getReceivedMessages } from '../../modules/apis/bottle/bottleApis';
 const { DEVICE_WIDTH } = useDimension();
 const borders = StyleSheet.create({
   red: {
@@ -177,6 +174,8 @@ const modalstyles = StyleSheet.create({
 export default function BottleBlue(): JSX.Element {
   const navigation = useNav();
 
+  const [userId, setUserId] = useState<number>(7);
+
   const beachVideoBlue = require('../../assets/videos/beachgreen.mp4');
 
   const convertBottle = () => {
@@ -185,52 +184,39 @@ export default function BottleBlue(): JSX.Element {
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
+  const [receivedMessagesList, setReceivedMessagesList] = useRecoilState<
+    ReceivedMessagesType[]
+  >(receivedMessagesListState);
+
+  const [preventModalPopup, setPreventModalPopup] = useState<boolean>(true);
+
   const handleModalPop = () => {
+    setPreventModalPopup(false);
+    console.log('답변하기 팻말 버튼 눌러짐 헉');
     setModalVisible(true);
   };
   const handleModalClose = () => {
     setModalVisible(false);
   };
 
-  const messageList = [
-    {
-      id: 1,
-      userReqBottleId: 1,
-      content: '힝 너무너무 슬프고 힘들어요 안아주세요?',
-      sentiment: -1,
-      ttsPath: null,
-      regTime: '2023-03-25 22:38:45',
-      status: 1,
-    },
-    {
-      id: 1,
-      userReqBottleId: 1,
-      writerId: 1,
-      content:
-        '학교다니는게 너무 재밌어요. 근데 다른 친구들 다 여유로우니까 재밌게 노는거고 저는 상황이 좋지 않으니까 이 친구들 따라서 놀면 안될 것 같은데 자꾸 놀고싶고 그래요..',
-      sentiment: 0,
-      ttsPath:
-        'https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/tts-mp3%2F481564219018800?alt=media',
-      regTime: '2023-03-25 22:38:39',
-      status: 0,
-    },
-    {
-      id: 1,
-      userReqBottleId: 1,
-      content: '헉 너무너무 조아요 근데 이게 고민이에요',
-      sentiment: 1,
-      ttsPath: null,
-      regTime: '2023-03-25 22:38:45',
-      status: 1,
-    },
-  ];
+  useEffect(() => {
+    getReceivedMessages(userId).then((data: ReceivedMessagesType[]) =>
+      setReceivedMessagesList(data)
+    );
+    console.log('메시지 리스트 useEffect 헉');
+    console.log(receivedMessagesList);
+  }, []);
 
   type messageDataType = {
+    user_req_bottle_id: number;
+    reqBottle: reqBottleType;
+  };
+  type reqBottleType = {
     id: number;
-    userReqBottleId: number;
+    writterId: number;
     content: string;
     sentiment: number;
-    ttsPath: string | null;
+    ttsPath: string;
     regTime: string;
     status: number;
   };
@@ -245,9 +231,9 @@ export default function BottleBlue(): JSX.Element {
   const modalMessageItem = ({ item }: { item: messageDataType }) => {
     let messageBoxBackgroundColor = '';
 
-    if (item.sentiment === -1) {
+    if (item.reqBottle.sentiment === -1) {
       messageBoxBackgroundColor = theme.textColor.error;
-    } else if (item.sentiment === 0) {
+    } else if (item.reqBottle.sentiment === 0) {
       messageBoxBackgroundColor = theme.grayColor.lightGray;
     } else {
       messageBoxBackgroundColor = theme.mainColor.main;
@@ -262,10 +248,10 @@ export default function BottleBlue(): JSX.Element {
           ]}
         >
           <Text style={modalstyles.messageRegTime}>
-            작성 날짜 : {item.regTime}
+            작성 날짜 : {item.reqBottle.regTime}
           </Text>
           <View>
-            <Text>{item.content}</Text>
+            <Text>{item.reqBottle.content}</Text>
           </View>
         </View>
       </Pressable>
@@ -311,7 +297,7 @@ export default function BottleBlue(): JSX.Element {
                   style={StyleSheet.flatten([borders.red, modalstyles.listBox])}
                 >
                   <FlatList
-                    data={messageList}
+                    data={receivedMessagesList}
                     renderItem={modalMessageItem}
                     // renderItem={({ item }) => <Text>{item.id}</Text>}
                     keyExtractor={(item, index) => index.toString()}

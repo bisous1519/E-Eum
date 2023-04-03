@@ -21,6 +21,7 @@ type RootStackParamList = {
   WritingPaperBlue?: undefined;
   WritingPaperGreen?: undefined;
   MyBottle?: undefined;
+  WritingResPaperBlue?: undefined;
 };
 
 // type RootStackParamList = {
@@ -40,4 +41,3 @@ export default function useNav() {
   //     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return useNav;
 }
-

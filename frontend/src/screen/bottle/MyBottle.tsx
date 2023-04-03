@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRecoilState } from 'recoil';
 import MyBottleItem from '../../components/bottle/MyBottleItem';
 import MyBottleModal from '../../components/bottle/MyBottleModal';
-import theme from '../../utils/theme';
-import useNav from '../../hooks/useNav';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderComp from '../../components/common/HeaderComp';
 import { getSendBottles } from '../../modules/apis/bottle/bottleApis';
 import { MyBottleStateType } from '../../modules/apis/bottle/bottleAtomTypes';
-import { useRecoilState } from 'recoil';
 import { myBottlesState } from '../../modules/apis/bottle/bottleAtoms';
+import theme from '../../utils/theme';
 
 const styles = StyleSheet.create({
   container: {
@@ -56,4 +55,3 @@ export default function MyBottle(): JSX.Element {
     </SafeAreaView>
   );
 }
-

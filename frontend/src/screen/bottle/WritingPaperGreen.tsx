@@ -7,6 +7,7 @@ import ButtonComp from '../../components/common/button/ButtonComp';
 import useDimension from '../../hooks/useDimension';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
+import { postWrittenMessage } from '../../modules/apis/bottle/bottleApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -138,6 +139,8 @@ export default function WritingPaperGreen(): JSX.Element {
   const [sended, setSended] = useState<boolean>(false);
   const sendingVideoPath = require('../../assets/videos/sendingbottle(long).mp4');
 
+  const [userId, setUserId] = useState<number>(1);
+
   const doneWriting = () => {
     setStartVideo(true);
     if (inputRef.current) {
@@ -145,6 +148,11 @@ export default function WritingPaperGreen(): JSX.Element {
     }
     // setWrittenTextValue('');
     setVisible(false);
+    postWrittenMessage({
+      writerId: userId,
+      content: writtenTextValue,
+      type: 2, //전문가 상담이 1
+    });
     setTimeout(() => {
       navigation.push('BottleGreen');
     }, 8600);
