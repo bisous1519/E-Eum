@@ -11,7 +11,7 @@ import static org.apache.spark.sql.functions.*;
 public class  SparkService {
 
     private final SparkSession sparkSession;
-    public double calculateAbusePercentage(String message) {
+    public int calculateAbusePercentage(String message) {
         Dataset<Row> abuseDS = sparkSession.read()
                 .option("multiline", true)
                 .json("hdfs://localhost:9000/user/hadoop/abuse_data_new.json")
