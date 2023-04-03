@@ -84,4 +84,16 @@ public class SupportController {
 		@RequestParam("uid") final Long uid) {
 		return new ResponseEntity<>(supportService.deleteSupportUser(sid, uid), HttpStatus.OK);
 	}
+
+	// 후원했던 요청 목록 조회
+	@GetMapping("/res/{uid}")
+	public ResponseEntity<?> getUserSupportList(@PathVariable final Long uid) {
+		return new ResponseEntity<>(supportService.getUserSupportList(uid), HttpStatus.OK);
+	}
+
+	// 작성한 후원요청 목록 조회
+	@GetMapping("/req/user/{uid}")
+	public ResponseEntity<?> getMySupportList(@PathVariable final Long uid) {
+		return new ResponseEntity<>(supportService.getMySupportList(uid), HttpStatus.OK);
+	}
 }

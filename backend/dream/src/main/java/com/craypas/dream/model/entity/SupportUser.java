@@ -45,4 +45,8 @@ public class SupportUser {
 		this.point = point;
 		this.regTime = regTime;
 	}
+
+	public void updatePoint(Integer point) {
+		this.point += point;
+	}
 }
