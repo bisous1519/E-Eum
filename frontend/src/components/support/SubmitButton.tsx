@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 import { shadowStyle } from '../common/shadowStyle';
@@ -28,11 +28,12 @@ export default function SubmitButton({
   onPressSubmitBtn,
 }: SubmitButtonPropsType): JSX.Element {
   return (
-    <Pressable
+    <TouchableOpacity
       style={StyleSheet.flatten([styles.container, shadowStyle.shadow])}
       onPress={onPressSubmitBtn}
+      activeOpacity={0.6}
     >
       <Text style={{ color: theme.textColor.white }}>등록하기</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }

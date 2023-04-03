@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -12,6 +12,13 @@ import theme from '../../utils/theme';
 import * as Progress from 'react-native-progress';
 import PlusButton from '../../components/common/PlusButton';
 import useNav from '../../hooks/useNav';
+import { getSupports } from '../../modules/apis/support/supportApis';
+import { useRecoilState } from 'recoil';
+import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
+import { supportsState } from '../../modules/apis/support/supportAtoms';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigator/SupportStack';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -70,152 +77,105 @@ const styles = StyleSheet.create({
   },
 });
 
-// 나중에 다 분리하자.. ===================================================
-// 후원 목록에서 보여줄 데이터: 임의의 JSON 데이터
-const DATA = [
-  {
-    id: 1,
-    nick: '1싸피',
-    title: '개발자가 되고싶어요 길어지면 어케되누',
-    goal: 110000,
-  },
-  {
-    id: 2,
-    nick: '2싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 3,
-    nick: '3싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 4,
-    nick: '4싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 5,
-    nick: '5싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 6,
-    nick: '6싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 7,
-    nick: '7싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 8,
-    nick: '8싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 9,
-    nick: '9싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 10,
-    nick: '10싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-  {
-    id: 11,
-    nick: '11싸피',
-    title: '개발자가 되고싶어요',
-    goal: 110000,
-  },
-];
-
 // 각 아이템(목록 데이터) 요소의 타입 지정
 type ItemProps = {
-  id: number;
-  nick: string;
+  sid: number;
+  userNickname: string;
   title: string;
-  goal: number;
+  targetAmount: number;
+  achievementRate: number;
 };
 
 // 각 카드를 어떻게 보여줄지 설정
-const Item = ({ id, nick, title, goal }: ItemProps) => (
-  <TouchableOpacity
-    style={styles.item}
-    onPress={() => console.log('디테일 스크린이 까꿍')}
-    activeOpacity={0.6}
-  >
-    <View style={styles.container}>
-      <View style={styles.profile}>
-        <Image
-          source={require('../../assets/images/sample.png')}
-          style={styles.image}
-        />
-        <Text>{nick}</Text>
-      </View>
-      <View style={styles.titleBox}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      <View style={styles.goal}>
-        <Text style={styles.lightTitle}>목표금액</Text>
-        <Text>{goal}원</Text>
-      </View>
-      <View style={styles.progress}>
-        <Text style={styles.lightTitle}>달성률</Text>
-        <Progress.Bar
-          progress={0.65}
-          width={null}
-          height={5}
-          color={theme.mainColor.main}
-        />
-      </View>
+const Item = ({
+  sid,
+  userNickname,
+  title,
+  targetAmount,
+  achievementRate,
+}: ItemProps) => (
+  <View style={styles.container}>
+    <View style={styles.profile}>
+      <Image
+        source={require('../../assets/images/sample.png')}
+        style={styles.image}
+      />
+      <Text>{userNickname}</Text>
     </View>
-  </TouchableOpacity>
+    <View style={styles.titleBox}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+    <View style={styles.goal}>
+      <Text style={styles.lightTitle}>목표금액</Text>
+      <Text>{targetAmount}원</Text>
+    </View>
+    <View style={styles.progress}>
+      <Text style={styles.lightTitle}>달성률</Text>
+      <Progress.Bar
+        progress={achievementRate}
+        width={null}
+        height={5}
+        color={theme.mainColor.main}
+      />
+    </View>
+  </View>
 );
 // ========================================================================
 
 // 초기 꿈후원 목록 화면
 export default function SupportList(): JSX.Element {
+  const [supports, setSupports] =
+    useRecoilState<SupportsStateType>(supportsState);
+
+  // 정렬 기준
+  const [sortType, setSortType] = useState<number>(1);
+
   const navigation = useNav();
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const onPressDetail = (sid: number) => {
+    nav.navigate('SupportDetail', { sid: sid });
+  };
 
   const onPressPlusBtn = () => {
     navigation.push('NewSupport');
   };
 
+  const fetchData = async () => {
+    const supportsData: SupportsStateType | undefined = await getSupports(
+      sortType
+    );
+    if (supportsData) {
+      setSupports(supportsData);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [sortType, supports]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.tempContainer}>
-        <Text
-          style={{ color: 'red' }}
-          onPress={() => navigation.push('SupportDetail')}
-        >
-          게시물 상세
-        </Text>
-      </View>
       <FlatList
-        data={DATA}
+        data={supports}
         renderItem={({ item }) => (
-          <Item
-            id={item.id}
-            nick={item.nick}
-            title={item.title}
-            goal={item.goal}
-          />
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => onPressDetail(item.sid)}
+            activeOpacity={0.6}
+            key={item.sid}
+          >
+            <Item
+              sid={item.sid}
+              userNickname={item.userNickname}
+              title={item.title}
+              targetAmount={item.targetAmount}
+              achievementRate={item.achievementRate / 100}
+              key={item.sid}
+            />
+          </TouchableOpacity>
         )}
         numColumns={2}
-        keyExtractor={(item) => item.id.toString()}
-        // key={2} // 당신..뭔데..?ㅋㅋㅋ
       />
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
     </View>

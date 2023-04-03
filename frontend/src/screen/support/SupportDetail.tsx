@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
@@ -10,6 +10,7 @@ import {
   Dimensions,
   Pressable,
 } from 'react-native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import theme from '../../utils/theme';
 // Progress Bar
@@ -21,9 +22,14 @@ import * as Linking from 'expo-linking';
 // 후원하기 버튼
 import SupportButton from '../../components/support/SupportButton';
 // 후원금 잔액 부족 모달 - DeleteModal로 테스트 =============
-import DeleteModal from '../../components/record/DeleteModal';
 import ChargeAlertModal from '../../components/support/ChargeAlertModal';
 import SupportModal from '../../components/support/SupportModal';
+import { RootStackParamList } from '../../navigator/SupportStack';
+import { supportDetail } from '../../modules/apis/support/supportApis';
+import { useRecoilState } from 'recoil';
+import { supportDetailState } from '../../modules/apis/support/supportAtoms';
+import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 // ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -47,16 +53,34 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH,
     alignItems: 'stretch',
   },
+  titleWithTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   title: {
     fontSize: theme.fontSize.big,
     fontWeight: '700',
+    marginRight: 10,
+  },
+  tagBox: {
+    backgroundColor: theme.mainColor.main,
+    width: DEVICE_WIDTH * 0.2,
+    paddingVertical: DEVICE_HEIGHT * 0.007,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tag: {
+    color: theme.textColor.white,
+    fontSize: theme.fontSize.small,
   },
   productLink: {
     backgroundColor: theme.mainColor.main,
-    borderRadius: 15,
-    paddingVertical: DEVICE_HEIGHT * 0.007,
     width: DEVICE_WIDTH * 0.25,
+    paddingVertical: DEVICE_HEIGHT * 0.007,
+    borderRadius: 15,
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 3,
   },
   contentTitle: {
@@ -64,6 +88,10 @@ const styles = StyleSheet.create({
     marginBottom: DEVICE_HEIGHT * 0.01,
   },
   linkText: {
+    fontSize: theme.fontSize.small,
+    color: theme.textColor.white,
+  },
+  supporterText: {
     fontSize: theme.fontSize.small,
   },
   content: {
@@ -130,19 +158,32 @@ const styles = StyleSheet.create({
 
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
-  const link = () => {
-    Linking.openURL('https://www.naver.com/');
+  const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
+  const sid = route.params?.sid;
+
+  const [detailData, setDetailData] =
+    useRecoilState<SupportDetailStateType>(supportDetailState);
+
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  // API 작업 필요
+  const handleTagPress = () => {
+    console.log('이 태그와 관련된 꿈피드로 푸슝~');
   };
 
-  const handleSupporterClick = () => {
-    console.log('후원자 프로필로 푸슝');
+  const handleSupporterClick = (uid: number) => {
+    nav.navigate('SupportProfile', { uid: uid });
+    console.log('후원자(sponsorId) 프로필로 푸슝~');
+  };
+
+  const handleProfilePress = (uid: number) => {
+    nav.navigate('SupportProfile', { uid: uid });
   };
   // ============================================================================
-
   // 1. writer 정보 중 point 정보를 받아와서 if (point === 0) 충전화면
   // 2. else인 경우 후원금액 입력 bottom sheet
 
-  // 실제 후원을 할 수 있는 모달
+  // 후원금액 입력 모달
   const [supportModal, setSupportModal] = useState<boolean>(false);
 
   // 잔액이 부족할 때 뜨는 모달
@@ -153,28 +194,53 @@ export default function SupportDetail(): JSX.Element {
     // 사용자 포인트 잔고가 있으면 setSupportModal(true);
     // 사용자 포인트 잔고가 없으면 setChargeModal(true);
     setSupportModal(true);
-    console.log('후원금액을 입력받는 모달이 푸슝~');
   };
 
   // 모달 밖의 화면을 눌렀을 때의 작업
   const onToggleDelete = () => {
     setSupportModal(false); // 요건 후원화면
-    setChargeModal(false); // 요건 충전권고화면
+    setChargeModal(false); // 요건 충전알람화면
   };
+
+  const link = () => {
+    Linking.openURL(`${detailData.purchaseLink}`);
+  };
+
+  const fetchData = async () => {
+    const supportDetailData: SupportDetailStateType | undefined =
+      await supportDetail(sid);
+    if (supportDetailData) {
+      setDetailData(supportDetailData);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [detailData]);
 
   return (
     <>
       <ScrollView style={styles.container}>
         <Image
           style={styles.picture}
+          // source={imagePath ? require(imagePath) : null}
           source={require('../../assets/images/sample.png')}
           resizeMode='cover'
         />
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>개발자가 되고 싶어요</Text>
+          <View style={styles.titleWithTag}>
+            <Text style={styles.title}>{detailData?.title}</Text>
+            <TouchableOpacity
+              style={styles.tagBox}
+              onPress={handleTagPress}
+              activeOpacity={0.6}
+            >
+              <Text style={styles.tag}>{detailData?.tagName}</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원 요청 내용</Text>
-            <Text style={styles.content}>인강사이트 개발자 강의 수강권</Text>
+            <Text style={styles.content}>{detailData?.purchaseLinkDetail}</Text>
             <TouchableOpacity
               onPress={() => link()}
               activeOpacity={0.6}
@@ -186,117 +252,66 @@ export default function SupportDetail(): JSX.Element {
 
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원 요청 기간</Text>
-            <Text style={styles.content}>2023.03.20 ~ 2023.04.01</Text>
+            <Text style={styles.content}>
+              {detailData?.regTime} ~ {detailData?.deadline}
+            </Text>
           </View>
 
           <View style={styles.group}>
             <Text style={styles.contentTitle}>목표 금액</Text>
-            <Text style={styles.content}>110,000원</Text>
+            <Text style={styles.content}>{detailData?.targetAmount}원</Text>
           </View>
 
           <View style={styles.group}>
             <Text style={styles.contentTitle}>달성률</Text>
             <View style={styles.goalBar}>
               <Progress.Bar
-                progress={60 / 100}
+                progress={detailData?.achievementRate / 100}
                 width={DEVICE_WIDTH * 0.8}
                 height={DEVICE_HEIGHT * 0.025}
                 color={theme.mainColor.main}
               />
-              <Text>60%</Text>
+              <Text>{detailData?.achievementRate}%</Text>
             </View>
           </View>
 
           <View style={styles.group}>
             <Text style={styles.contentTitle}>후원자</Text>
             {/* 후원자 프로필 사진 모아서 보여주기 */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {/* 지금은 그냥 이미지 나열이지만 실제로는 리스트를 만들거야 */}
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-              <Pressable onPress={handleSupporterClick}>
-                <Image
-                  source={require('../../assets/images/sample.png')}
-                  style={styles.profilePicture}
-                />
-              </Pressable>
-            </ScrollView>
+            {detailData?.sponsorIdList.length > 0 ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {/* sponsorList의 길이만큼 목록을 표시 */}
+                {detailData?.sponsorIdList.map((idx: number) => {
+                  return (
+                    <Pressable
+                      key={idx}
+                      onPress={() =>
+                        handleSupporterClick(detailData.sponsorIdList[idx])
+                      }
+                    >
+                      {/* 주석 풀어야해 */}
+                      <Image
+                        // source={require(detailData?.sponsorImagePathList[idx])}
+                        source={require('../../assets/images/sample.png')}
+                        style={styles.profilePicture}
+                      />
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
+            ) : (
+              <View>
+                <Text style={styles.supporterText}>
+                  {detailData?.userNickname}님의 첫 번째 후원자가 되어보세요 🎉
+                </Text>
+              </View>
+            )}
           </View>
 
           {/* 여기는 이제.. 글쓴이 프로필로 가는 버튼 */}
           <View style={styles.group}>
             <TouchableOpacity
-              onPress={() => console.log('프로필이 까꿍')}
+              onPress={() => handleProfilePress(detailData.uid)}
               activeOpacity={0.6}
             >
               <View style={styles.writerTag}>
@@ -306,8 +321,12 @@ export default function SupportDetail(): JSX.Element {
                     style={styles.profilePicture}
                   />
                   <View style={styles.leftText}>
-                    <Text style={styles.writerName}>홍싸피</Text>
-                    <Text style={styles.writerIntro}>나는 있잖아요..</Text>
+                    <Text style={styles.writerName}>
+                      {detailData?.userNickname}
+                    </Text>
+                    <Text style={styles.writerIntro}>
+                      {detailData?.userIntroduction}
+                    </Text>
                   </View>
                 </View>
                 <MaterialIcons
@@ -320,25 +339,20 @@ export default function SupportDetail(): JSX.Element {
           </View>
 
           <View style={styles.group}>
-            <Text style={styles.mainContent}>
-              {`안녕하세요 저는 나싸핀데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
-              
-              
-  줄바꿈 테스트임...
-  이거 맞는거야?
-              
-  일단은 그냥 해보지 뭐...
-              
-  이부분은 스크롤 테스트임...으아아아
-  안녕하세요 저는 누구누군데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??
-  안녕하세요 저는 누구누군데 이런 꿈을 갖고 있는데 강의 듣고 싶은데 돈은 없는데 열심히 할건데.. 이거 어떻게 들어가는데..??`}
-            </Text>
+            <Text style={styles.mainContent}>{detailData?.content}</Text>
           </View>
         </View>
       </ScrollView>
       <SupportButton onPressSupportBtn={onPressSupportBtn} />
       {chargeModal && <ChargeAlertModal onToggleDelete={onToggleDelete} />}
-      {supportModal && <SupportModal onToggleDelete={onToggleDelete} />}
+      {supportModal && (
+        <SupportModal
+          onToggleDelete={onToggleDelete}
+          targetAmount={detailData?.targetAmount}
+          sid={sid}
+          uid={1}
+        />
+      )}
     </>
   );
 }
