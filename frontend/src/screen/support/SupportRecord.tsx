@@ -9,18 +9,9 @@ import useNav from '../../hooks/useNav';
 import useDimension from '../../hooks/useDimension';
 import DeleteModal from '../../components/record/DeleteModal';
 import { useRecoilState } from 'recoil';
-import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
-import {
-  getRecordsWithTag,
-  getTags,
-} from '../../modules/apis/record/recordApis';
-import {
-  RecordsStateType,
-  TagStateType,
-} from '../../modules/apis/record/recordAtomTypes';
-import TagList from '../../components/record/TagList';
-import AddTagModal from '../../components/record/AddTagModal';
-import UpDelTagModal from '../../components/record/UpDelTagModal';
+import { recordsState } from '../../modules/apis/record/recordAtoms';
+import { getRecordsWithTag } from '../../modules/apis/record/recordApis';
+import { RecordsStateType } from '../../modules/apis/record/recordAtomTypes';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -112,25 +103,15 @@ export default function SupportRecord(): JSX.Element {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
-  // const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
   const sheetRef = useRef<BottomSheet>(null);
-  // const [deleteModal, setDeleteModal] = useState<boolean>(false);
-  // const [addTagModal, setAddTagModal] = useState<boolean>(false);
-  // const [upDelTagModal, setUpDelTagModal] = useState<boolean>(false);
-  // const [upDelTargetTag, setUpDelTargetTag] = useState<TagStateType>();
   const [profileHeight, setProfileHeight] = useState<number>(0);
-  // const [tagHeight, setTagHeight] = useState<number>(0);
   const [delTargetContentId, setDelTargetContentId] = useState<number>();
 
   const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
     setProfileHeight(height);
   };
-  // const onLayoutTag = (e: LayoutChangeEvent): void => {
-  //   const { height } = e.nativeEvent.layout;
-  //   setTagHeight(height);
-  // };
 
   const handleSheetChange = (idx: number): void => {
     console.log('bottomSheet changed', idx);
@@ -139,17 +120,7 @@ export default function SupportRecord(): JSX.Element {
     if (recordId || recordId === 0) {
       setDelTargetContentId(recordId);
     }
-    // setDeleteModal((prev) => !prev);
   };
-  // const onToggleAddTagModal = (): void => {
-  //   setAddTagModal((prev) => !prev);
-  // };
-  // const onToggleUpDelTagModal = (tag?: TagStateType): void => {
-  //   if (tag) {
-  //     setUpDelTargetTag(tag);
-  //   }
-  //   setUpDelTagModal((prev) => !prev);
-  // };
 
   const handleProfilePress = (uid: number) => {
     nav.navigate('SupportProfile', { uid: uid });
@@ -161,13 +132,9 @@ export default function SupportRecord(): JSX.Element {
       uid,
       tid
     );
-    // const tagsData: TagStateType[] | undefined = await getTags(1);
     if (recordsData) {
       setRecords(recordsData);
     }
-    // if (tagsData) {
-    //   setTags(tagsData);
-    // }
   };
 
   useEffect(() => {
@@ -212,16 +179,11 @@ export default function SupportRecord(): JSX.Element {
       <View
         style={StyleSheet.flatten([stylesFeed.container, styles.container])}
       >
-        {/* {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? ( */}
         {profileHeight && profileHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
             index={0}
-            snapPoints={[
-              // DEVICE_HEIGHT - (profileHeight + tagHeight + 50),
-              DEVICE_HEIGHT - (profileHeight + 50),
-              '100%',
-            ]}
+            snapPoints={[DEVICE_HEIGHT - (profileHeight + 50), '100%']}
             onChange={handleSheetChange}
             style={{ alignItems: 'center' }}
           >

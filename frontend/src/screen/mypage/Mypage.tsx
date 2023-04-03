@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {
   Dimensions,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Image,
-  Pressable,
   StyleProp,
   ViewStyle,
 } from 'react-native';
@@ -18,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ModifyButton from '../../components/common/ModifyButton';
 import useNav from '../../hooks/useNav';
 import ConfirmButton from '../../components/common/ConfirmButton';
+import { updateProfile } from '../../modules/apis/user/userApis';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -165,13 +164,22 @@ export default function Mypage(): JSX.Element {
 
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
 
-  const onPressBtn = () => {
+  const onPressModifyBtn = () => {
     setIsUpdate((props) => !props);
+  };
+
+  const onPressConfirmBtn = () => {
+    setIsUpdate((props) => !props);
+    updateProfile(loginUser, {
+      password: '',
+      introduction: '',
+      groupName: '',
+    });
   };
 
   const handleChargePoint = () => {
     console.log('포인트 충전 화면으로 푸슝');
-    // navigation.push('PointCharge');
+    navigation.push('PointCharge');
   };
 
   useEffect(() => {});
@@ -205,9 +213,9 @@ export default function Mypage(): JSX.Element {
             </View>
           </View>
           <View style={styles.badgeContainer}>
-            <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 #몰루</Text>
+            <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 # 몰루</Text>
           </View>
-          <ConfirmButton onPressConfirmBtn={onPressBtn} />
+          <ConfirmButton onPressConfirmBtn={onPressConfirmBtn} />
         </View>
       ) : (
         <View style={styles.container}>
@@ -246,7 +254,7 @@ export default function Mypage(): JSX.Element {
               keyExtractor={(item) => item.id.toString()}
             />
           </View>
-          <ModifyButton onPressModifyBtn={onPressBtn} />
+          <ModifyButton onPressModifyBtn={onPressModifyBtn} />
         </View>
       )}
     </>
