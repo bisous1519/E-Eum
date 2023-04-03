@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   MyBottleResStateType,
   MyBottleStateType,
+  PostBottleLikeReturnType,
   PostBottleReportBodyType,
   PostBottleReportReturnType,
 } from './bottleAtomTypes';
@@ -32,7 +33,7 @@ export async function getMyBottleRes(bottleId: number) {
   }
 }
 
-// 해류병 신고
+// 해류병 답변을 신고
 export async function postBottleReport(postData: PostBottleReportBodyType) {
   try {
     const { data } = await axios.post<PostBottleReportReturnType>(
@@ -45,3 +46,18 @@ export async function postBottleReport(postData: PostBottleReportBodyType) {
     throw new Error(error as string);
   }
 }
+
+// 해류병 답변에 좋아요
+export async function postBottleLike(userId: number, bottleId: number) {
+  try {
+    const { data } = await axios.post<PostBottleLikeReturnType>(
+      `http://j8a607.p.ssafy.io/api/bottle/res/${bottleId}/like`,
+      { userId }
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+

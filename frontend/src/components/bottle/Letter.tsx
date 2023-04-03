@@ -15,7 +15,10 @@ import {
   ResBottleStateType,
 } from '../../modules/apis/bottle/bottleAtomTypes';
 import useDate from '../../hooks/useDate';
-import { postBottleReport } from '../../modules/apis/bottle/bottleApis';
+import {
+  postBottleLike,
+  postBottleReport,
+} from '../../modules/apis/bottle/bottleApis';
 
 const paperImage = require('../../assets/images/paper.png');
 const { LETTER_WIDTH, LETTER_HEIGHT } = useLetterSize();
@@ -115,20 +118,15 @@ export default function Letter({
   );
 
   const onSendReport = (): void => {
-    console.log('신고누름');
-    // if (item.status === 0) {
-    //   alert('이미 신고 처리된 글입니다');
-    // } else {
     const postData: PostBottleReportBodyType = {
       type: REPORT_TYPE.resBottle,
       targetId: item.id,
       content: '불건전합니다',
     };
     postBottleReport(postData).then(() => alert('신고되었습니다.'));
-    // }
   };
   const onPressLike = (): void => {
-    console.log('좋아요 눌므');
+    postBottleLike(1, item.id);
     if (!isLike) {
       setisLike((prev) => !prev);
     }
@@ -136,7 +134,12 @@ export default function Letter({
 
   useEffect(() => {
     if (item.userNickname) {
-      setFromWhom(item.userNickname);
+      if (item.status === 1) {
+        // 정상해류병(신고된게 아니면)
+        setFromWhom(item.userNickname);
+      } else if (type && type === 2) {
+        setFromWhom(item.userNickname);
+      }
     }
     if (item) {
       (setNewDate as (regTime: Date) => void)(item.regTime);
@@ -176,14 +179,14 @@ export default function Letter({
             </View>
           )}
           <FlatList
-            data={[item.content]}
+            data={[item.status === 3 ? '신고된 해류병 입니다.' : item.content]}
             style={styles.contentWrapper}
             renderItem={({ item }) => <TextRender content={item} />}
           />
           {isRes ? (
             <View style={styles.bottom}>
               {/* 뱃지 */}
-              {item.userBadges ? (
+              {item.userBadges && item.status !== 3 ? (
                 <FlatList
                   horizontal
                   inverted
@@ -221,3 +224,4 @@ export default function Letter({
     </ImageBackground>
   );
 }
+

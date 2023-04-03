@@ -47,7 +47,7 @@ export type ReportType =
   | ReportType_record
   | ReportType_support
   | ReportType_user;
-
+// --- 신고된 타입
 export const REPORT_TYPE = {
   reqBottle: 1,
   resBottle: 2,
@@ -104,4 +104,11 @@ export type PostBottleReportReturnType = {
   content: string;
   regTime: Date;
   status: StatusType;
+};
+
+// 해류병 좋아요 리턴 타입
+export type PostBottleLikeReturnType = {
+  id: number;
+  userId: number;
+  resBottleId: number;
 };
