@@ -7,29 +7,37 @@ import theme from '../../utils/theme';
 import useNav from '../../hooks/useNav';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderComp from '../../components/common/HeaderComp';
-import { getSendBottles } from '../../modules/apis/bottle/bottleApis';
-import { MyBottleStateType } from '../../modules/apis/bottle/bottleAtomTypes';
+import { getMyBottles } from '../../modules/apis/bottle/bottleApis';
+import {
+  MyBottleResStateType,
+  MyBottleStateType,
+} from '../../modules/apis/bottle/bottleAtomTypes';
 import { useRecoilState } from 'recoil';
-import { myBottlesState } from '../../modules/apis/bottle/bottleAtoms';
+import {
+  myBottleResState,
+  myBottlesState,
+} from '../../modules/apis/bottle/bottleAtoms';
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.background,
+    flex: 1,
   },
   itemContainer: {},
 });
 
 export default function MyBottle(): JSX.Element {
-  const [sendBottles, setSendBottles] =
+  const [myBottles, setMyBottles] =
     useRecoilState<MyBottleStateType[]>(myBottlesState);
 
   const [detailModal, setDetailModal] = useState<boolean>(false);
+
   const onToggleDetailModal = (): void => {
     setDetailModal((prev) => !prev);
   };
 
   const fetchData = () => {
-    getSendBottles(1).then((data: MyBottleStateType[]) => setSendBottles(data));
+    getMyBottles(1).then((data: MyBottleStateType[]) => setMyBottles(data));
   };
 
   useEffect(() => {
@@ -38,11 +46,14 @@ export default function MyBottle(): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <HeaderComp title='고민 목록' />
-      {sendBottles ? (
+      {myBottles ? (
         <FlatList
-          data={sendBottles}
+          data={myBottles}
           renderItem={({ item }) => (
-            <MyBottleItem item={item} onPressItem={onToggleDetailModal} />
+            <MyBottleItem
+              item={item}
+              onToggleDetailModal={onToggleDetailModal}
+            />
           )}
         />
       ) : (
@@ -56,4 +67,3 @@ export default function MyBottle(): JSX.Element {
     </SafeAreaView>
   );
 }
-

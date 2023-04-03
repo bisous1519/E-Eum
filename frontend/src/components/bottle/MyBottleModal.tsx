@@ -1,6 +1,9 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
+import { useRecoilState } from 'recoil';
 import useDimension from '../../hooks/useDimension';
+import { myBottleResState } from '../../modules/apis/bottle/bottleAtoms';
+import { MyBottleResStateType } from '../../modules/apis/bottle/bottleAtomTypes';
 import theme from '../../utils/theme';
 import ModalComp from '../common/ModalComp';
 import CarouselComp from './CarouselComp';
@@ -31,4 +34,3 @@ export default function MyBottleModal({
     </Pressable>
   );
 }
-
