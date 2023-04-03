@@ -16,15 +16,17 @@ import useNav from '../../hooks/useNav';
 import { FontAwesome } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 const { DEVICE_WIDTH } = useDimension();
+const borders = StyleSheet.create({
+  red: {
+    // borderWidth: 1,
+    // borderColor: 'red',
+  },
+  blue: {
+    // borderWidth: 1,
+    // borderColor: 'blue',
+  },
+});
 const styles = StyleSheet.create({
-  tempBorderRed: {
-    borderWidth: 1,
-    borderColor: 'red',
-  },
-  tempBorderBlue: {
-    borderWidth: 1,
-    borderColor: 'blue',
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -46,7 +48,7 @@ const styles = StyleSheet.create({
     left: 10,
     zIndex: 1,
   },
-  leftPagePressableLocation: {
+  leftPageBottlesLocation: {
     position: 'absolute',
     width: 200,
     height: 170,
@@ -237,7 +239,7 @@ export default function BottleBlue(): JSX.Element {
     // navigation.push('MessagePaper');
   };
   const moveToWritingPaper = () => {
-    navigation.push('WritingPaper');
+    navigation.push('WritingPaperBlue');
   };
 
   const modalMessageItem = ({ item }: { item: messageDataType }) => {
@@ -275,29 +277,21 @@ export default function BottleBlue(): JSX.Element {
     <View style={styles.container}>
       {modalVisible && (
         <View
-          style={StyleSheet.flatten([
-            modalstyles.wholeContainer,
-            styles.tempBorderRed,
-          ])}
+          style={StyleSheet.flatten([modalstyles.wholeContainer, borders.red])}
         >
           <Modal visible={modalVisible} transparent={true} animationType='fade'>
-            <View
-              style={StyleSheet.flatten([
-                modalstyles.box,
-                styles.tempBorderBlue,
-              ])}
-            >
+            <View style={StyleSheet.flatten([modalstyles.box, borders.blue])}>
               <View style={modalstyles.content}>
                 <View
                   style={StyleSheet.flatten([
                     modalstyles.modalTop,
-                    styles.tempBorderBlue,
+                    borders.blue,
                   ])}
                 >
                   <Text
                     style={StyleSheet.flatten([
                       modalstyles.topTitle,
-                      styles.tempBorderRed,
+                      borders.red,
                     ])}
                   >
                     받은 해류병 목록
@@ -314,10 +308,7 @@ export default function BottleBlue(): JSX.Element {
                   </Pressable>
                 </View>
                 <View
-                  style={StyleSheet.flatten([
-                    styles.tempBorderRed,
-                    modalstyles.listBox,
-                  ])}
+                  style={StyleSheet.flatten([borders.red, modalstyles.listBox])}
                 >
                   <FlatList
                     data={messageList}
@@ -332,7 +323,7 @@ export default function BottleBlue(): JSX.Element {
         </View>
       )}
       <View style={styles.backgroundVideo}>
-        {/* <Video
+        <Video
           source={beachVideoBlue}
           rate={1.0}
           // volume={1.0}
@@ -345,22 +336,17 @@ export default function BottleBlue(): JSX.Element {
             console.log('에러');
             console.log(error);
           }}
-        /> */}
+        />
       </View>
       <View style={styles.popupFromBackground}>
-        <View
-          style={StyleSheet.flatten([
-            styles.headerButtons,
-            styles.tempBorderRed,
-          ])}
-        >
-          <View style={[styles.headerButtonLeft, styles.tempBorderBlue]}>
+        <View style={StyleSheet.flatten([styles.headerButtons, borders.red])}>
+          <View style={[styles.headerButtonLeft, borders.blue]}>
             <ButtonComp
               text={'고민상담 해류병'}
               onPressBtn={convertBottle}
             ></ButtonComp>
           </View>
-          <View style={[styles.headerButtonRight, styles.tempBorderBlue]}>
+          <View style={[styles.headerButtonRight, borders.blue]}>
             <ButtonComp
               text={'고민 보내기'}
               onPressBtn={moveToWritingPaper}
@@ -368,28 +354,9 @@ export default function BottleBlue(): JSX.Element {
           </View>
         </View>
         <Pressable
-          style={styles.leftPagePressableLocation}
+          style={styles.leftPageBottlesLocation}
           onPress={handleModalPop}
-        >
-          {/* <Pressable
-            style={StyleSheet.flatten([
-              styles.tempBorderBlue,
-              styles.bluePageRedPressable,
-            ])}
-          ></Pressable>
-          <Pressable
-            style={StyleSheet.flatten([
-              styles.tempBorderBlue,
-              styles.bluePageBlackPressable,
-            ])}
-          ></Pressable>
-          <Pressable
-            style={StyleSheet.flatten([
-              styles.tempBorderBlue,
-              styles.bluePageGreenPressable,
-            ])}
-          ></Pressable> */}
-        </Pressable>
+        />
       </View>
     </View>
   );
