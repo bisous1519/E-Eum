@@ -102,7 +102,7 @@ export default function RegularSupportModal({
             style={styles.pointInput}
             autoFocus={true}
             keyboardType='number-pad'
-            value={supportPoint}
+            // value={supportPoint}
             onChange={handleSupportPoint}
           />
         </View>
