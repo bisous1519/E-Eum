@@ -30,7 +30,7 @@ public class SparkConfig {
                 .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
                 .set("spark.driver.allowMultipleContexts", "true")
                 .setMaster(sparkMasterUri)
-                .set("spark.executor.instances", "2")
+                .set("spark.executor.instances", "4")
                 .set("spark.executor.cores", "1");
         return sparkConf;
     }
