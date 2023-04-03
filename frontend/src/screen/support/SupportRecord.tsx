@@ -21,8 +21,10 @@ import {
 import TagList from '../../components/record/TagList';
 import AddTagModal from '../../components/record/AddTagModal';
 import UpDelTagModal from '../../components/record/UpDelTagModal';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -75,18 +77,6 @@ const stylesProfile = StyleSheet.create({
   },
 });
 
-const stylesTag = StyleSheet.create({
-  container: {
-    width: DEVICE_WIDTH * 0.8,
-    height: 30,
-    marginTop: 30,
-    position: 'absolute',
-  },
-  scrollBox: {
-    alignItems: 'center',
-  },
-});
-
 const stylesFeed = StyleSheet.create({
   container: {
     width: DEVICE_WIDTH,
@@ -119,11 +109,13 @@ export default function SupportRecord(): JSX.Element {
   const uid = route.params?.uid;
   const tid = route.params?.tid;
 
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   // const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
   const sheetRef = useRef<BottomSheet>(null);
-  const [deleteModal, setDeleteModal] = useState<boolean>(false);
+  // const [deleteModal, setDeleteModal] = useState<boolean>(false);
   // const [addTagModal, setAddTagModal] = useState<boolean>(false);
   // const [upDelTagModal, setUpDelTagModal] = useState<boolean>(false);
   // const [upDelTargetTag, setUpDelTargetTag] = useState<TagStateType>();
@@ -147,7 +139,7 @@ export default function SupportRecord(): JSX.Element {
     if (recordId || recordId === 0) {
       setDelTargetContentId(recordId);
     }
-    setDeleteModal((prev) => !prev);
+    // setDeleteModal((prev) => !prev);
   };
   // const onToggleAddTagModal = (): void => {
   //   setAddTagModal((prev) => !prev);
@@ -158,6 +150,11 @@ export default function SupportRecord(): JSX.Element {
   //   }
   //   setUpDelTagModal((prev) => !prev);
   // };
+
+  const handleProfilePress = (uid: number) => {
+    nav.navigate('SupportProfile', { uid: uid });
+    console.log('supportProfile로 푸슝~');
+  };
 
   const fetchData = async () => {
     const recordsData: RecordsStateType | undefined = await getRecordsWithTag(
@@ -183,10 +180,15 @@ export default function SupportRecord(): JSX.Element {
       <View style={stylesProfile.container} onLayout={onLayoutProfile}>
         <Text style={stylesProfile.nickName}>나싸피임</Text>
         <View style={stylesProfile.infoWrapper}>
-          <Image
-            style={stylesProfile.infoImg}
-            source={require('../../assets/images/profileImg.png')}
-          />
+          <TouchableOpacity
+            activeOpacity={0.6}
+            onPress={() => handleProfilePress(1)}
+          >
+            <Image
+              style={stylesProfile.infoImg}
+              source={require('../../assets/images/profileImg.png')}
+            />
+          </TouchableOpacity>
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
               <Text style={stylesProfile.infoContent}>
@@ -194,6 +196,7 @@ export default function SupportRecord(): JSX.Element {
               </Text>
               <Text style={stylesProfile.infoCaption}>꿈피드</Text>
             </View>
+
             <View style={stylesProfile.infoItem}>
               <Text style={stylesProfile.infoContent}>+23일</Text>
               <Text style={stylesProfile.infoCaption}>꿈여정</Text>
