@@ -1,5 +1,6 @@
 package com.craypas.abusecounting.service;
 
+import com.craypas.abusecounting.model.dto.AbuseResultDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.*;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import static org.apache.spark.sql.functions.*;
 public class  SparkService {
 
     private final SparkSession sparkSession;
-    public boolean calculateAbusePercentage(String message) {
+    public AbuseResultDto calculateAbusePercentage(String message) {
         Dataset<Row> abuseDS = sparkSession.read()
                 .option("multiline", true)
                 .json("hdfs://localhost:9000/user/hadoop/abuse_data_new.json")
@@ -26,9 +27,9 @@ public class  SparkService {
             System.out.println(messageWord);
             boolean isContained = explodedDS.filter(expr("INSTR('" + messageWord + "', word) > 0")).count() > 0;
             if (isContained) {
-                return true;
+                return AbuseResultDto.builder().isAbuse(true).build();
             }
         }
-        return false;
+        return AbuseResultDto.builder().isAbuse(false).build();
     }
 }
