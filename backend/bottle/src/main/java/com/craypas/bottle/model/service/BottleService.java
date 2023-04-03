@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.craypas.bottle.exception.CustomException;
@@ -41,17 +43,16 @@ public class BottleService {
 	private final LikeRepository likeRepository;
 	private final ReportRepository reportRepository;
 
-
-	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto) {
+	@Transactional
+	public CreatedReqBottleDto sendReqBottles(CreateReqBottleDto reqBottleDto, List<Integer> userId) {
 		if (reqBottleDto.getWriterId() == null || reqBottleDto.getContent() == null || reqBottleDto.getType() == null || reqBottleDto.getSentiment() == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
 
 		ReqBottle reqBottle = reqBottleDto.toEntity();
 
-		// 내가 아닌 모든 유저나 자문단 유저 중에, 랜덤 3명 뽑기! 3명보다 적다면 그냥 다 데려와. -> 이거 유저서비스에서 해야함
 		List<UserReqBottle> userReqBottles = new ArrayList<>();
-		for (Long receiverId : new long[] {7, 8, 9}) {
+		for (long receiverId : userId) {
 			userReqBottles.add(UserReqBottle.builder().receiverId(receiverId).reqBottle(reqBottle).build());
 		}
 		reqBottle.updateUserReqBottles(userReqBottles);
@@ -63,9 +64,7 @@ public class BottleService {
 		if (writerId == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
-		return reqBottleRepository.findAllByWriterId(writerId).stream()
-			.map(ReqBottle::toSummaryBottleDto)
-			.collect(Collectors.toList());
+		return qBottleRepository.findAllReqBottleWithResCntByWriterId(writerId);
 	}
 
 	public DetailReqBottleDto findDetailReqBottle(Long id) {
@@ -80,6 +79,8 @@ public class BottleService {
 			.map(UserReqBottle::toCreatedReqDto)
 			.collect(Collectors.toList());
 	}
+
+	@Transactional
 	public CreatedResBottleDto sendResBottles(CreateResBottleDto resBottleDto) {
 		if (!userReqBottleRepository.findById(resBottleDto.getUserReqBottleId()).isPresent()) {
 			throw new CustomException(ErrorCode.REQ_BOTTLE_NOT_FOUND);
@@ -90,6 +91,7 @@ public class BottleService {
 		return resBottleRepository.save(resBottleDto.toEntity()).toCreatedDto();
 	}
 
+	@Transactional
 	public CreatedLikeDto createLike(CreateLikeDto likeDto) {
 		if(!resBottleRepository.findById(likeDto.getResBottleId()).isPresent()) {
 			throw new CustomException(ErrorCode.RES_BOTTLE_NOT_FOUND);
@@ -97,6 +99,7 @@ public class BottleService {
 		return likeRepository.save(likeDto.toEntity()).toCreatedDto();
 	}
 
+	@Transactional
 	public CreatedReportDto reportBottle(CreateReportDto reportDto) {
 		Integer type = reportDto.getType();
 		Long targetId = reportDto.getTargetId();
