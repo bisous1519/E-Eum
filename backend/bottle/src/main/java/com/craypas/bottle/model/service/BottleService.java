@@ -13,6 +13,7 @@ import com.craypas.bottle.model.dto.request.CreateLikeDto;
 import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
+import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedLikeDto;
 import com.craypas.bottle.model.dto.response.CreatedReportDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
@@ -69,7 +70,13 @@ public class BottleService {
 		if (!reqBottleRepository.findById(id).isPresent()) {
 			throw new CustomException(ErrorCode.BOTTLE_NOT_FOUND);
 		}
-		return qBottleRepository.findAllResBottleByReqBottleId(id);
+		DetailReqBottleDto detailReqBottleDto = qBottleRepository.findAllResBottleByReqBottleId(id);
+		for(CheckedResBottleDto resBottleDto : detailReqBottleDto.getResBottles()) {
+			resBottleDto.setLikeDto(
+				likeRepository.findByUserIdAndResBottleId(detailReqBottleDto.getWriterId(), resBottleDto.getId()).get().toCreatedDto()
+			);
+		}
+		return detailReqBottleDto;
 	}
 
 	public List<CreatedReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) {
