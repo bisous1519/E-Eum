@@ -19,6 +19,7 @@ import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
 import { postEmailVerify } from '../../modules/apis/user/userApis';
 import { MaterialIcons } from '@expo/vector-icons';
+import FileUploaderComp from '../../components/common/fileuploader/FileUploaderComp';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -128,6 +129,10 @@ const stylesSignupInput = StyleSheet.create({
   addProfileImageButtonText: {
     color: theme.textColor.light,
     fontSize: theme.fontSize.big,
+  },
+  fileUploaderContainer: {
+    marginTop: 10,
+    marginLeft: 10,
   },
 });
 
@@ -442,9 +447,9 @@ export default function Signup(): JSX.Element {
           </View>
           <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>프로필 사진</Text>
-            <Pressable style={stylesSignupInput.addProfileImageButton}>
-              <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
-            </Pressable>
+            <View style={stylesSignupInput.fileUploaderContainer}>
+              <FileUploaderComp />
+            </View>
           </View>
           <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>회원구분</Text>
@@ -511,15 +516,12 @@ export default function Signup(): JSX.Element {
           {(userType === 1 || userType === 2) && (
             <View style={stylesSignupInput.noInputTextContainer}>
               <Text style={stylesSignupInput.noInputTextTitle}>증빙 자료</Text>
-              <Pressable style={stylesSignupInput.addProfileImageButton}>
-                <Text style={stylesSignupInput.addProfileImageButtonText}>
-                  +
-                </Text>
-              </Pressable>
+              <View style={stylesSignupInput.fileUploaderContainer}>
+                <FileUploaderComp />
+              </View>
             </View>
           )}
         </View>
-        {/* inner container */}
       </View>
     </ScrollView>
   );
