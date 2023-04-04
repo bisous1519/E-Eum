@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   LayoutChangeEvent,
+  Pressable,
 } from 'react-native';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import theme from '../../utils/theme';
@@ -26,6 +27,7 @@ import {
 import TagList from '../../components/record/TagList';
 import AddTagModal from '../../components/record/AddTagModal';
 import UpDelTagModal from '../../components/record/UpDelTagModal';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -76,6 +78,14 @@ const stylesProfile = StyleSheet.create({
     fontSize: theme.fontSize.regular,
     color: theme.textColor.light,
   },
+  imgPressBox: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    // borderWidth: 1,
+    // borderColor: 'red',
+    position: 'absolute',
+  },
 });
 
 const stylesTag = StyleSheet.create({
@@ -87,6 +97,9 @@ const stylesTag = StyleSheet.create({
   },
   scrollBox: {
     alignItems: 'center',
+  },
+  display: {
+    display: 'none',
   },
 });
 
@@ -123,6 +136,7 @@ export default function Record(): JSX.Element {
 
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
+  const imageRef = useRef<Image>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
   const [addTagModal, setAddTagModal] = useState<boolean>(false);
   const [upDelTagModal, setUpDelTagModal] = useState<boolean>(false);
@@ -130,6 +144,8 @@ export default function Record(): JSX.Element {
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [tagHeight, setTagHeight] = useState<number>(0);
   const [delTargetContentId, setDelTargetContentId] = useState<number>();
+  const [expandFeed, setExpandFeed] = useState<boolean>(false);
+  const [imgOffsetXY, setImgOffsetXY] = useState<{ x: number; y: number }>();
 
   const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
@@ -139,9 +155,16 @@ export default function Record(): JSX.Element {
     const { height } = e.nativeEvent.layout;
     setTagHeight(height);
   };
+  const onLayoutImage = (): void => {
+    imageRef.current?.measureInWindow((x, y) => {
+      console.log(x, y);
+      setImgOffsetXY({ x, y });
+    });
+  };
 
   const handleSheetChange = (idx: number): void => {
     console.log('bottomSheet changed', idx);
+    setExpandFeed(idx === 1 ? true : false);
   };
   const onPressPlusBtn = (): void => {
     navigation.push('RecordEditor');
@@ -184,6 +207,8 @@ export default function Record(): JSX.Element {
         <Text style={stylesProfile.nickName}>나싸피임</Text>
         <View style={stylesProfile.infoWrapper}>
           <Image
+            ref={imageRef}
+            onLayout={onLayoutImage}
             style={stylesProfile.infoImg}
             source={require('../../assets/images/profileImg.png')}
           />
@@ -240,7 +265,24 @@ export default function Record(): JSX.Element {
         )}
       </View>
 
+      {/* 사용자 이미지 클릭 섹션*/}
+      {imgOffsetXY && !expandFeed ? (
+        <Pressable
+          style={StyleSheet.flatten([
+            stylesProfile.imgPressBox,
+            {
+              top: imgOffsetXY.y,
+              left: imgOffsetXY.x,
+            },
+          ])}
+          onPress={() => console.log('클릭이얌')}
+        ></Pressable>
+      ) : (
+        <></>
+      )}
+
       {/* 태그 */}
+<<<<<<< HEAD
       <View
         style={StyleSheet.flatten([
           stylesTag.container,
@@ -258,6 +300,30 @@ export default function Record(): JSX.Element {
           <></>
         )}
       </View>
+=======
+      {!expandFeed ? (
+        <View
+          style={StyleSheet.flatten([
+            stylesTag.container,
+            { top: profileHeight },
+          ])}
+          onLayout={onLayoutTag}
+        >
+          {tags ? (
+            <TagList
+              tags={tags}
+              allTag={true}
+              onToggleAddTagModal={onToggleAddTagModal}
+              onToggleUpDelTagModal={onToggleUpDelTagModal}
+            />
+          ) : (
+            <></>
+          )}
+        </View>
+      ) : (
+        <></>
+      )}
+>>>>>>> 18c96c044772cc25bca898a1998e8841fa7ae8af
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
       {deleteModal && delTargetContentId ? (
         <DeleteModal
@@ -283,3 +349,4 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
+

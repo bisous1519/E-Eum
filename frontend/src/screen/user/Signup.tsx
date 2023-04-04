@@ -18,6 +18,8 @@ import * as Font from 'expo-font';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
 import { postEmailVerify } from '../../modules/apis/user/userApis';
+import { MaterialIcons } from '@expo/vector-icons';
+import FileUploaderComp from '../../components/common/fileuploader/FileUploaderComp';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -127,6 +129,10 @@ const stylesSignupInput = StyleSheet.create({
   addProfileImageButtonText: {
     color: theme.textColor.light,
     fontSize: theme.fontSize.big,
+  },
+  fileUploaderContainer: {
+    marginTop: 10,
+    marginLeft: 10,
   },
 });
 
@@ -285,6 +291,8 @@ export default function Signup(): JSX.Element {
     setUserType(3);
   };
 
+  const nameTest = <MaterialIcons name='check-box' size={24} color='black' />;
+
   return (
     <ScrollView style={stylesGlobalContainer.scrollContainer}>
       <View style={stylesGlobalContainer.container}>
@@ -294,6 +302,7 @@ export default function Signup(): JSX.Element {
               name={'이름'}
               text={userName}
               onChangeText={onChangeUserName}
+              check={nameState}
             />
           </View>
           <View
@@ -306,7 +315,8 @@ export default function Signup(): JSX.Element {
               name={'이메일'}
               text={userEmail}
               onChangeText={onChangeUserEmail}
-              btn={true}
+              btn={!emailState}
+              check={emailState}
               btnText={
                 timerOn
                   ? `${Math.floor(timeLeft / 60)
@@ -324,7 +334,8 @@ export default function Signup(): JSX.Element {
               name={'인증 코드'}
               text={verifCode}
               onChangeText={onChangeVerifCode}
-              btn={true}
+              btn={!emailState}
+              check={emailState}
               btnText={'확인'}
               onPressBtn={checkVerifCode}
               isValid={checkCode || notChecked}
@@ -368,7 +379,7 @@ export default function Signup(): JSX.Element {
               name={'닉네임 (3~10자)'}
               text={userNickName}
               onChangeText={onChangeUserNickName}
-              check={true}
+              check={nickState}
               isValid={checkNickNameLength}
               errorMsg={'3~10자'}
             />
@@ -437,9 +448,9 @@ export default function Signup(): JSX.Element {
           </View>
           <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>프로필 사진</Text>
-            <Pressable style={stylesSignupInput.addProfileImageButton}>
-              <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
-            </Pressable>
+            <View style={stylesSignupInput.fileUploaderContainer}>
+              <FileUploaderComp />
+            </View>
           </View>
           <View style={stylesSignupInput.noInputTextContainer}>
             <Text style={stylesSignupInput.noInputTextTitle}>회원구분</Text>
@@ -506,15 +517,12 @@ export default function Signup(): JSX.Element {
           {(userType === 1 || userType === 2) && (
             <View style={stylesSignupInput.noInputTextContainer}>
               <Text style={stylesSignupInput.noInputTextTitle}>증빙 자료</Text>
-              <Pressable style={stylesSignupInput.addProfileImageButton}>
-                <Text style={stylesSignupInput.addProfileImageButtonText}>
-                  +
-                </Text>
-              </Pressable>
+              <View style={stylesSignupInput.fileUploaderContainer}>
+                <FileUploaderComp />
+              </View>
             </View>
           )}
         </View>
-        {/* inner container */}
       </View>
     </ScrollView>
   );
