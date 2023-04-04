@@ -158,7 +158,6 @@ public class BottleController {
 				}
 			}
 
-			resBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
 
 			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성
