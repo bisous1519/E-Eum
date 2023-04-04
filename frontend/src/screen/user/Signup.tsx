@@ -18,6 +18,7 @@ import * as Font from 'expo-font';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
 import { postEmailVerify } from '../../modules/apis/user/userApis';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -290,10 +291,12 @@ export default function Signup(): JSX.Element {
       <View style={stylesGlobalContainer.container}>
         <View testID='inner' style={stylesInnerContainer.container}>
           <View style={stylesSignupInput.box}>
+            <MaterialIcons name='check-box' size={24} color='black' />
             <InputComp
               name={'이름'}
               text={userName}
               onChangeText={onChangeUserName}
+              check={nameState}
             />
           </View>
           <View
@@ -306,7 +309,8 @@ export default function Signup(): JSX.Element {
               name={'이메일'}
               text={userEmail}
               onChangeText={onChangeUserEmail}
-              btn={true}
+              btn={!emailState}
+              check={emailState}
               btnText={
                 timerOn
                   ? `${Math.floor(timeLeft / 60)
@@ -324,7 +328,8 @@ export default function Signup(): JSX.Element {
               name={'인증 코드'}
               text={verifCode}
               onChangeText={onChangeVerifCode}
-              btn={true}
+              btn={!emailState}
+              check={emailState}
               btnText={'확인'}
               onPressBtn={checkVerifCode}
               isValid={checkCode || notChecked}
@@ -368,7 +373,7 @@ export default function Signup(): JSX.Element {
               name={'닉네임 (3~10자)'}
               text={userNickName}
               onChangeText={onChangeUserNickName}
-              check={true}
+              check={nickState}
               isValid={checkNickNameLength}
               errorMsg={'3~10자'}
             />
