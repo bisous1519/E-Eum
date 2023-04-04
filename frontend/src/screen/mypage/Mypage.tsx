@@ -20,6 +20,8 @@ import { useRecoilState } from 'recoil';
 import { badgeListState } from '../../modules/apis/user/userAtoms';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
+import { SupportProfileStateType } from '../../modules/apis/support/supportAtomTypes';
+import { checkProfile } from '../../modules/apis/support/supportApis';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.big,
   },
   badgeContainer: {
-    backgroundColor: theme.mainColor.main,
+    backgroundColor: theme.mainColor.light,
     width: DEVICE_WIDTH,
     height: DEVICE_HEIGHT * 0.65,
     borderTopLeftRadius: 50,
@@ -155,8 +157,14 @@ export default function Mypage(): JSX.Element {
     const badgeData: BadgeStateType[] | undefined = await getBadgeList(
       loginUser
     );
+    const userData: SupportProfileStateType | undefined = await checkProfile(
+      loginUser
+    );
     if (badgeData) {
       setBadgeList(badgeData);
+    }
+    if (userData) {
+      // 로그인 유저의 이름 정보 받아와~~
     }
   };
 
@@ -266,7 +274,6 @@ export default function Mypage(): JSX.Element {
                           uri: 'https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/badge-image%2Fattend-1.png?alt=media',
                         }}
                       /> */}
-                      <Text></Text>
                     </View>
                   </TouchableOpacity>
                   // <Badge style={styles.uniBadge} id={item.id} num={item.num} />
