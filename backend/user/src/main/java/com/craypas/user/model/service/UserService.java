@@ -64,7 +64,7 @@ public interface UserService {
 	String updateCertificateFile(final Long uid, final MultipartFile file);
 
 	// 해류병 발송시 수신 회원 조회
-	List<Long> getRandomUserList(final Long uid);
+	List<Long> getRandomUserList(final Long uid, final Integer type);
 
 	// 뱃지 획득 정보 생성
 	ResponseDto.GetUserBadge createUserBadge(final Long uid, final Long bid);
