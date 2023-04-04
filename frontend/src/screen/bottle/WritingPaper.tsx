@@ -8,6 +8,9 @@ import useNav, { RootStackParamList } from '../../hooks/useNav';
 import theme from '../../utils/theme';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import FnqType from '../../models/bottle/fnqType';
+import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import FnqModal from '../../components/bottle/FnqModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -130,24 +133,34 @@ type WritingPaperProp = NativeStackNavigationProp<
   'WritingPaper'
 >;
 
+export const fnqMockup: FnqType = {
+  id: 1,
+  title: '주거 관련 정보',
+  content:
+    '<div>경기도 내 아동복지시설 보호종료 5년이내 또는 종료예정인 자립준비청년을 대상으로  자립준비청년 주거기반 자립지원 참여자를 모집 중에 있습니다.<br><br> 매월 15일까지 온라인 또는 방문접수가 가능합니다.</div>',
+  linkTo: 'http://naver.com',
+};
+
 export default function WritingPaper(): JSX.Element {
   const navigation = useNav();
 
   const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
   const messageNormal = route.params?.messageType === 1 ? true : false;
+  const inputRef = useRef<TextInput>(null);
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
 
   const [startVideo, setStartVideo] = useState<boolean>(false);
   const [writtenTextValue, setWrittenTextValue] = useState<string>('');
-  const writtenTextLength = writtenTextValue.length;
-  const inputRef = useRef<TextInput>(null);
   const [visible, setVisible] = useState<boolean>(true);
   const [sendingModal, setSendingModal] = useState<boolean>(false);
   const [sended, setSended] = useState<boolean>(false);
   const sendingVideoPath = messageNormal
     ? require('../../assets/videos/sendingbottle(round).mp4')
     : require('../../assets/videos/sendingbottle(long).mp4');
+  const [fnqModal, setFnqModal] = useState<boolean>(false);
+
+  const writtenTextLength = writtenTextValue.length;
 
   const doneWriting = () => {
     setStartVideo(true);
@@ -156,11 +169,11 @@ export default function WritingPaper(): JSX.Element {
     }
     // setWrittenTextValue('');
     setVisible(false);
-    setTimeout(() => {
-      messageNormal
-        ? navigation.navigate('BottleBlue')
-        : navigation.navigate('BottleGreen');
-    }, 8600);
+    // setTimeout(() => {
+    //   messageNormal
+    //     ? navigation.navigate('BottleBlue')
+    //     : navigation.navigate('BottleGreen');
+    // }, 8600);
     setTimeout(() => {
       setSendingModal(true);
     }, 4000);
@@ -168,8 +181,17 @@ export default function WritingPaper(): JSX.Element {
       setSended(true);
     }, 7000);
     setTimeout(() => {
+      // 여기가 맞나?
+      setFnqModal(true);
       setSendingModal(false);
     }, 8500);
+  };
+
+  const onCloseFnqModal = () => {
+    setFnqModal(false);
+    messageNormal
+      ? navigation.navigate('BottleBlue')
+      : navigation.navigate('BottleGreen');
   };
 
   const handleTextChange = (text: string) => {
@@ -260,6 +282,11 @@ export default function WritingPaper(): JSX.Element {
             </View>
           </Modal>
         </View>
+      )}
+      {fnqModal ? (
+        <FnqModal data={fnqMockup} onCloseFnqModal={onCloseFnqModal} />
+      ) : (
+        <></>
       )}
     </View>
   );
