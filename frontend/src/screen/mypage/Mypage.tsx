@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
   View,
   Image,
-  StyleProp,
-  ViewStyle,
 } from 'react-native';
 import theme from '../../utils/theme';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -16,7 +14,12 @@ import { Ionicons } from '@expo/vector-icons';
 import ModifyButton from '../../components/common/ModifyButton';
 import useNav from '../../hooks/useNav';
 import ConfirmButton from '../../components/common/ConfirmButton';
-import { updateProfile } from '../../modules/apis/user/userApis';
+import { getBadgeList, updateProfile } from '../../modules/apis/user/userApis';
+import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
+import { useRecoilState } from 'recoil';
+import { badgeListState } from '../../modules/apis/user/userAtoms';
+import InputComp from '../../components/common/input/InputComp';
+import useInputText from '../../hooks/useInputText';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -105,74 +108,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: DEVICE_WIDTH * 0.055,
   },
+  modifyInfo: {
+    width: DEVICE_WIDTH * 0.6,
+    position: 'absolute',
+    bottom: DEVICE_HEIGHT * 0.14,
+  },
+  emptySpace: {
+    padding: DEVICE_WIDTH * 0.06,
+  },
 });
-// =====================================
-
-// 이것도...나중에 분리해야 하는 badge임.. ==============
-type BadgeProps = {
-  style?: StyleProp<ViewStyle>;
-  id: number;
-  num: number;
-};
-
-const handleBadgePress = () => {
-  console.log('뱃지 디테일 모달이 푸슝~');
-};
-
-const Badge = ({ style, id, num }: BadgeProps) => (
-  <TouchableOpacity
-    style={styles.uniBadge}
-    onPress={handleBadgePress}
-    activeOpacity={0.6}
-  >
-    <View>
-      <Text>{num}</Text>
-    </View>
-  </TouchableOpacity>
-);
-
-// 뱃지 목록 임의로 만들게용...
-// image_path가 string으로 들어올거임
-const badgeData: BadgeProps[] = [
-  {
-    id: 1,
-    num: 1,
-  },
-  {
-    id: 2,
-    num: 2,
-  },
-  {
-    id: 3,
-    num: 3,
-  },
-  {
-    id: 4,
-    num: 4,
-  },
-  {
-    id: 5,
-    num: 5,
-  },
-  {
-    id: 6,
-    num: 6,
-  },
-  {
-    id: 7,
-    num: 7,
-  },
-];
-
-// ======================================================
 
 export default function Mypage(): JSX.Element {
   // 유저 아이디
   const loginUser: number = 1;
-
   const navigation = useNav();
 
+  const { text: userIntro, onChangeText: setUserIntro } = useInputText();
+  const { text: userGroup, onChangeText: setUserGroup } = useInputText();
+  const { text: newPassword, onChangeText: setNewPassword } = useInputText();
+  const { text: checkPassword, onChangeText: setCheckPassword } =
+    useInputText();
+
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const [badgeList, setBadgeList] =
+    useRecoilState<BadgeStateType[]>(badgeListState);
 
   const onPressModifyBtn = () => {
     setIsUpdate((props) => !props);
@@ -180,11 +139,7 @@ export default function Mypage(): JSX.Element {
 
   const onPressConfirmBtn = () => {
     setIsUpdate((props) => !props);
-    updateProfile(loginUser, {
-      password: '',
-      introduction: '',
-      groupName: '',
-    });
+    updateProfile(loginUser, newPassword, userIntro, userGroup);
   };
 
   const handleChargePoint = () => {
@@ -192,7 +147,22 @@ export default function Mypage(): JSX.Element {
     navigation.push('PointCharge');
   };
 
-  useEffect(() => {});
+  const handleBadgePress = () => {
+    console.log('뱃지 디테일 API로 푸슝~');
+  };
+
+  const fetchData = async () => {
+    const badgeData: BadgeStateType[] | undefined = await getBadgeList(
+      loginUser
+    );
+    if (badgeData) {
+      setBadgeList(badgeData);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -223,7 +193,33 @@ export default function Mypage(): JSX.Element {
             </View>
           </View>
           <View style={styles.badgeContainer}>
-            <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 # 몰루</Text>
+            <View style={styles.modifyInfo}>
+              <InputComp
+                name={'자기소개'}
+                text={userIntro}
+                onChangeText={setUserIntro}
+              />
+              <View style={styles.emptySpace}></View>
+              <InputComp
+                name={'출신 보육원 및 소속'}
+                text={userGroup}
+                onChangeText={setUserGroup}
+              />
+              <InputComp
+                name={'비밀번호'}
+                text={newPassword}
+                onChangeText={setNewPassword}
+                pw
+                check
+              />
+              <InputComp
+                name={'비밀번호 확인'}
+                text={checkPassword}
+                onChangeText={setCheckPassword}
+                pw
+                check
+              />
+            </View>
           </View>
           <ConfirmButton onPressConfirmBtn={onPressConfirmBtn} />
         </View>
@@ -254,15 +250,29 @@ export default function Mypage(): JSX.Element {
             </View>
           </View>
           <View style={styles.badgeContainer}>
-            <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 # 몰루</Text>
-            {badgeData.length > 0 ? (
+            <Text style={styles.userIntro}>{userIntro}</Text>
+            {badgeList ? (
               <FlatList
-                data={badgeData}
-                renderItem={({ item }) => (
-                  <Badge style={styles.uniBadge} id={item.id} num={item.num} />
+                data={badgeList}
+                renderItem={({ data }) => (
+                  <TouchableOpacity
+                    style={styles.uniBadge}
+                    onPress={handleBadgePress}
+                    activeOpacity={0.6}
+                  >
+                    <View>
+                      {/* <Image
+                        source={{
+                          uri: 'https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/badge-image%2Fattend-1.png?alt=media',
+                        }}
+                      /> */}
+                      <Text></Text>
+                    </View>
+                  </TouchableOpacity>
+                  // <Badge style={styles.uniBadge} id={item.id} num={item.num} />
                 )}
                 numColumns={3}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(data) => data.id.toString()}
               />
             ) : (
               <View style={styles.emptyBox}>

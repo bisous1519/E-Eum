@@ -21,7 +21,7 @@ export const updateProfileState = atom<UserUpdateStateType>({
 });
 
 // 뱃지 목록
-export const badgeListState = atom<BadgeStateType>({
+export const badgeListState = atom<BadgeStateType[]>({
   key: 'badgeListState',
-  default: badgeListInitialState,
+  default: [badgeListInitialState],
 });

@@ -4,13 +4,19 @@ import { UserUpdateStateType } from './userAtomTypes';
 // 회원정보 수정
 export async function updateProfile(
   uid: number,
-  updateData: UserUpdateStateType
+  password: string,
+  introduction: string,
+  groupName: string
+  // updateData: UserUpdateStateType
 ) {
   try {
     const { data } = await axios.put(
       `http://j8a607.p.ssafy.io/api/user/${uid}`,
       {
-        updateData,
+        password,
+        introduction,
+        groupName,
+        // updateData,
       }
     );
     return data;
