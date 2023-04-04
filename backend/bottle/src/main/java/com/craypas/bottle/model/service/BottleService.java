@@ -2,6 +2,7 @@ package com.craypas.bottle.model.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -20,6 +21,7 @@ import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
+import com.craypas.bottle.model.entity.Like;
 import com.craypas.bottle.model.entity.ReqBottle;
 import com.craypas.bottle.model.entity.UserReqBottle;
 import com.craypas.bottle.model.repository.LikeRepository;
@@ -70,11 +72,13 @@ public class BottleService {
 		if (!reqBottleRepository.findById(id).isPresent()) {
 			throw new CustomException(ErrorCode.BOTTLE_NOT_FOUND);
 		}
+		Optional<Like> queryResult;
 		DetailReqBottleDto detailReqBottleDto = qBottleRepository.findAllResBottleByReqBottleId(id);
 		for(CheckedResBottleDto resBottleDto : detailReqBottleDto.getResBottles()) {
-			resBottleDto.setLikeDto(
-				likeRepository.findByUserIdAndResBottleId(detailReqBottleDto.getWriterId(), resBottleDto.getId()).get().toCreatedDto()
-			);
+			queryResult = likeRepository.findByUserIdAndResBottleId(detailReqBottleDto.getWriterId(), resBottleDto.getId());
+			if(queryResult.isPresent()) {
+				resBottleDto.setLikeDto(queryResult.get().toCreatedDto());
+			}
 		}
 		return detailReqBottleDto;
 	}
