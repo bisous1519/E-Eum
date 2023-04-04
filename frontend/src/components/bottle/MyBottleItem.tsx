@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { MyBottleStateType } from '../../modules/apis/bottle/bottleAtomTypes';
+import {
+  MyBottleResStateType,
+  MyBottleStateType,
+} from '../../modules/apis/bottle/bottleAtomTypes';
 import theme from '../../utils/theme';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
+import { getMyBottleRes } from '../../modules/apis/bottle/bottleApis';
+import { useRecoilState } from 'recoil';
+import { myBottleResState } from '../../modules/apis/bottle/bottleAtoms';
+import useDate from '../../hooks/useDate';
 
 const styles = StyleSheet.create({
   container: {
@@ -54,46 +61,65 @@ const styles = StyleSheet.create({
 
 type MyBottleItemPropsType = {
   item: MyBottleStateType;
-  onPressItem: () => void;
+  onToggleDetailModal: () => void;
 };
 
 export default function MyBottleItem({
   item,
-  onPressItem,
+  onToggleDetailModal,
 }: MyBottleItemPropsType): JSX.Element {
-  const [date, setDate] = useState<string>();
+  const [myBottleRes, setMyBottleRes] =
+    useRecoilState<MyBottleResStateType>(myBottleResState);
+
+  const [date, setNewDate] = useDate();
+  // const [date, setDate] = useState();
   const [type, setType] = useState<'고민 상담' | '전문가 상담'>();
+
+  const onPressItem = (bottleId: number) => {
+    getMyBottleRes(bottleId)
+      .then((data) => setMyBottleRes(data))
+      .then(() => {
+        // console.log(myBottleRes);
+        onToggleDetailModal();
+      });
+  };
 
   useEffect(() => {
     if (item) {
-      // 날짜 형식 세팅
-      setDate(
-        dayjs(item.regTime.toString(), 'YYYY-MM-DD HH:mm:ss').format('YY.MM.DD')
-      );
+      // // 날짜 형식 세팅
+      (setNewDate as (regTime: Date) => void)(item.regTime);
       // 타입 세팅
       item.type === 1 ? setType('고민 상담') : setType('전문가 상담');
     }
   }, [item]);
   return (
-    <Pressable style={styles.container} onPress={onPressItem}>
-      <View style={styles.leftWrapper}>
-        <View style={styles.header}>
-          {date ? <Text style={styles.date}>{date}</Text> : <></>}
-          <Text style={styles.headerDivider}>.</Text>
-          <Text style={styles.kindof}>{type}</Text>
-        </View>
-        <Text
-          style={styles.content}
-          // numberOfLines={2}
+    <>
+      {item ? (
+        <Pressable
+          style={styles.container}
+          onPress={() => onPressItem(item.id)}
         >
-          {item.content}
-        </Text>
-      </View>
-      <View style={styles.countWrapper}>
-        <View style={styles.newBadge}></View>
-        <Text style={styles.count}>+3</Text>
-      </View>
-    </Pressable>
+          <View style={styles.leftWrapper}>
+            <View style={styles.header}>
+              {date ? <Text style={styles.date}>{date as string}</Text> : <></>}
+              <Text style={styles.headerDivider}>.</Text>
+              <Text style={styles.kindof}>{type}</Text>
+            </View>
+            <Text
+              style={styles.content}
+              // numberOfLines={2}
+            >
+              {item.content}
+            </Text>
+          </View>
+          <View style={styles.countWrapper}>
+            <View style={styles.newBadge}></View>
+            <Text style={styles.count}>+{item.resCnt}</Text>
+          </View>
+        </Pressable>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
-
