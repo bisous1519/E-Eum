@@ -207,8 +207,7 @@ export default function Record(): JSX.Element {
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
-      >
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
         {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
@@ -218,8 +217,7 @@ export default function Record(): JSX.Element {
               '100%',
             ]}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}
-          >
+            style={{ alignItems: 'center' }}>
             {records ? (
               <BottomSheetFlatList
                 contentContainerStyle={styles.contentContainer}
@@ -248,8 +246,7 @@ export default function Record(): JSX.Element {
           stylesTag.container,
           { top: profileHeight },
         ])}
-        onLayout={onLayoutTag}
-      >
+        onLayout={onLayoutTag}>
         {tags ? (
           <TagList
             tags={tags}
