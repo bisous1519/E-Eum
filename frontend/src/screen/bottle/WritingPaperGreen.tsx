@@ -2,7 +2,6 @@ import { Video } from 'expo-av';
 import React, { useRef, useState } from 'react';
 import { StyleSheet, View, Text, Modal } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
-import { DisplayP3ColorSpace } from 'three';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import useDimension from '../../hooks/useDimension';
 import useNav from '../../hooks/useNav';
