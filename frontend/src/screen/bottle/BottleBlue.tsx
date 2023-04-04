@@ -15,6 +15,8 @@ import ButtonComp from '../../components/common/button/ButtonComp';
 import useNav from '../../hooks/useNav';
 import { FontAwesome } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
+import WritingPaperBlue from './WritingPaper';
+
 const { DEVICE_WIDTH } = useDimension();
 const borders = StyleSheet.create({
   red: {
@@ -239,7 +241,7 @@ export default function BottleBlue(): JSX.Element {
     // navigation.push('MessagePaper');
   };
   const moveToWritingPaper = () => {
-    navigation.push('WritingPaperBlue');
+    navigation.push('WritingPaper', { messageType: 1 });
   };
 
   const modalMessageItem = ({ item }: { item: messageDataType }) => {

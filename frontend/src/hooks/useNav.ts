@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RecordStateType } from '../modules/apis/record/recordAtomTypes';
 
-type RootStackParamList = {
+export type RootStackParamList = {
   BottleStack?: undefined;
   RecordStack?: undefined;
   SupportStack?: undefined;
@@ -17,9 +17,7 @@ type RootStackParamList = {
   Signin?: undefined;
   BottleGreen?: undefined;
   BottleBlue?: undefined;
-  MessagePaper?: undefined;
-  WritingPaperBlue?: undefined;
-  WritingPaperGreen?: undefined;
+  WritingPaper?: { messageType: number }; // 1:일반 상담, 2: 전문가 상담
 };
 
 // type RootStackParamList = {

@@ -5,8 +5,10 @@ import { TextInput } from 'react-native-gesture-handler';
 import { DisplayP3ColorSpace } from 'three';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import useDimension from '../../hooks/useDimension';
-import useNav from '../../hooks/useNav';
+import useNav, { RootStackParamList } from '../../hooks/useNav';
 import theme from '../../utils/theme';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -124,8 +126,16 @@ const modalstyle = StyleSheet.create({
   },
 });
 
-export default function WritingPaperBlue(): JSX.Element {
+type WritingPaperProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'WritingPaper'
+>;
+
+export default function WritingPaper(): JSX.Element {
   const navigation = useNav();
+
+  const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
+  const messageNormal = route.params?.messageType === 1 ? true : false;
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
 
@@ -136,7 +146,9 @@ export default function WritingPaperBlue(): JSX.Element {
   const [visible, setVisible] = useState<boolean>(true);
   const [sendingModal, setSendingModal] = useState<boolean>(false);
   const [sended, setSended] = useState<boolean>(false);
-  const sendingVideoPath = require('../../assets/videos/sendingbottle(round).mp4');
+  const sendingVideoPath = messageNormal
+    ? require('../../assets/videos/sendingbottle(round).mp4')
+    : require('../../assets/videos/sendingbottle(long).mp4');
 
   const doneWriting = () => {
     setStartVideo(true);
@@ -146,7 +158,9 @@ export default function WritingPaperBlue(): JSX.Element {
     // setWrittenTextValue('');
     setVisible(false);
     setTimeout(() => {
-      navigation.push('BottleBlue');
+      messageNormal
+        ? navigation.navigate('BottleBlue')
+        : navigation.navigate('BottleGreen');
     }, 8600);
     setTimeout(() => {
       setSendingModal(true);
