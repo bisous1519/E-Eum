@@ -19,3 +19,16 @@ export async function updateProfile(
     throw e;
   }
 }
+
+// 뱃지 목록
+export async function getBadgeList(uid: number) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/user/badge/${uid}`
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

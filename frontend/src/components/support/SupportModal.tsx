@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
 type SupportModalPropsType = {
   onToggleDelete: () => void;
   targetAmount: number;
+  currentAmount: number;
   sid: number;
   uid: number;
 };
@@ -71,6 +72,7 @@ type SupportModalPropsType = {
 export default function SupportModal({
   onToggleDelete,
   targetAmount,
+  currentAmount,
   sid,
   uid,
 }: SupportModalPropsType): JSX.Element {
@@ -108,7 +110,9 @@ export default function SupportModal({
           <TextInput style={styles.inputNumber}>{pay}</TextInput>
         </View>
         <View>
-          <Text style={styles.goal}>목표까지 {targetAmount}원</Text>
+          <Text style={styles.goal}>
+            목표까지 {targetAmount - currentAmount}원
+          </Text>
         </View>
         <NumberPad
           onNumberPress={onPressNumber}

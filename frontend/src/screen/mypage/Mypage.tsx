@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
-  // 프로필 스타일 적용 ================
   profileContainer: {
     flex: 3,
     width: DEVICE_WIDTH,
@@ -43,6 +42,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 10,
   },
   profileImage: {
     height: DEVICE_WIDTH * 0.3,
@@ -70,6 +70,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: 8,
+  },
+  emptyBox: {
+    paddingBottom: DEVICE_HEIGHT * 0.15,
+  },
+  emptyText: {
+    fontSize: theme.fontSize.big,
   },
   badgeContainer: {
     backgroundColor: theme.mainColor.main,
@@ -109,10 +115,14 @@ type BadgeProps = {
   num: number;
 };
 
+const handleBadgePress = () => {
+  console.log('뱃지 디테일 모달이 푸슝~');
+};
+
 const Badge = ({ style, id, num }: BadgeProps) => (
   <TouchableOpacity
     style={styles.uniBadge}
-    onPress={() => console.log('뱃지 디테일이 까꿍')}
+    onPress={handleBadgePress}
     activeOpacity={0.6}
   >
     <View>
@@ -123,7 +133,7 @@ const Badge = ({ style, id, num }: BadgeProps) => (
 
 // 뱃지 목록 임의로 만들게용...
 // image_path가 string으로 들어올거임
-const badgeData = [
+const badgeData: BadgeProps[] = [
   {
     id: 1,
     num: 1,
@@ -245,14 +255,20 @@ export default function Mypage(): JSX.Element {
           </View>
           <View style={styles.badgeContainer}>
             <Text style={styles.userIntro}># 자기소개 # 이렇게쓰나 # 몰루</Text>
-            <FlatList
-              data={badgeData}
-              renderItem={({ item }) => (
-                <Badge style={styles.uniBadge} id={item.id} num={item.num} />
-              )}
-              numColumns={3}
-              keyExtractor={(item) => item.id.toString()}
-            />
+            {badgeData.length > 0 ? (
+              <FlatList
+                data={badgeData}
+                renderItem={({ item }) => (
+                  <Badge style={styles.uniBadge} id={item.id} num={item.num} />
+                )}
+                numColumns={3}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            ) : (
+              <View style={styles.emptyBox}>
+                <Text style={styles.emptyText}>뱃지를 수집중입니다 👊</Text>
+              </View>
+            )}
           </View>
           <ModifyButton onPressModifyBtn={onPressModifyBtn} />
         </View>

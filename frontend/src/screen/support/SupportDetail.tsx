@@ -343,6 +343,7 @@ export default function SupportDetail(): JSX.Element {
         <SupportModal
           onToggleDelete={onToggleDelete}
           targetAmount={detailData?.targetAmount}
+          currentAmount={detailData?.currentAmount}
           sid={sid}
           uid={1}
         />
