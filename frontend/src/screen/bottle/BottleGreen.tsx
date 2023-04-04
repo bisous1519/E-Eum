@@ -239,7 +239,7 @@ export default function BottleBlue(): JSX.Element {
     // navigation.push('MessagePaper');
   };
   const moveToWritingPaper = () => {
-    navigation.push('WritingPaperGreen');
+    navigation.push('WritingPaper', { messageType: 2 });
   };
 
   const modalMessageItem = ({ item }: { item: messageDataType }) => {
