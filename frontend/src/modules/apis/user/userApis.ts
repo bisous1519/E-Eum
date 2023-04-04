@@ -36,6 +36,8 @@ export async function getBadgeList(uid: number) {
   } catch (e) {
     console.error(e);
     throw e;
+  }
+}
 
 // 이메일 인증 전송
 export async function postEmailVerify(userEmail: string) {

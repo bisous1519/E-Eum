@@ -262,7 +262,7 @@ export default function Mypage(): JSX.Element {
             {badgeList ? (
               <FlatList
                 data={badgeList}
-                renderItem={({ data }) => (
+                renderItem={() => (
                   <TouchableOpacity
                     style={styles.uniBadge}
                     onPress={handleBadgePress}
@@ -274,6 +274,7 @@ export default function Mypage(): JSX.Element {
                           uri: 'https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/badge-image%2Fattend-1.png?alt=media',
                         }}
                       /> */}
+                      <Text>1</Text>
                     </View>
                   </TouchableOpacity>
                   // <Badge style={styles.uniBadge} id={item.id} num={item.num} />
