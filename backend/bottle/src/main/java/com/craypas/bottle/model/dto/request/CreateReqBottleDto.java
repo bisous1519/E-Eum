@@ -31,6 +31,8 @@ public class CreateReqBottleDto {
 			.ttsPath(ttsPath)
 			.type(type)
 			.sentiment(sentiment)
+			.read(false)
+			.resRead(false)
 			.build();
 	}
 }

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.checkerframework.checker.units.qual.C;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
@@ -48,6 +49,7 @@ public class ResBottle {
 
 	@Column(name = "status")
 	private int status;
+
 
 	public CreatedResBottleDto toCreatedDto() {
 		return CreatedResBottleDto.builder()

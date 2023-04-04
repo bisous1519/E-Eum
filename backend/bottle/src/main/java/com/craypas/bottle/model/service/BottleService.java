@@ -1,5 +1,6 @@
 package com.craypas.bottle.model.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class BottleService {
 			userReqBottles.add(UserReqBottle.builder().receiverId(receiverId).reqBottle(reqBottle).build());
 		}
 		reqBottle.updateUserReqBottles(userReqBottles);
-
+		System.out.println(reqBottle);
 		return reqBottleRepository.save(reqBottle).toCreatedDto();
 	}
 
@@ -68,11 +69,17 @@ public class BottleService {
 		return qBottleRepository.findAllReqBottleWithResCntByWriterId(writerId);
 	}
 
-	public DetailReqBottleDto findDetailReqBottle(Long id) {
+	@Transactional
+	public DetailReqBottleDto findDetailReqBottle(Long id) throws ParseException {
 		if (!reqBottleRepository.findById(id).isPresent()) {
 			throw new CustomException(ErrorCode.BOTTLE_NOT_FOUND);
 		}
+		CreatedReqBottleDto reqBottleDto = reqBottleRepository.findById(id).get().toCreatedDto();
+		reqBottleDto.setResRead(true);
+		reqBottleRepository.save(reqBottleDto.toEntity());
+
 		Optional<Like> queryResult;
+
 		DetailReqBottleDto detailReqBottleDto = qBottleRepository.findAllResBottleByReqBottleId(id);
 		for(CheckedResBottleDto resBottleDto : detailReqBottleDto.getResBottles()) {
 			queryResult = likeRepository.findByUserIdAndResBottleId(detailReqBottleDto.getWriterId(), resBottleDto.getId());
@@ -83,8 +90,15 @@ public class BottleService {
 		return detailReqBottleDto;
 	}
 
-	public List<CreatedReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) {
-		return qBottleRepository.findAllResBottleByReqWriterIdAndType(receiverId, reqBottletype);
+	public List<CreatedReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) throws
+		ParseException {
+		List<CreatedReqBottleDto> createdReqBottleDtos = qBottleRepository.findAllResBottleByReqWriterIdAndType(receiverId, reqBottletype);
+
+		for(CreatedReqBottleDto innerReqBottleDto : createdReqBottleDtos) {
+			innerReqBottleDto.setRead(true);
+			reqBottleRepository.save(innerReqBottleDto.toEntity());
+		}
+		return createdReqBottleDtos;
 	}
 
 	@Transactional
