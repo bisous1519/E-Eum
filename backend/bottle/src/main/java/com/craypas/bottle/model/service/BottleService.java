@@ -1,5 +1,6 @@
 package com.craypas.bottle.model.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,10 +75,8 @@ public class BottleService {
 		return qBottleRepository.findAllResBottleByReqBottleId(id);
 	}
 
-	public List<ReceivedUserReqBottleDto> findAllUserReqBottleByReceiverId(Long receiverId) {
-		return userReqBottleRepository.findAllByReceiverId(receiverId).stream()
-			.map(UserReqBottle::toCreatedReqDto)
-			.collect(Collectors.toList());
+	public List<CreatedReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) {
+		return qBottleRepository.findAllResBottleByReqWriterIdAndType(receiverId, reqBottletype);
 	}
 
 	@Transactional
@@ -90,7 +89,7 @@ public class BottleService {
 		}
 		return resBottleRepository.save(resBottleDto.toEntity()).toCreatedDto();
 	}
-
+	
 	@Transactional
 	public CreatedLikeDto createLike(CreateLikeDto likeDto) {
 		if(!resBottleRepository.findById(likeDto.getResBottleId()).isPresent()) {

@@ -24,7 +24,7 @@ import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
-import com.craypas.bottle.model.service.ApiRequestService;
+import com.craypas.bottle.model.service.APIRequestService;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
 import com.craypas.bottle.model.service.GoogleCloudService;
@@ -46,7 +46,7 @@ public class BottleController {
 
 	private final GoogleCloudService googleCloudService;
 
-	private final ApiRequestService apiRequestService;
+	private final APIRequestService apiRequestService;
 
 	@Value("${server.url.user}")
 	private String userServerUrl;
@@ -57,24 +57,11 @@ public class BottleController {
 	@Value("${server.url.python}")
 	private String pythonServerUrl;
 
-
 	@PostMapping("/req")
 	ResponseEntity<?> sendReqBottle(@Valid @RequestBody CreateReqBottleDto reqBottleDto) {
 		String bucketFolder = "", saveFileName = "";
 		try {
 			String content = reqBottleDto.getContent();
-
-			// 유해 탐지 분산 서버 요청
-			AbuseResultDto isAbuse = apiRequestService.requestPostAPI(sparkServerUrl, "content", reqBottleDto.getContent()).getBody();
-			if(isAbuse.getPrediction()) {
-				return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-			} else {
-				// 유해 탐지 딥러닝 서버 요청
-				isAbuse = apiRequestService.requestPostAPI(pythonServerUrl, "input_data", reqBottleDto.getContent()).getBody();
-				if(isAbuse.getPrediction()) {
-					return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-				}
-			}
 
 			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
@@ -95,11 +82,7 @@ public class BottleController {
 			reqBottleDto.setTtsPath(fireBaseService.getFileUrl(bucketFolder, saveFileName));
 
 			// random user id 요청
-			List<Integer> body = apiRequestService.requestGetAPI(userServerUrl, "/random/"+reqBottleDto.getWriterId()).getBody();
-			// List<Integer> resultList = null;
-			// if (body instanceof ArrayList) {
-			// 	resultList = (List<Integer>) body;
-			// }
+			List<Integer> body = apiRequestService.requestGetRandomUserIdAPI(userServerUrl, "/random/"+reqBottleDto.getWriterId()+"/"+reqBottleDto.getType()).getBody();
 
 			CreatedReqBottleDto createdBottleDto = bottleService.sendReqBottles(reqBottleDto, body);
 			return new ResponseEntity<>(createdBottleDto, HttpStatus.OK);
@@ -137,10 +120,20 @@ public class BottleController {
 		}
 	}
 
-	@GetMapping("/receiver/{uid}/list")
-	ResponseEntity<?> getReceivedBottles(@PathVariable("uid") Long receiverId) {
+	@GetMapping("/receiver/{uid}/normal-list")
+	ResponseEntity<?> getReceivedNormalTypeBottles(@PathVariable("uid") Long receiverId) {
 		try {
-			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverId(receiverId), HttpStatus.OK);
+			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverIdAndType(receiverId, 1), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@GetMapping("/receiver/{uid}/expert-list")
+	ResponseEntity<?> getReceivedExpertTypeBottles(@PathVariable("uid") Long receiverId) {
+		try {
+			return new ResponseEntity<>(bottleService.findAllUserReqBottleByReceiverIdAndType(receiverId, 2), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
@@ -153,8 +146,17 @@ public class BottleController {
 		try {
 			String content = resBottleDto.getContent();
 
-			// 유해 탐지 ai 서버 요청
 			// 유해 탐지 분산 서버 요청
+			// AbuseResultDto isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
+			// if(isAbuse.getPrediction()) {
+			// 	return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+			// } else {
+			// 	// 유해 탐지 딥러닝 서버 요청
+			// 	isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
+			// 	if(isAbuse.getPrediction()) {
+			// 		return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+			// 	}
+			// }
 
 			resBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
