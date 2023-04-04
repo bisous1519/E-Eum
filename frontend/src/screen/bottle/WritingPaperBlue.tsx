@@ -6,6 +6,9 @@ import ButtonComp from '../../components/common/button/ButtonComp';
 import useDimension from '../../hooks/useDimension';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
+import FnqType from '../../models/bottle/fnqType';
+import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import FnqModal from '../../components/bottle/FnqModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -123,19 +126,30 @@ const modalstyle = StyleSheet.create({
   },
 });
 
+export const fnqMockup: FnqType = {
+  id: 1,
+  title: '주거 관련 정보',
+  content:
+    '<div>경기도 내 아동복지시설 보호종료 5년이내 또는 종료예정인 자립준비청년을 대상으로  자립준비청년 주거기반 자립지원 참여자를 모집 중에 있습니다.<br><br> 매월 15일까지 온라인 또는 방문접수가 가능합니다.</div>',
+  linkTo: 'http://naver.com',
+};
+
 export default function WritingPaperBlue(): JSX.Element {
   const navigation = useNav();
 
+  const inputRef = useRef<TextInput>(null);
+
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
+  const sendingVideoPath = require('../../assets/videos/sendingbottle(round).mp4');
 
   const [startVideo, setStartVideo] = useState<boolean>(false);
   const [writtenTextValue, setWrittenTextValue] = useState<string>('');
-  const writtenTextLength = writtenTextValue.length;
-  const inputRef = useRef<TextInput>(null);
   const [visible, setVisible] = useState<boolean>(true);
   const [sendingModal, setSendingModal] = useState<boolean>(false);
   const [sended, setSended] = useState<boolean>(false);
-  const sendingVideoPath = require('../../assets/videos/sendingbottle(round).mp4');
+  const [fnqModal, setFnqModal] = useState<boolean>(false);
+
+  const writtenTextLength = writtenTextValue.length;
 
   const doneWriting = () => {
     setStartVideo(true);
@@ -144,9 +158,9 @@ export default function WritingPaperBlue(): JSX.Element {
     }
     // setWrittenTextValue('');
     setVisible(false);
-    setTimeout(() => {
-      navigation.push('BottleBlue');
-    }, 8600);
+    // setTimeout(() => {
+    //   navigation.push('BottleBlue');
+    // }, 8600);
     setTimeout(() => {
       setSendingModal(true);
     }, 4000);
@@ -154,8 +168,15 @@ export default function WritingPaperBlue(): JSX.Element {
       setSended(true);
     }, 7000);
     setTimeout(() => {
+      // 여기가 맞나?
+      setFnqModal(true);
       setSendingModal(false);
     }, 8500);
+  };
+
+  const onCloseFnqModal = () => {
+    setFnqModal(false);
+    navigation.push('BottleBlue');
   };
 
   const handleTextChange = (text: string) => {
@@ -246,6 +267,11 @@ export default function WritingPaperBlue(): JSX.Element {
             </View>
           </Modal>
         </View>
+      )}
+      {fnqModal ? (
+        <FnqModal data={fnqMockup} onCloseFnqModal={onCloseFnqModal} />
+      ) : (
+        <></>
       )}
     </View>
   );

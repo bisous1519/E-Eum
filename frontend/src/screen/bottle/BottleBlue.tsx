@@ -15,7 +15,9 @@ import ButtonComp from '../../components/common/button/ButtonComp';
 import useNav from '../../hooks/useNav';
 import { FontAwesome } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
-const { DEVICE_WIDTH } = useDimension();
+import { fnqMockup } from './WritingPaperBlue';
+import FnqModal from '../../components/bottle/FnqModal';
+const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const borders = StyleSheet.create({
   red: {
     // borderWidth: 1,
@@ -47,6 +49,8 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10,
     zIndex: 1,
+    // backgroundColor: 'orange',
+    height: '100%',
   },
   leftPageBottlesLocation: {
     position: 'absolute',
@@ -56,6 +60,15 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     top: 290,
     left: 160,
+  },
+  myBottleBox: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    // borderWidth: 1,
+    // borderColor: 'red',
+    right: 0,
+    bottom: 50,
   },
   bluePageRedPressable: {
     position: 'absolute',
@@ -361,31 +374,8 @@ export default function BottleBlue(): JSX.Element {
           style={styles.leftPageBottlesLocation}
           onPress={handleModalPop}
         />
-        {/* > */}
-        {/* <Pressable
-            style={StyleSheet.flatten([
-              styles.tempBorderBlue,
-              styles.bluePageRedPressable,
-            ])}
-          ></Pressable>
-          <Pressable
-            style={StyleSheet.flatten([
-              styles.tempBorderBlue,
-              styles.bluePageBlackPressable,
-            ])}
-          ></Pressable>
-          <Pressable
-            style={StyleSheet.flatten([
-              styles.tempBorderBlue,
-              styles.bluePageGreenPressable,
-            ])}
-          ></Pressable> */}
-        {/* </Pressable> */}
-        <Pressable onPress={navigateToMyBottle}>
-          <Text>마이보틀목록</Text>
-        </Pressable>
+        <Pressable style={styles.myBottleBox} onPress={navigateToMyBottle} />
       </View>
     </View>
   );
 }
-
