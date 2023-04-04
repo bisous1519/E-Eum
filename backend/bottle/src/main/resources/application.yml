@@ -2,7 +2,7 @@ server:
   port: 8080
   url:
     user: "http://j8a607.p.ssafy.io/api/user"
-    spark: "http://34.22.72.254:1818/api/spark/abuse-counting"
+    spark: "http://34.64.198.205:1818/api/spark/abuse-counting"
     python: "http://34.64.220.102/predict"
 
 spring:

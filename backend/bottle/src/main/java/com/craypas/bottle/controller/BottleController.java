@@ -21,6 +21,7 @@ import com.craypas.bottle.model.dto.request.CreateLikeDto;
 import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
+import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.service.APIRequestService;
@@ -146,16 +147,16 @@ public class BottleController {
 			String content = resBottleDto.getContent();
 
 			// 유해 탐지 분산 서버 요청
-			// AbuseResultDto isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
-			// if(isAbuse.getPrediction()) {
-			// 	return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-			// } else {
-			// 	// 유해 탐지 딥러닝 서버 요청
-			// 	isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
-			// 	if(isAbuse.getPrediction()) {
-			// 		return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-			// 	}
-			// }
+			AbuseResultDto isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
+			if(isAbuse.getPrediction()) {
+				return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+			} else {
+				// 유해 탐지 딥러닝 서버 요청
+				isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
+				if(isAbuse.getPrediction()) {
+					return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+				}
+			}
 
 			resBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
