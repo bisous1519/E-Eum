@@ -16,12 +16,12 @@ const styles = StyleSheet.create({
     height: DEVICE_HEIGHT,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: DEVICE_HEIGHT * 0.1,
+    paddingTop: DEVICE_HEIGHT * 0.13,
     paddingBottom: DEVICE_HEIGHT * 0.03,
   },
   input: {
     borderWidth: 2,
-    width: DEVICE_WIDTH * 0.55,
+    width: DEVICE_WIDTH * 0.65,
     height: DEVICE_HEIGHT * 0.08,
     margin: 10,
     padding: 10,
@@ -74,7 +74,6 @@ export default function PointCharge() {
         <TextInput style={styles.inputNumber}>{point}</TextInput>
       </View>
       <NumberPad onNumberPress={onPressNumber} onDeletePress={onPressDelete} />
-      {/* 이 아래가 '후원하기' 버튼 부분 */}
       <Pressable style={styles.confirm} onPress={handlePointCharge}>
         <Text style={styles.confirmText}>충전하기</Text>
       </Pressable>
