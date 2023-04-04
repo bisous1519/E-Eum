@@ -166,9 +166,15 @@ export default function Record(): JSX.Element {
     console.log('bottomSheet changed', idx);
     setExpandFeed(idx === 1 ? true : false);
   };
+
+  const handleProfilePress = () => {
+    navigation.navigate('SupportProfile');
+  };
+
   const onPressPlusBtn = (): void => {
     navigation.push('RecordEditor');
   };
+
   const onToggleDelete = (recordId?: number): void => {
     if (recordId || recordId === 0) {
       setDelTargetContentId(recordId);
@@ -275,7 +281,7 @@ export default function Record(): JSX.Element {
               left: imgOffsetXY.x,
             },
           ])}
-          onPress={() => console.log('클릭이얌')}></Pressable>
+          onPress={handleProfilePress}></Pressable>
       ) : (
         <></>
       )}
