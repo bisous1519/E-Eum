@@ -30,7 +30,8 @@ export default function Badge({
         <BadgeBox
           size={size}
           //   source={require(badge.imagePath)}
-          source={require('../../assets/images/badge_sample.png')}
+          // source={require('../../assets/images/badge_sample.png')}
+          source={{ uri: badge.imagePath }}
           imageStyle={{ borderRadius: size }}
           style={styles}
         />
@@ -40,4 +41,3 @@ export default function Badge({
     </>
   );
 }
-

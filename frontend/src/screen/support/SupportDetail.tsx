@@ -285,7 +285,7 @@ export default function SupportDetail(): JSX.Element {
                     >
                       {/* 주석 풀어야해 */}
                       <Image
-                        // source={require(detailData?.sponsorImagePathList[idx])}
+                        // source={{uri: detailData?.sponsorImagePathList[idx]}}
                         source={require('../../assets/images/sample.png')}
                         style={styles.profilePicture}
                       />

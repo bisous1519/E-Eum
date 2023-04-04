@@ -142,3 +142,15 @@ export async function deleteTag(tagId: number) {
   }
 }
 
+// 꿈피드 회원정보 조회
+export async function getProfileData(uid: number) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/user/dream/${uid}`
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
