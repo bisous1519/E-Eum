@@ -84,6 +84,7 @@ export default function JoinPW(): JSX.Element {
   //이메일 인증
   const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
   const requestVerifCode = () => {
+    setTimerOn(true);
     console.log('인증 버튼 눌림');
   };
   const { text: verifCode, onChangeText: onChangeVerifCode } = useInputText();
@@ -91,7 +92,6 @@ export default function JoinPW(): JSX.Element {
   const [timeLeft, setTimeLeft] = useState<number>(5);
   const checkVerifCode = () => {
     console.log('인증 확인 버튼 눌림');
-    setTimerOn(true);
   };
   useEffect(() => {
     let interval: any;
@@ -149,7 +149,15 @@ export default function JoinPW(): JSX.Element {
               text={userEmail}
               onChangeText={onChangeUserEmail}
               btn={true}
-              btnText={'인증'}
+              btnText={
+                timerOn
+                  ? `${Math.floor(timeLeft / 60)
+                      .toString()
+                      .padStart(2, '0')}:${(timeLeft % 60)
+                      .toString()
+                      .padStart(2, '0')}`
+                  : '인증'
+              }
               onPressBtn={requestVerifCode}
             />
           </View>
@@ -164,15 +172,7 @@ export default function JoinPW(): JSX.Element {
               text={verifCode}
               onChangeText={onChangeVerifCode}
               btn={true}
-              btnText={
-                timerOn
-                  ? `${Math.floor(timeLeft / 60)
-                      .toString()
-                      .padStart(2, '0')}:${(timeLeft % 60)
-                      .toString()
-                      .padStart(2, '0')}`
-                  : '확인'
-              }
+              btnText={'확인'}
               onPressBtn={checkVerifCode}
             />
           </View>

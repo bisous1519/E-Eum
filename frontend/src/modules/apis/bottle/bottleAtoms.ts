@@ -1,12 +1,16 @@
 import { atom } from 'recoil';
-import { MyBottleStateType, ResBottleStateType } from './bottleAtomTypes';
+import { MyBottleResStateType, MyBottleStateType } from './bottleAtomTypes';
 
 // 특정 질문에 대한 답변 해류병 목록 initialState
-// const resBottlesInitialState: MyResBottlesStateType = {
-//     id: 0,
-//     content: "",
-
-// }
+const myBottleResInitialState: MyBottleResStateType = {
+  id: 0,
+  content: '',
+  type: 1,
+  sentiment: 0,
+  regTime: new Date(),
+  status: 1,
+  resBottles: [],
+};
 
 // 작성한 질문 해류병 목록
 export const myBottlesState = atom<MyBottleStateType[]>({
@@ -15,7 +19,7 @@ export const myBottlesState = atom<MyBottleStateType[]>({
 });
 
 // 특정 질문에 대한 답변 해류병 목록
-export const resBottlesState = atom<ResBottleStateType>({
+export const myBottleResState = atom<MyBottleResStateType>({
   key: 'resBottlesState',
-  //   default:
+  default: myBottleResInitialState,
 });

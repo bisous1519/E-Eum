@@ -21,7 +21,6 @@ type RootStackParamList = {
   Signin?: undefined;
   BottleGreen?: undefined;
   BottleBlue?: undefined;
-  MessagePaper?: undefined;
   WritingPaperBlue?: undefined;
   WritingPaperGreen?: undefined;
   MyBottle?: undefined;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { UserUpdateStateType } from './userAtomTypes';
+// import { UserUpdateStateType } from './userAtomTypes';
 
 // 회원정보 수정
 export async function updateProfile(
@@ -36,5 +36,16 @@ export async function getBadgeList(uid: number) {
   } catch (e) {
     console.error(e);
     throw e;
+
+// 이메일 인증 전송
+export async function postEmailVerify(userEmail: string) {
+  try {
+    const { data } = await axios.post<string>(
+      `http://j8a607.p.ssafy.io/api/user/join?email=${userEmail}`
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
   }
 }
