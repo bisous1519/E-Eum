@@ -156,13 +156,14 @@ export default function Signup(): JSX.Element {
   const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
   const { text: verifCode, onChangeText: onChangeVerifCode } = useInputText();
   const [timerOn, setTimerOn] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState<number>(300);
+  const [timeLeft, setTimeLeft] = useState<number>(180);
   const [codeFromEmail, setCodeFromEmail] = useState<string>();
   const [checkCode, setCheckCode] = useState<boolean>(false);
   const [notChecked, setNotChecked] = useState<boolean>(true);
   const requestVerifCode = () => {
     console.log('인증 버튼 눌림');
     setTimerOn(true);
+    setTimeLeft(180);
     postEmailVerify(userEmail).then((output) => setCodeFromEmail(output)); //인증 코드 전송
     setNotChecked(true);
   };
@@ -170,19 +171,19 @@ export default function Signup(): JSX.Element {
   const checkVerifCode = () => {
     console.log('인증 확인 버튼 눌림');
     setNotChecked(false);
-    verifCode === codeFromEmail
-      ? checkEmailStateTrue()
-      : checkEmailStateFalse();
+    verifCode == codeFromEmail ? checkEmailStateTrue() : checkEmailStateFalse();
   };
 
   const checkEmailStateTrue = () => {
     setCheckCode(true);
     setTimerOn(false);
     setEmailState(true);
+    console.log('맞음');
   };
   const checkEmailStateFalse = () => {
     setCheckCode(false);
     setEmailState(false);
+    console.log('틀림');
   };
 
   useEffect(() => {
@@ -190,8 +191,8 @@ export default function Signup(): JSX.Element {
     // console.log('카운트다운');
     // console.log('checkCode: ' + checkCode);
     // console.log('notChecked: ' + notChecked);
-    // console.log(codeFromEmail);
-    // console.log(verifCode);
+    console.log(codeFromEmail);
+    console.log(verifCode);
     if (timerOn && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
@@ -253,8 +254,6 @@ export default function Signup(): JSX.Element {
   }, [userNickName]);
 
   const [userGender, setUserGender] = useState<string>('');
-  const [userProfileImage, setUserProfileImage] = useState<string>('');
-  const [userType, setUserType] = useState<string>('');
 
   // 성별 관련
   const handleGenderFemale = () => {
@@ -271,13 +270,19 @@ export default function Signup(): JSX.Element {
   };
 
   //프로필 사진 관련
+  const [userProfileImage, setUserProfileImage] = useState<string>('');
 
   //회원 구분 관련
+  const [userType, setUserType] = useState<number>(0);
+
   const handleUserTypeYA = () => {
-    setUserType('YoungAdult');
+    setUserType(1);
+  };
+  const handleUserTypeExpert = () => {
+    setUserType(2);
   };
   const handleUserTypeETC = () => {
-    setUserType('ETC');
+    setUserType(3);
   };
 
   return (
@@ -448,7 +453,7 @@ export default function Signup(): JSX.Element {
                     stylesSignupInput.noInputTextSelectionButton,
                     {
                       backgroundColor:
-                        userType === 'YoungAdult'
+                        userType === 1
                           ? theme.mainColor.main
                           : theme.grayColor.lightGray,
                     },
@@ -456,6 +461,25 @@ export default function Signup(): JSX.Element {
                 ></View>
                 <Text style={stylesSignupInput.noInputTextSelectionText}>
                   자립준비청년
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={handleUserTypeExpert}
+                style={stylesSignupInput.noInputTextSelections}
+              >
+                <View
+                  style={[
+                    stylesSignupInput.noInputTextSelectionButton,
+                    {
+                      backgroundColor:
+                        userType === 2
+                          ? theme.mainColor.main
+                          : theme.grayColor.lightGray,
+                    },
+                  ]}
+                ></View>
+                <Text style={stylesSignupInput.noInputTextSelectionText}>
+                  전문 상담가
                 </Text>
               </Pressable>
               <Pressable
@@ -467,7 +491,7 @@ export default function Signup(): JSX.Element {
                     stylesSignupInput.noInputTextSelectionButton,
                     {
                       backgroundColor:
-                        userType === 'ETC'
+                        userType === 3
                           ? theme.mainColor.main
                           : theme.grayColor.lightGray,
                     },
@@ -479,12 +503,16 @@ export default function Signup(): JSX.Element {
               </Pressable>
             </View>
           </View>
-          <View style={stylesSignupInput.noInputTextContainer}>
-            <Text style={stylesSignupInput.noInputTextTitle}>증빙 자료</Text>
-            <Pressable style={stylesSignupInput.addProfileImageButton}>
-              <Text style={stylesSignupInput.addProfileImageButtonText}>+</Text>
-            </Pressable>
-          </View>
+          {(userType === 1 || userType === 2) && (
+            <View style={stylesSignupInput.noInputTextContainer}>
+              <Text style={stylesSignupInput.noInputTextTitle}>증빙 자료</Text>
+              <Pressable style={stylesSignupInput.addProfileImageButton}>
+                <Text style={stylesSignupInput.addProfileImageButtonText}>
+                  +
+                </Text>
+              </Pressable>
+            </View>
+          )}
         </View>
         {/* inner container */}
       </View>
