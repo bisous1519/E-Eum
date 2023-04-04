@@ -275,40 +275,19 @@ export default function Record(): JSX.Element {
               left: imgOffsetXY.x,
             },
           ])}
-          onPress={() => console.log('클릭이얌')}
-        ></Pressable>
+          onPress={() => console.log('클릭이얌')}></Pressable>
       ) : (
         <></>
       )}
 
       {/* 태그 */}
-<<<<<<< HEAD
-      <View
-        style={StyleSheet.flatten([
-          stylesTag.container,
-          { top: profileHeight },
-        ])}
-        onLayout={onLayoutTag}>
-        {tags ? (
-          <TagList
-            tags={tags}
-            allTag={true}
-            onToggleAddTagModal={onToggleAddTagModal}
-            onToggleUpDelTagModal={onToggleUpDelTagModal}
-          />
-        ) : (
-          <></>
-        )}
-      </View>
-=======
       {!expandFeed ? (
         <View
           style={StyleSheet.flatten([
             stylesTag.container,
             { top: profileHeight },
           ])}
-          onLayout={onLayoutTag}
-        >
+          onLayout={onLayoutTag}>
           {tags ? (
             <TagList
               tags={tags}
@@ -323,7 +302,6 @@ export default function Record(): JSX.Element {
       ) : (
         <></>
       )}
->>>>>>> 18c96c044772cc25bca898a1998e8841fa7ae8af
       <PlusButton onPressPlusBtn={onPressPlusBtn} />
       {deleteModal && delTargetContentId ? (
         <DeleteModal
@@ -349,4 +327,3 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
-

@@ -108,3 +108,9 @@ export const regularSupportState = atom<RegularSupportStateType>({
   key: 'regularSupportState${v1}',
   default: regularSupportInitialState,
 });
+
+// 정렬 기준
+export const sortType = atom<number>({
+  key: 'sortType',
+  default: 1,
+});
