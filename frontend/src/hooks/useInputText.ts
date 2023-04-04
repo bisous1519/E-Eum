@@ -10,4 +10,3 @@ export default function useInputText() {
 
   return { text, onChangeText, setText };
 }
-

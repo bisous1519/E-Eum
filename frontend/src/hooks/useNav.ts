@@ -7,11 +7,15 @@ type RootStackParamList = {
   RecordStack?: undefined;
   SupportStack?: undefined;
   MypageStack?: undefined;
+  Mypage?: undefined;
+  PointCharge?: undefined;
   Notice?: undefined;
+  Record?: undefined;
   RecordEditor?: { item: RecordStateType } | undefined;
   Signup?: undefined;
   SupportDetail?: undefined;
   NewSupport?: undefined;
+  SupportRecord?: { uid: number; tid: number };
   JoinPW?: undefined;
   SetNewPW?: undefined;
   Signin?: undefined;

@@ -176,7 +176,7 @@ export default function NewSupport(): JSX.Element {
   //   }
   // };
 
-  const handleContextChange = (data: any) => {
+  const handleContextChange = (data: string) => {
     setContext(data);
   };
 

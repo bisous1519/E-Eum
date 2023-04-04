@@ -16,7 +16,7 @@ import { getSupports } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
 import { supportsState } from '../../modules/apis/support/supportAtoms';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigator/SupportStack';
 

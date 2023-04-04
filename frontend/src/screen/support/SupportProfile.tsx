@@ -77,19 +77,21 @@ const styles = StyleSheet.create({
   supportText: {
     color: theme.textColor.white,
   },
-  // ====================================
-  // 뱃지 스타일 적용 ===================
   badgeContainer: {
     backgroundColor: theme.mainColor.main,
     width: DEVICE_WIDTH,
+    height: DEVICE_HEIGHT * 0.65,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: DEVICE_HEIGHT * 0.15,
   },
   userIntro: {
     fontSize: theme.fontSize.regular,
     marginTop: DEVICE_HEIGHT * 0.05,
+    position: 'absolute',
+    bottom: DEVICE_HEIGHT * 0.54,
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
