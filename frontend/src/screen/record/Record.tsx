@@ -28,6 +28,7 @@ import TagList from '../../components/record/TagList';
 import AddTagModal from '../../components/record/AddTagModal';
 import UpDelTagModal from '../../components/record/UpDelTagModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import EmptyMessage from '../../components/common/EmptyMessage';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -259,7 +260,10 @@ export default function Record(): JSX.Element {
                 )}
               />
             ) : (
-              <></>
+              <EmptyMessage
+                text='작성된 꿈기록이 없습니다'
+                marginBottom={350}
+              />
             )}
           </BottomSheet>
         ) : (
