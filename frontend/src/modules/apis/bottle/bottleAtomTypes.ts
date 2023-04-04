@@ -76,6 +76,9 @@ export type MyBottleResStateType = {
   sentiment: SentimentType;
   regTime: Date;
   status: StatusType;
+  writerId: number;
+  read: boolean;
+  resRead: boolean;
   resBottles: ResBottleStateType[];
 };
 

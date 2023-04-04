@@ -5,10 +5,13 @@ import { MyBottleResStateType, MyBottleStateType } from './bottleAtomTypes';
 const myBottleResInitialState: MyBottleResStateType = {
   id: 0,
   content: '',
+  writerId: 0,
   type: 1,
   sentiment: 0,
   regTime: new Date(),
   status: 1,
+  read: false,
+  resRead: false,
   resBottles: [],
 };
 
@@ -23,3 +26,4 @@ export const myBottleResState = atom<MyBottleResStateType>({
   key: 'resBottlesState',
   default: myBottleResInitialState,
 });
+
