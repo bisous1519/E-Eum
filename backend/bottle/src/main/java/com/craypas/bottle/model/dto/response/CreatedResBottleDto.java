@@ -44,7 +44,8 @@ public class CreatedResBottleDto {
 			.sentiment(sentiment)
 			.ttsPath(ttsPath)
 			.regTime(dateConverter(regTime))
-			.status(status).build();
+			.status(status)
+			.build();
 	}
 
 	public Date dateConverter(String input) throws ParseException {
