@@ -3,7 +3,6 @@ package com.craypas.bottle.model.dto.request;
 import javax.validation.constraints.NotNull;
 
 import com.craypas.bottle.model.entity.ReqBottle;
-import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

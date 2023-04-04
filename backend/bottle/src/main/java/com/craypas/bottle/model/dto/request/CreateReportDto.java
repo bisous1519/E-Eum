@@ -1,11 +1,9 @@
 package com.craypas.bottle.model.dto.request;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.craypas.bottle.model.entity.Report;
-import com.google.firebase.database.core.Repo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

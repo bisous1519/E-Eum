@@ -38,7 +38,7 @@ public class QBottleRepository {
 			.leftJoin(userReqBottle.resBottles, resBottle).on(resBottle.userReqBottleId.eq(userReqBottle.id))
 			.where(reqBottle.id.eq(id))
 			.transform(groupBy(reqBottle.id).as(new QDetailReqBottleDto(
-				reqBottle.id, reqBottle.content, reqBottle.type, reqBottle.sentiment, Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime), reqBottle.status,
+				reqBottle.id, reqBottle.writerId, reqBottle.content, reqBottle.type, reqBottle.sentiment, Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime), reqBottle.status,
 				list(new QCheckedResBottleDto(resBottle.id, resBottle.content, resBottle.ttsPath,
 					Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime),
 					resBottle.status))

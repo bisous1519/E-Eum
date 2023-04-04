@@ -16,12 +16,9 @@ import lombok.ToString;
 public class CreateResBottleDto {
 
 	private Long userReqBottleId;
-
 	@NotEmpty
 	private String content;
-
 	private String ttsPath;
-
 	private Integer sentiment;
 
 	public ResBottle toEntity() {
