@@ -149,27 +149,63 @@ export default function WritingPaper(): JSX.Element {
     ? require('../../assets/videos/sendingbottle(round).mp4')
     : require('../../assets/videos/sendingbottle(long).mp4');
 
-  const doneWriting = () => {
+  const [endRollingPaper, setEndRollingPaper] = useState<boolean>(false);
+  const [endFloatingBottle, setEndFloatingBootle] = useState<boolean>(false);
+
+  const handleRollingPaper = (status: any) => {
+    if (status.didJustFinish) {
+      setEndRollingPaper(true);
+      console.log('되나?');
+      console.log(status.didJustFinish);
+    }
+  };
+  const handleFloatingBottle = (status: any) => {
+    if (status.didJustFinish) {
+      setEndFloatingBootle(true);
+      console.log('되나?');
+      console.log(status.didJustFinish);
+    } else {
+      console.log(status.didJustFinish);
+    }
+  };
+
+  const doneWriting = async () => {
     setStartVideo(true);
     if (inputRef.current) {
       inputRef.current.blur();
     }
     // setWrittenTextValue('');
     setVisible(false);
+    console.log('보내기 버튼 눌림');
+    while (!endRollingPaper) {
+      if (endRollingPaper) break;
+      console.log('while');
+    }
+    console.log('while 끝');
+    setSendingModal(true);
+    // while (!endFloatingBottle) continue;
+    setSended(true);
     setTimeout(() => {
+      setSendingModal(false);
       messageNormal
         ? navigation.navigate('BottleBlue')
         : navigation.navigate('BottleGreen');
-    }, 8600);
-    setTimeout(() => {
-      setSendingModal(true);
-    }, 4000);
-    setTimeout(() => {
-      setSended(true);
-    }, 7000);
-    setTimeout(() => {
-      setSendingModal(false);
-    }, 8500);
+    }, 1000);
+
+    // setTimeout(() => {
+    //   messageNormal
+    //     ? navigation.navigate('BottleBlue')
+    //     : navigation.navigate('BottleGreen');
+    // }, 8600);
+    // setTimeout(() => {
+    //   setSendingModal(true);
+    // }, 4000);
+    // setTimeout(() => {
+    //   setSended(true);
+    // }, 7000);
+    // setTimeout(() => {
+    //   setSendingModal(false);
+    // }, 8500);
   };
 
   const handleTextChange = (text: string) => {
@@ -177,6 +213,7 @@ export default function WritingPaper(): JSX.Element {
   };
 
   const clearText = () => {
+    console.log('지우기');
     setWrittenTextValue('');
   };
 
@@ -185,6 +222,7 @@ export default function WritingPaper(): JSX.Element {
       <View style={styles.backgroundVideo}>
         <Video
           source={paperVideo}
+          onPlaybackStatusUpdate={handleRollingPaper}
           rate={1.0}
           // volume={1.0}
           isMuted={true}
@@ -241,6 +279,7 @@ export default function WritingPaper(): JSX.Element {
                 <View style={modalstyle.sendingVideoBox}>
                   <Video
                     source={sendingVideoPath}
+                    onPlaybackStatusUpdate={handleFloatingBottle}
                     rate={1.0}
                     // volume={1.0}
                     isMuted={true}
