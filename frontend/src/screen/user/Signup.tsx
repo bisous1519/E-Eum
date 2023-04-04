@@ -291,12 +291,13 @@ export default function Signup(): JSX.Element {
     setUserType(3);
   };
 
+  const nameTest = <MaterialIcons name='check-box' size={24} color='black' />;
+
   return (
     <ScrollView style={stylesGlobalContainer.scrollContainer}>
       <View style={stylesGlobalContainer.container}>
         <View testID='inner' style={stylesInnerContainer.container}>
           <View style={stylesSignupInput.box}>
-            <MaterialIcons name='check-box' size={24} color='black' />
             <InputComp
               name={'이름'}
               text={userName}
