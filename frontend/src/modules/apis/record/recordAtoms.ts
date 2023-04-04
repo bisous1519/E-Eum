@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import {
+  RecordProfileStateType,
   RecordsStateType,
   RecordStateType,
   TagStateType,
@@ -27,6 +28,15 @@ const tagInitialState: TagStateType = {
   name: '',
 };
 
+// 꿈피드 회원정보 initialState
+const recordProfileInitialState: RecordProfileStateType = {
+  nickname: '',
+  imagePath: '',
+  introduction: '',
+  groupName: '',
+  dayCnt: 0,
+};
+
 // 꿈기록 하나
 export const recordState = atom<RecordStateType>({
   key: 'recordState',
@@ -49,4 +59,10 @@ export const tagState = atom<TagStateType>({
 export const tagsState = atom<TagStateType[]>({
   key: 'tagsState',
   default: [],
+});
+
+// 꿈피드 회원정보
+export const recordProfileState = atom<RecordProfileStateType>({
+  key: 'recordProfileState',
+  default: recordProfileInitialState,
 });

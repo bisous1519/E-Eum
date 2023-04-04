@@ -14,14 +14,26 @@ import { Ionicons } from '@expo/vector-icons';
 import ModifyButton from '../../components/common/ModifyButton';
 import useNav from '../../hooks/useNav';
 import ConfirmButton from '../../components/common/ConfirmButton';
-import { getBadgeList, updateProfile } from '../../modules/apis/user/userApis';
-import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
+import {
+  getBadgeList,
+  getSponsorProfile,
+  updateProfile,
+} from '../../modules/apis/user/userApis';
+import {
+  BadgeStateType,
+  SponsorStateType,
+} from '../../modules/apis/user/userAtomTypes';
 import { useRecoilState } from 'recoil';
-import { badgeListState } from '../../modules/apis/user/userAtoms';
+import {
+  badgeListState,
+  sponsorState,
+} from '../../modules/apis/user/userAtoms';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
-import { SupportProfileStateType } from '../../modules/apis/support/supportAtomTypes';
-import { checkProfile } from '../../modules/apis/support/supportApis';
+import Badge from '../../components/common/Badge';
+import { RecordProfileStateType } from '../../modules/apis/record/recordAtomTypes';
+import { getProfileData } from '../../modules/apis/record/recordApis';
+import { recordProfileState } from '../../modules/apis/record/recordAtoms';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -132,8 +144,13 @@ export default function Mypage(): JSX.Element {
     useInputText();
 
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  // const [isModal, setIsModal] = useState<boolean>(false);
   const [badgeList, setBadgeList] =
     useRecoilState<BadgeStateType[]>(badgeListState);
+  const [userProfile, setUserProfile] =
+    useRecoilState<SponsorStateType>(sponsorState);
+  const [recordProfile, setRecordProfile] =
+    useRecoilState<RecordProfileStateType>(recordProfileState);
 
   const onPressModifyBtn = () => {
     setIsUpdate((props) => !props);
@@ -141,7 +158,11 @@ export default function Mypage(): JSX.Element {
 
   const onPressConfirmBtn = () => {
     setIsUpdate((props) => !props);
-    updateProfile(loginUser, newPassword, userIntro, userGroup);
+    updateProfile(loginUser, {
+      password: newPassword,
+      introduction: userIntro,
+      groupName: userGroup,
+    });
   };
 
   const handleChargePoint = () => {
@@ -149,28 +170,43 @@ export default function Mypage(): JSX.Element {
     navigation.push('PointCharge');
   };
 
-  const handleBadgePress = () => {
-    console.log('뱃지 디테일 API로 푸슝~');
-  };
+  const handleBadgePress = () =>
+    // imagePath: string,
+    // name: string,
+    // description: string
+    {
+      console.log('뱃지 디테일 모달이 푸슝~');
+      // setIsModal((prev) => !prev);
+    };
+
+  // const handleModalClose = () => {
+  //   setIsModal((prev) => !prev);
+  // };
 
   const fetchData = async () => {
     const badgeData: BadgeStateType[] | undefined = await getBadgeList(
       loginUser
     );
-    const userData: SupportProfileStateType | undefined = await checkProfile(
+    const userData: SponsorStateType | undefined = await getSponsorProfile(
+      1,
       loginUser
     );
+    const profileData: RecordProfileStateType | undefined =
+      await getProfileData(loginUser);
     if (badgeData) {
-      setBadgeList(badgeData);
+      setBadgeList(badgeData.badgeList);
     }
     if (userData) {
-      // 로그인 유저의 이름 정보 받아와~~
+      setUserProfile(userData);
+    }
+    if (profileData) {
+      setRecordProfile(profileData);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [userProfile.myPoint, recordProfile]);
 
   return (
     <>
@@ -178,18 +214,26 @@ export default function Mypage(): JSX.Element {
         <View style={styles.container}>
           <View style={styles.profileContainer}>
             <View style={styles.profileBox}>
-              <Image
-                source={require('../../assets/images/sample.png')}
-                style={styles.profileImage}
-              />
-              <Text style={styles.nickname}>김더미</Text>
+              {recordProfile.imagePath ? (
+                <Image
+                  source={{ uri: recordProfile?.imagePath }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <Image
+                  // 기본 이미지로 넣어둬
+                  source={{ uri: 'https://i.stack.imgur.com/l60Hf.png' }}
+                  style={styles.profileImage}
+                />
+              )}
+              <Text style={styles.nickname}>{userProfile.nickname}</Text>
               <View style={styles.pointBox}>
                 <MaterialIcons
                   name='copyright'
                   size={24}
                   color={theme.mainColor.dark}
                 />
-                <Text style={styles.pointCount}>300,000</Text>
+                <Text style={styles.pointCount}>{userProfile.myPoint}</Text>
               </View>
               <TouchableOpacity
                 style={styles.chargePoint}
@@ -217,15 +261,15 @@ export default function Mypage(): JSX.Element {
                 name={'비밀번호'}
                 text={newPassword}
                 onChangeText={setNewPassword}
-                pw
-                check
+                pw={true}
+                check={true}
               />
               <InputComp
                 name={'비밀번호 확인'}
                 text={checkPassword}
                 onChangeText={setCheckPassword}
-                pw
-                check
+                pw={true}
+                check={true}
               />
             </View>
           </View>
@@ -235,18 +279,26 @@ export default function Mypage(): JSX.Element {
         <View style={styles.container}>
           <View style={styles.profileContainer}>
             <View style={styles.profileBox}>
-              <Image
-                source={require('../../assets/images/sample.png')}
-                style={styles.profileImage}
-              />
-              <Text style={styles.nickname}>김더미</Text>
+              {recordProfile.imagePath ? (
+                <Image
+                  source={{ uri: recordProfile?.imagePath }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <Image
+                  // 기본 이미지로 넣어둬
+                  source={{ uri: 'https://i.stack.imgur.com/l60Hf.png' }}
+                  style={styles.profileImage}
+                />
+              )}
+              <Text style={styles.nickname}>{userProfile.nickname}</Text>
               <View style={styles.pointBox}>
                 <MaterialIcons
                   name='copyright'
                   size={24}
                   color={theme.mainColor.dark}
                 />
-                <Text style={styles.pointCount}>300,000</Text>
+                <Text style={styles.pointCount}>{userProfile.myPoint}</Text>
               </View>
               <TouchableOpacity
                 style={styles.chargePoint}
@@ -258,29 +310,20 @@ export default function Mypage(): JSX.Element {
             </View>
           </View>
           <View style={styles.badgeContainer}>
-            <Text style={styles.userIntro}>{userIntro}</Text>
+            <Text style={styles.userIntro}>{recordProfile.introduction}</Text>
             {badgeList ? (
               <FlatList
                 data={badgeList}
-                renderItem={() => (
+                renderItem={(badge) => (
                   <TouchableOpacity
                     style={styles.uniBadge}
                     onPress={handleBadgePress}
                     activeOpacity={0.6}
                   >
-                    <View>
-                      {/* <Image
-                        source={{
-                          uri: 'https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/badge-image%2Fattend-1.png?alt=media',
-                        }}
-                      /> */}
-                      <Text>1</Text>
-                    </View>
+                    <Badge key={badge.item.id} badge={badge.item} />
                   </TouchableOpacity>
-                  // <Badge style={styles.uniBadge} id={item.id} num={item.num} />
                 )}
                 numColumns={3}
-                keyExtractor={(data) => data.id.toString()}
               />
             ) : (
               <View style={styles.emptyBox}>

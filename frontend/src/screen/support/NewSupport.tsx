@@ -7,7 +7,6 @@ import {
   View,
   Pressable,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Ionicons } from '@expo/vector-icons';
 import Postcode from '@actbase/react-daum-postcode';
@@ -98,6 +97,12 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH,
     height: DEVICE_HEIGHT,
   },
+  addressDetail: {
+    paddingBottom: 5,
+    borderBottomColor: theme.mainColor.light,
+    borderBottomWidth: 2,
+    marginBottom: DEVICE_HEIGHT * 0.015,
+  },
 });
 
 // 날짜 형식 지정
@@ -180,11 +185,11 @@ export default function NewSupport(): JSX.Element {
     setContext(data);
   };
 
-  const handleSelectTag = (tid: number): void => {
+  const handleSelectTag = (tid: number, index: number): void => {
     setIsSelectedAllTag(false);
 
     const arr = falseArr();
-    arr[tid] = true;
+    arr[index] = true;
     setIsSelectedTag([...arr]);
 
     setTag(tid);
@@ -275,7 +280,7 @@ export default function NewSupport(): JSX.Element {
                         key={tag.id}
                         tag={tag}
                         isSelected={isSelectedTag[index]}
-                        onPressTag={() => handleSelectTag(tag.id)}
+                        onPressTag={() => handleSelectTag(tag.id, index)}
                       />
                     ))
                   : null}
@@ -378,6 +383,7 @@ export default function NewSupport(): JSX.Element {
                 placeholder='배송지를 입력하세요'
                 onPressOut={handleSelectedAddress}
                 value={mainAddress.substring(1, mainAddress.length - 1)}
+                style={styles.addressDetail}
               />
               <TextInput
                 placeholder='상세주소를 입력하세요'

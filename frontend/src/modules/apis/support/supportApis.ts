@@ -1,8 +1,5 @@
 import axios from 'axios';
-import {
-  NewSupportStateType,
-  RegularSupportStateType,
-} from './supportAtomTypes';
+import { NewSupportStateType } from './supportAtomTypes';
 
 // 꿈후원 목록 조회
 export async function getSupports(sortType: number) {
