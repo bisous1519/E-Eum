@@ -13,8 +13,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.QCheckedResBottleDto;
+import com.craypas.bottle.model.dto.response.QCreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.QDetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.QSummaryBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
@@ -37,7 +39,9 @@ public class QBottleRepository {
 			.where(reqBottle.id.eq(id))
 			.transform(groupBy(reqBottle.id).as(new QDetailReqBottleDto(
 				reqBottle.id, reqBottle.content, reqBottle.type, reqBottle.sentiment, Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime), reqBottle.status,
-				list(new QCheckedResBottleDto(resBottle.id, resBottle.content, Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime), resBottle.status))
+				list(new QCheckedResBottleDto(resBottle.id, resBottle.content, resBottle.ttsPath,
+					Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime),
+					resBottle.status))
 			)));
 
 		DetailReqBottleDto detailReqBottleDto = new DetailReqBottleDto();
@@ -62,7 +66,7 @@ public class QBottleRepository {
 			.transform(groupBy(reqBottle.id).as(new QSummaryBottleDto(
 				reqBottle.id, reqBottle.content, reqBottle.type, reqBottle.sentiment,
 				Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime), reqBottle.type,
-				list(new QCheckedResBottleDto(resBottle.id, resBottle.content,
+				list(new QCheckedResBottleDto(resBottle.id, resBottle.content, resBottle.ttsPath,
 					Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime),
 					resBottle.status))
 			)));
@@ -76,5 +80,16 @@ public class QBottleRepository {
 			cnt = 0;
 		}
 		return resultMap.values().stream().collect(Collectors.toList());
+	}
+
+	public List<CreatedReqBottleDto> findAllResBottleByReqWriterIdAndType(long id, int reqBottletype) {
+		return jpaQueryFactory
+			.select(new QCreatedReqBottleDto(reqBottle.id, reqBottle.writerId, reqBottle.content, reqBottle.sentiment, reqBottle.ttsPath,
+				Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime),
+				reqBottle.status))
+			.from(reqBottle)
+			.leftJoin(reqBottle.userReqBottles, userReqBottle).on(userReqBottle.reqBottle.id.eq(reqBottle.id))
+			.where(userReqBottle.receiverId.eq(id), reqBottle.type.eq(reqBottletype))
+			.fetch();
 	}
 }

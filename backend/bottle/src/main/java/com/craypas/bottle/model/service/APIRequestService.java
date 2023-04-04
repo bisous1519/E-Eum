@@ -8,8 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ApiRequestService {
-	public ResponseEntity<List> requestGetAPI(String urlStr, String path) {
+public class APIRequestService {
+	public ResponseEntity<List> requestGetRandomUserIdAPI(String urlStr, String path) {
 		URI uri = UriComponentsBuilder
 			.fromUriString(urlStr)
 			.path(path)
@@ -30,7 +28,17 @@ public class ApiRequestService {
 		return restTemplate.getForEntity(uri, List.class);
 	}
 
-	public ResponseEntity<AbuseResultDto> requestPostAPI(String urlStr, String key, String content) {
+	public ResponseEntity<List> requestGetUserAPI(String urlStr, String path) {
+		URI uri = UriComponentsBuilder
+			.fromUriString(urlStr)
+			.path(path)
+			.build()
+			.toUri();
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForEntity(uri, List.class);
+	}
+
+	public ResponseEntity<AbuseResultDto> requestPostAbuseAnalysisAPI(String urlStr, String key, String content) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 

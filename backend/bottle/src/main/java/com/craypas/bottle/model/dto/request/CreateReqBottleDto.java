@@ -3,6 +3,7 @@ package com.craypas.bottle.model.dto.request;
 import javax.validation.constraints.NotNull;
 
 import com.craypas.bottle.model.entity.ReqBottle;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,15 +18,11 @@ public class CreateReqBottleDto {
 
 	@NotNull
 	private Long writerId;
-
 	@NotNull
 	private String content;
-
 	private String ttsPath;
-
 	@NotNull
 	private Integer type;
-
 	private Integer sentiment;
 
 	public ReqBottle toEntity() {
