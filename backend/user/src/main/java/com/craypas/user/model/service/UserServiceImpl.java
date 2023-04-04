@@ -275,14 +275,20 @@ public class UserServiceImpl implements UserService {
 
 	// 해류병 발송시 수신 회원 조회
 	@Override
-	public List<Long> getRandomUserList(final Long uid) {
+	public List<Long> getRandomUserList(final Long uid, final Integer type) {
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		List<User> userList = userRepository.findAll();
+		List<User> userList = userRepository.findAllByType(type);
 		userList.remove(user);
 		Set<Long> randomUsers = new HashSet<>();
-		while (randomUsers.size() < 3) {
-			int idx = (int)((Math.random() * 1000) % userList.size());
-			randomUsers.add(userList.get(idx).getId());
+		if (userList.size() <= 3) {
+			for (User currUser : userList) {
+				randomUsers.add(currUser.getId());
+			}
+		} else {
+			while (randomUsers.size() < 3) {
+				int idx = (int)((Math.random() * 1000) % userList.size());
+				randomUsers.add(userList.get(idx).getId());
+			}
 		}
 		return new ArrayList<>(randomUsers);
 	}

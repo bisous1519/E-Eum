@@ -2,6 +2,8 @@ package com.craypas.user.controller;
 
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.user.model.dto.user.RequestDto;
-import com.craypas.user.model.dto.user.ResponseDto;
 import com.craypas.user.model.service.EmailService;
 import com.craypas.user.model.service.UserService;
 
@@ -34,7 +35,7 @@ public class UserController {
 
 	// 회원정보 등록
 	@PostMapping
-	public ResponseEntity<?> createUser(@RequestBody final RequestDto.CreateUser requestDto) {
+	public ResponseEntity<?> createUser(@Valid @RequestBody final RequestDto.CreateUser requestDto) {
 		return new ResponseEntity<>(userService.createUser(requestDto), HttpStatus.CREATED);
 	}
 
@@ -156,9 +157,9 @@ public class UserController {
 	}
 
 	// 해류병 발송시 수신 회원 조회
-	@GetMapping("/random/{uid}")
-	public ResponseEntity<?> getRandomUserList(@PathVariable final Long uid) {
-		return new ResponseEntity<>(userService.getRandomUserList(uid), HttpStatus.OK);
+	@GetMapping("/random/{uid}/{type}")
+	public ResponseEntity<?> getRandomUserList(@PathVariable final Long uid, @PathVariable final Integer type) {
+		return new ResponseEntity<>(userService.getRandomUserList(uid, type), HttpStatus.OK);
 	}
 
 	// 뱃지 획득 정보 생성
@@ -175,7 +176,7 @@ public class UserController {
 
 	// 회원 로그인
 	@PostMapping("/login")
-	public ResponseEntity<?> loginUser(@RequestBody final RequestDto.LoginUser requestDto) {
+	public ResponseEntity<?> loginUser(@Valid @RequestBody final RequestDto.LoginUser requestDto) {
 		return new ResponseEntity<>(userService.loginUser(requestDto), HttpStatus.OK);
 	}
 }
