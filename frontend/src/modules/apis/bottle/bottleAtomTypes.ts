@@ -85,8 +85,17 @@ export type ResBottleStateType = {
   userNickname: string | null;
   userBadges: any[] | null;
   content: string;
+  ttsPath: string | null;
   regTime: Date;
   status: StatusType;
+  likeDto: LikeDtoType | null;
+};
+
+// 답변 해류병 좋아요 리턴 타입
+export type LikeDtoType = {
+  id: number;
+  userId: number;
+  resBottleId: number;
 };
 
 // 해류병 신고 바디 타입
@@ -106,9 +115,3 @@ export type PostBottleReportReturnType = {
   status: StatusType;
 };
 
-// 해류병 좋아요 리턴 타입
-export type PostBottleLikeReturnType = {
-  id: number;
-  userId: number;
-  resBottleId: number;
-};

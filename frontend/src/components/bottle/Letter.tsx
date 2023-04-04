@@ -144,8 +144,14 @@ export default function Letter({
     if (item) {
       (setNewDate as (regTime: Date) => void)(item.regTime);
     }
-    if (type && type !== -1) {
-      type === 1 ? setReqType('고민 상담') : setReqType('전문가 상담');
+    if (type) {
+      if (type !== -1) {
+        // 질문
+        type === 1 ? setReqType('고민 상담') : setReqType('전문가 상담');
+      } else {
+        // 답변
+        setisLike(item.likeDto ? true : false);
+      }
     }
   }, [item]);
   return (
@@ -224,3 +230,4 @@ export default function Letter({
     </ImageBackground>
   );
 }
+
