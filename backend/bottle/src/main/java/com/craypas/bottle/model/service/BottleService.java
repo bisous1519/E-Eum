@@ -22,6 +22,7 @@ import com.craypas.bottle.model.dto.response.CreatedReportDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
+import com.craypas.bottle.model.dto.response.LateUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
@@ -92,6 +93,7 @@ public class BottleService {
 		return detailReqBottleDto;
 	}
 
+	@Transactional
 	public List<ReceivedTypeReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) {
 		List<ReceivedTypeReqBottleDto> receivedReqBottleDtos = qBottleRepository.findAllResBottleByReqWriterIdAndType(receiverId, reqBottletype);
 
@@ -166,6 +168,21 @@ public class BottleService {
 		return userReqBottleRepository.findAllByReceiverId(receiverId).stream()
 			.map(UserReqBottle::toCreatedReqDto)
 			.collect(Collectors.toList());
+	}
+
+	public List<LateUserReqBottleDto> findLateUserReqBottles() {
+		return qBottleRepository.findAllUserResBottleByRegTime();
+	}
+
+	@Transactional
+	public void resendReqBottle(long userReqBottleId, long reqBottleId, long reReceiverId) {
+		userReqBottleRepository.deleteById(userReqBottleId);
+
+		UserReqBottle userReqBottle = UserReqBottle.builder()
+			.reqBottle(reqBottleRepository.findById(reqBottleId).get())
+			.receiverId(reReceiverId)
+			.build();
+		userReqBottleRepository.save(userReqBottle);
 	}
 
 }

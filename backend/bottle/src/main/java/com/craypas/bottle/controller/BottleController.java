@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.LateUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.APIRequestService;
@@ -61,13 +63,13 @@ public class BottleController {
 	private String pythonServerUrl;
 
 	@PostMapping("/req")
-	ResponseEntity<?> sendReqBottle(@Valid @RequestBody CreateReqBottleDto reqBottleDto) {
+	ResponseEntity<?> sendReqBottle(@RequestParam int gender, @Valid @RequestBody CreateReqBottleDto reqBottleDto) {
 		String bucketFolder = "", saveFileName = "";
 		try {
 			String content = reqBottleDto.getContent();
 
-			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));				// 텍스트 기반 감정분석
-			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
+			reqBottleDto.setSentiment(googleCloudService.getSentimant(content));					// 텍스트 기반 감정분석
+			ByteString audioContents = googleCloudService.getAudioContent(content, gender);			// content에서 TTS를 통해 오디오 추출
 
 			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성
 
@@ -144,28 +146,29 @@ public class BottleController {
 	}
 
 	@PostMapping("/{userReqBottleId}/res")
-	ResponseEntity<?> sendResBottle(@PathVariable("userReqBottleId") long userReqBottleId, @Valid @RequestBody CreateResBottleDto resBottleDto) {
+	ResponseEntity<?> sendResBottle(@PathVariable("userReqBottleId") long userReqBottleId, @RequestParam int gender, @Valid @RequestBody CreateResBottleDto resBottleDto) {
 		String bucketFolder = "", saveFileName = "";
 		try {
 			String content = resBottleDto.getContent();
 
 			// 유해 탐지 분산 서버 요청
+			AbuseResultDto isAbuse;
 			try {
-				AbuseResultDto isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
+				isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
 				if(isAbuse.getPrediction()) {
 					return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-				} else {
-					// 유해 탐지 딥러닝 서버 요청
-					isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
-					if(isAbuse.getPrediction()) {
-						return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-					}
 				}
 			} catch (ResourceAccessException rae) {
 				log.error("error: ", rae);
 			}
 
-			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
+			// 유해 탐지 딥러닝 서버 요청
+			isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
+			if(isAbuse.getPrediction()) {
+				return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+			}
+
+			ByteString audioContents = googleCloudService.getAudioContent(content, gender);				// content에서 TTS를 통해 오디오 추출
 
 			saveFileName = String.valueOf(System.nanoTime());				// 유일한 파일 이름 생성
 
@@ -273,6 +276,24 @@ public class BottleController {
 		} catch (Exception e) {
 			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@PostMapping("/toss")
+	void tossReqBottles(){
+		List<LateUserReqBottleDto> lateUserReqBottleDtos = bottleService.findLateUserReqBottles();
+		for(LateUserReqBottleDto lateUserReqBottleDto : lateUserReqBottleDtos) {
+			// random user id 요청
+			List<Integer> body = apiRequestService.requestGetRandomUserIdAPI(
+				userServerUrl, "/random/"+lateUserReqBottleDto.getReqWriterId()+"/"+lateUserReqBottleDto.getType()
+			).getBody();
+
+			for(int uid : body) {
+				if(uid != lateUserReqBottleDto.getReceiverId()) {
+					bottleService.resendReqBottle(lateUserReqBottleDto.getId(), lateUserReqBottleDto.getReqBottleId(), uid);
+					break;
+				}
+			}
 		}
 	}
 }
