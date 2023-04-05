@@ -5,6 +5,7 @@ import {
   MyBottleStateType,
   PostBottleReportBodyType,
   PostBottleReportReturnType,
+  PostNewBottleReturnType,
 } from './bottleAtomTypes';
 
 // 작성한 질문 해류병 목록 조회
@@ -61,3 +62,21 @@ export async function postBottleLike(userId: number, bottleId: number) {
   }
 }
 
+// 새 해류병 질문 작성
+export async function postNewBottle(
+  writerId: number,
+  content: string,
+  type: number
+) {
+  try {
+    const { data } = await axios.post<PostNewBottleReturnType>(
+      'http://j8a607.p.ssafy.io/api/bottle/req',
+      { writerId, content, type }
+    );
+    return data;
+  } catch (error: unknown) {
+    console.log('새 해류병 질문 작성 오류');
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
