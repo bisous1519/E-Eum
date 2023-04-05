@@ -48,14 +48,30 @@ public class GoogleCloudService {
 		return 0;
 	}
 
-	public ByteString getAudioContent(String content) {
+	public ByteString getAudioContent(String content, int gender) {
 		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()) {
 			SynthesisInput input = SynthesisInput.newBuilder().setText(content).build();
+
+			SsmlVoiceGender vGender;
+			String vName;
+			if(gender == 1){
+				vGender = SsmlVoiceGender.FEMALE;
+				vName = "ko-KR-Wavenet-A";
+			}
+			else if(gender == 2){
+				vGender = SsmlVoiceGender.MALE;
+				vName = "ko-KR-Wavenet-C";
+			}
+			else{
+				vGender = SsmlVoiceGender.FEMALE;
+				vName = "ko-KR-Neural2-B";
+			}
 
 			VoiceSelectionParams voice =
 				VoiceSelectionParams.newBuilder()
 					.setLanguageCode("ko-KR")
-					.setSsmlGender(SsmlVoiceGender.FEMALE)
+					.setSsmlGender(vGender)
+					.setName(vName)
 					.build();
 
 			AudioConfig audioConfig = AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();		// 리턴할 오디오 타입 선택

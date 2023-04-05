@@ -6,6 +6,8 @@ import static com.craypas.bottle.model.entity.QUserReqBottle.*;
 import static com.querydsl.core.group.GroupBy.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,8 +16,11 @@ import org.springframework.stereotype.Repository;
 
 import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
+import com.craypas.bottle.model.dto.response.LateUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.QCheckedResBottleDto;
+import com.craypas.bottle.model.dto.response.QCreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.QDetailReqBottleDto;
+import com.craypas.bottle.model.dto.response.QLateUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.QReceivedTypeReqBottleDto;
 import com.craypas.bottle.model.dto.response.QSummaryBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
@@ -97,7 +102,28 @@ public class QBottleRepository {
 			.fetch();
 	}
 
-	// public ReceivedUserResBottleDto findAllUserResBottleByRegTime() {
-	// 	return jpaQueryFactory.select()
-	// }
+	public List<LateUserReqBottleDto> findAllUserResBottleByRegTime() {
+		// 현재 시간보다 24시간 전 시간 계산
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.HOUR_OF_DAY, -24);
+		Date date = new Date(cal.getTimeInMillis());
+
+		List<LateUserReqBottleDto> lateUserReqBottleDtos = jpaQueryFactory
+			.select(new QLateUserReqBottleDto(userReqBottle.id, userReqBottle.reqBottle.id, userReqBottle.reqBottle.writerId, userReqBottle.receiverId, userReqBottle.reqBottle.type,
+				new QCreatedResBottleDto(resBottle.id, resBottle.userReqBottleId, resBottle.content, resBottle.ttsPath,
+					Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime),
+					resBottle.status)
+				))
+			.from(userReqBottle)
+			.leftJoin(userReqBottle.resBottles, resBottle)
+			.where(userReqBottle.regTime.lt(date))
+			.fetchAll()
+			.stream().collect(Collectors.toList());
+
+		// 답장 객체가 없는 userReqBottleDto들만 필터링
+		return lateUserReqBottleDtos.stream()
+			.filter(lateUserReqBottleDto -> lateUserReqBottleDto.getResBottleDto().getId() == 0L)
+			.collect(Collectors.toList());
+	}
 }

@@ -32,7 +32,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity(name = "req_bottle")
 @DynamicUpdate
-@ToString
 public class ReqBottle {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
