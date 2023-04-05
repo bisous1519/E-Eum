@@ -39,3 +39,9 @@ export type SignUpReturnType = {
   introduction: string;
   groupName: string;
 };
+
+export type EditPWType = {
+  name: string;
+  introduction: string;
+  groupName: string;
+};

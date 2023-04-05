@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  EditPWType,
   SignUpReturnType,
   SignUpStateType,
   UserUpdateStateType,
@@ -85,6 +86,35 @@ export async function postSignUp(postData: SignUpStateType) {
     return data;
   } catch (e) {
     console.log('회원가입 에러');
+    console.error(e);
+    throw e;
+  }
+}
+
+//이름 이메일 일치
+export async function getNameAndEmail(name: string, email: string) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/user/findpw?name=${name}&email=${email}`
+    );
+    return data;
+  } catch (e) {
+    console.log('이름 이메일 일치 에러');
+    console.error(e);
+    throw e;
+  }
+}
+
+//비밀번호 재설정
+export async function putEditPW(password: string) {
+  try {
+    const { data } = await axios.put<EditPWType>(
+      `http://j8a607.p.ssafy.io/api/user/findpw/1`,
+      { password }
+    );
+    return data;
+  } catch (e) {
+    console.log('비밀번호 재설정 에러');
     console.error(e);
     throw e;
   }
