@@ -1,9 +1,9 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import theme from '../../utils/theme';
 import ModalComp from '../common/ModalComp';
 import useDimension from '../../hooks/useDimension';
-import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
+// import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
 import Badge from '../common/Badge';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
@@ -11,14 +11,19 @@ const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const styles = StyleSheet.create({
   container: {
     height: DEVICE_HEIGHT * 0.3,
+    paddingVertical: DEVICE_HEIGHT * 0.065,
     justifyContent: 'space-between',
     alignContent: 'center',
   },
   titleGroup: {
     flexDirection: 'row',
-    width: '30%',
+    width: '50%',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+  },
+  title: {
+    fontSize: theme.fontSize.regular,
+    fontWeight: '500',
   },
   infoGroup: {
     alignItems: 'center',
@@ -49,7 +54,8 @@ const styles = StyleSheet.create({
 });
 
 type BadgeModalPropsType = {
-  badge: BadgeStateType;
+  badge: any;
+  // badge: BadgeStateType;
   onToggleModal: () => void;
 };
 
@@ -65,8 +71,8 @@ export default function BadgeModal({
     <ModalComp onCloseModal={onToggleModal}>
       <View style={styles.container}>
         <View style={styles.titleGroup}>
-          <Badge badge={badge} />
-          <Text>{badge.name}</Text>
+          <Badge badge={badge} size={40} />
+          <Text style={styles.title}>{badge.name}</Text>
         </View>
         <View style={styles.infoGroup}>
           <Text style={styles.text}>획득 조건</Text>

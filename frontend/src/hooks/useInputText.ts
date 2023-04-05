@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 
-export default function useInputText() {
-  const [text, setText] = useState<string>('');
+interface useInputTextProps {
+  initialValue?: string;
+}
+
+export default function useInputText({ initialValue }: useInputTextProps = {}) {
+  const [text, setText] = useState<string>(initialValue ?? '');
 
   const onChangeText = (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setText(e.nativeEvent.text);

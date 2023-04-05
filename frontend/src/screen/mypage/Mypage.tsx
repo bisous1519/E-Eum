@@ -183,7 +183,8 @@ export default function Mypage(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const badgeData: BadgeStateType[] | undefined = await getBadgeList(
+    const badgeData: any = await getBadgeList(
+      // const badgeData: BadgeStateType[] | undefined = await getBadgeList(
       loginUser
     );
     const userData: SponsorStateType | undefined = await getSponsorProfile(
@@ -237,7 +238,8 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}>
+                activeOpacity={0.6}
+              >
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -246,13 +248,15 @@ export default function Mypage(): JSX.Element {
             <View style={styles.modifyInfo}>
               <InputComp
                 name={'자기소개'}
-                text={userIntro}
+                text={
+                  recordProfile.introduction ? recordProfile.introduction : ''
+                }
                 onChangeText={setUserIntro}
               />
-              <View style={styles.emptySpace}></View>
+              <View style={styles.emptySpace} />
               <InputComp
                 name={'출신 보육원 및 소속'}
-                text={userGroup}
+                text={recordProfile.groupName ? recordProfile.groupName : ''}
                 onChangeText={setUserGroup}
               />
               <InputComp
@@ -301,7 +305,8 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}>
+                activeOpacity={0.6}
+              >
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -315,7 +320,8 @@ export default function Mypage(): JSX.Element {
                   <TouchableOpacity
                     style={styles.uniBadge}
                     onPress={() => handleBadgePress(badge.item)}
-                    activeOpacity={0.6}>
+                    activeOpacity={0.6}
+                  >
                     <Badge key={badge.item.id} badge={badge.item} />
                   </TouchableOpacity>
                 )}
@@ -326,9 +332,6 @@ export default function Mypage(): JSX.Element {
                 <Text style={styles.emptyText}>뱃지를 수집중입니다 👊</Text>
               </View>
             )}
-            {isModal ? (
-              <BadgeModal badge={badge} onToggleModal={handleModalClose} />
-            ) : null}
           </View>
           <ModifyButton onPressModifyBtn={onPressModifyBtn} />
         </View>
