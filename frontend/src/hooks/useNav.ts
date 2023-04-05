@@ -23,7 +23,7 @@ export type RootStackParamList = {
   BottleGreen?: undefined;
   BottleBlue?: undefined;
   MyBottle?: undefined;
-  WritingPaper?: { messageType: number }; // 1:일반 상담, 2: 전문가 상담
+  WritingPaper?: { messageType: number; newMessage: boolean }; // 1:일반 상담, 2: 전문가 상담 // true: 새 질문, false: 질문 답장
   AdminStack?: undefined;
   AdminMain?: undefined;
   Approve?: undefined;

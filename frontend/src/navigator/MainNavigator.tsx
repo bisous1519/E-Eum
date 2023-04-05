@@ -8,4 +8,3 @@ export default function MainNavigator(): JSX.Element {
   // return <>{isLoggedIn ? <TabNavigator /> : <SigninStack />}</>;
   return <TabNavigator />;
 }
-

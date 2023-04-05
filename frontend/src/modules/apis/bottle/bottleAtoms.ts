@@ -26,4 +26,3 @@ export const myBottleResState = atom<MyBottleResStateType>({
   key: 'resBottlesState',
   default: myBottleResInitialState,
 });
-
