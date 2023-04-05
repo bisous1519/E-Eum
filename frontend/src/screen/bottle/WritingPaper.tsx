@@ -149,63 +149,37 @@ export default function WritingPaper(): JSX.Element {
     ? require('../../assets/videos/sendingbottle(round).mp4')
     : require('../../assets/videos/sendingbottle(long).mp4');
 
-  const [endRollingPaper, setEndRollingPaper] = useState<boolean>(false);
-  const [endFloatingBottle, setEndFloatingBootle] = useState<boolean>(false);
+  const doneWriting = () => {
+    //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
+    console.log('전송버튼');
+
+    if (inputRef.current) {
+      inputRef.current.blur(); //키보드 넣기
+    }
+    setVisible(false); //  양피지 뺴고 다 숨기기
+    console.log('첫 숨김');
+    setStartVideo(true); //양피지 말기 재생
+  };
 
   const handleRollingPaper = (status: any) => {
+    //양피지 재생 끝나면 Modal 나타내기
     if (status.didJustFinish) {
-      setEndRollingPaper(true);
-      console.log('되나?');
-      console.log(status.didJustFinish);
+      console.log('양피지 재생 끝');
+      setSendingModal(true); //모달 나타나고 동영상도 재생
     }
   };
+
   const handleFloatingBottle = (status: any) => {
+    //모달 내부 floating 재생 끝나면 문자 바꾸고 1초 뒤에 돌아가기
     if (status.didJustFinish) {
-      setEndFloatingBootle(true);
-      console.log('되나?');
-      console.log(status.didJustFinish);
-    } else {
-      console.log(status.didJustFinish);
+      setSended(true);
+      setTimeout(() => {
+        setSendingModal(false);
+        messageNormal
+          ? navigation.navigate('BottleBlue')
+          : navigation.navigate('BottleGreen');
+      }, 1000);
     }
-  };
-
-  const doneWriting = async () => {
-    setStartVideo(true);
-    if (inputRef.current) {
-      inputRef.current.blur();
-    }
-    // setWrittenTextValue('');
-    setVisible(false);
-    console.log('보내기 버튼 눌림');
-    while (!endRollingPaper) {
-      if (endRollingPaper) break;
-      console.log('while');
-    }
-    console.log('while 끝');
-    setSendingModal(true);
-    // while (!endFloatingBottle) continue;
-    setSended(true);
-    setTimeout(() => {
-      setSendingModal(false);
-      messageNormal
-        ? navigation.navigate('BottleBlue')
-        : navigation.navigate('BottleGreen');
-    }, 1000);
-
-    // setTimeout(() => {
-    //   messageNormal
-    //     ? navigation.navigate('BottleBlue')
-    //     : navigation.navigate('BottleGreen');
-    // }, 8600);
-    // setTimeout(() => {
-    //   setSendingModal(true);
-    // }, 4000);
-    // setTimeout(() => {
-    //   setSended(true);
-    // }, 7000);
-    // setTimeout(() => {
-    //   setSendingModal(false);
-    // }, 8500);
   };
 
   const handleTextChange = (text: string) => {
