@@ -1,5 +1,6 @@
 package com.craypas.bottle.controller;
 
+import java.net.ConnectException;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.craypas.bottle.exception.CustomException;
@@ -147,15 +150,19 @@ public class BottleController {
 			String content = resBottleDto.getContent();
 
 			// 유해 탐지 분산 서버 요청
-			AbuseResultDto isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
-			if(isAbuse.getPrediction()) {
-				return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
-			} else {
-				// 유해 탐지 딥러닝 서버 요청
-				isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
+			try {
+				AbuseResultDto isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(sparkServerUrl, "content", resBottleDto.getContent()).getBody();
 				if(isAbuse.getPrediction()) {
 					return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+				} else {
+					// 유해 탐지 딥러닝 서버 요청
+					isAbuse = apiRequestService.requestPostAbuseAnalysisAPI(pythonServerUrl, "input_data", resBottleDto.getContent()).getBody();
+					if(isAbuse.getPrediction()) {
+						return new ResponseEntity<>(ErrorCode.ABUSE_CONTENT.getMessage(), ErrorCode.ABUSE_CONTENT.getHttpStatus());
+					}
 				}
+			} catch (ResourceAccessException rae) {
+				log.error("error: ", rae);
 			}
 
 			ByteString audioContents = googleCloudService.getAudioContent(content);				// content에서 TTS를 통해 오디오 추출
