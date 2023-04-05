@@ -101,6 +101,7 @@ public class BottleService {
 		for(ReceivedTypeReqBottleDto receivedReqBottleDto : receivedReqBottleDtos) {
 			resultReqBottleDtos.add(ReceivedTypeReqBottleDto.builder()
 											.id(receivedReqBottleDto.getId())
+											.userReqBottleId(receivedReqBottleDto.getUserReqBottleId())
 											.writerId(receivedReqBottleDto.getWriterId())
 											.content(receivedReqBottleDto.getContent())
 											.sentiment(receivedReqBottleDto.getSentiment())

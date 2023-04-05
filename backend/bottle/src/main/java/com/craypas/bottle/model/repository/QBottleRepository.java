@@ -92,7 +92,7 @@ public class QBottleRepository {
 
 	public List<ReceivedTypeReqBottleDto> findAllResBottleByReqWriterIdAndType(long id, int reqBottletype) {
 		return jpaQueryFactory
-			.select(new QReceivedTypeReqBottleDto(reqBottle.id, reqBottle.writerId, reqBottle.content, reqBottle.sentiment, reqBottle.ttsPath,
+			.select(new QReceivedTypeReqBottleDto(reqBottle.id, userReqBottle.id, reqBottle.writerId, reqBottle.content, reqBottle.sentiment, reqBottle.ttsPath,
 				Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime),
 				reqBottle.status, userReqBottle.receiverRead
 			))
