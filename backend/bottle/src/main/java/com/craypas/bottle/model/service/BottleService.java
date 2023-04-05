@@ -109,12 +109,16 @@ public class BottleService {
 
 	@Transactional
 	public CreatedResBottleDto sendResBottles(CreateResBottleDto resBottleDto) {
-		if (!userReqBottleRepository.findById(resBottleDto.getUserReqBottleId()).isPresent()) {
+		Optional<UserReqBottle> userReqBottle = userReqBottleRepository.findById(resBottleDto.getUserReqBottleId());
+		if (!userReqBottle.isPresent()) {
 			throw new CustomException(ErrorCode.REQ_BOTTLE_NOT_FOUND);
 		}
 		if (resBottleDto.getContent() == null) {
 			throw new CustomException(ErrorCode.INVALID_INPUT);
 		}
+		ReqBottle reqBottle = userReqBottle.get().getReqBottle();
+		reqBottle.updateResRead(false);
+		reqBottleRepository.save(reqBottle);
 		return resBottleRepository.save(resBottleDto.toEntity()).toCreatedDto();
 	}
 	
