@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,9 +15,32 @@ import { RootStackParamList } from '../../navigator/SupportStack';
 import { SupportProfileStateType } from '../../modules/apis/support/supportAtomTypes';
 import { checkProfile } from '../../modules/apis/support/supportApis';
 import { supportProfileState } from '../../modules/apis/support/supportAtoms';
-import { useRecoilState } from 'recoil';
 import ModalComp from '../../components/common/ModalComp';
 import RegularSupportModal from '../../components/support/RegularSupportModal';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import ModifyButton from '../../components/common/ModifyButton';
+import useNav from '../../hooks/useNav';
+import ConfirmButton from '../../components/common/ConfirmButton';
+import {
+  getBadgeList,
+  getSponsorProfile,
+  updateProfile,
+} from '../../modules/apis/user/userApis';
+import {
+  BadgeStateType,
+  SponsorStateType,
+} from '../../modules/apis/user/userAtomTypes';
+import { useRecoilState } from 'recoil';
+import {
+  badgeListState,
+  sponsorState,
+} from '../../modules/apis/user/userAtoms';
+import Badge from '../../components/common/Badge';
+import { RecordProfileStateType } from '../../modules/apis/record/recordAtomTypes';
+import { getProfileData } from '../../modules/apis/record/recordApis';
+import { recordProfileState } from '../../modules/apis/record/recordAtoms';
+import BadgeModal from '../../components/support/BadgeModal';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -95,8 +117,8 @@ const styles = StyleSheet.create({
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
     borderRadius: 5,
     width: DEVICE_WIDTH * 0.12,
     height: DEVICE_WIDTH * 0.12,
@@ -105,72 +127,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: DEVICE_WIDTH * 0.055,
   },
+  emptySpace: {
+    padding: DEVICE_WIDTH * 0.06,
+  },
+  emptyBox: {
+    paddingBottom: DEVICE_HEIGHT * 0.15,
+  },
+  emptyText: {
+    fontSize: theme.fontSize.big,
+  },
 });
-// =====================================
-
-// 이것도...나중에 분리해야 하는 badge임.. ==============
-type BadgeProps = {
-  id: number;
-  num: number;
-};
-
-const Badge = ({ id, num }: BadgeProps) => (
-  <TouchableOpacity
-    style={styles.uniBadge}
-    onPress={() => console.log('뱃지 디테일이 까꿍')}
-    activeOpacity={0.6}
-  >
-    <View>
-      <Text>{num}</Text>
-    </View>
-  </TouchableOpacity>
-);
-
-// 뱃지 목록 임의로 만들게용...
-// image_path가 string으로 들어올거임
-const badgeData = [
-  {
-    id: 1,
-    num: 1,
-  },
-  {
-    id: 2,
-    num: 2,
-  },
-  {
-    id: 3,
-    num: 3,
-  },
-  {
-    id: 4,
-    num: 4,
-  },
-  {
-    id: 5,
-    num: 5,
-  },
-  {
-    id: 6,
-    num: 6,
-  },
-  {
-    id: 7,
-    num: 7,
-  },
-];
-
 // ======================================================
 
 export default function SupportProfile(): JSX.Element {
+  // 로그인 유저 id
+  const loginUser: number = 1;
+
   const route = useRoute<RouteProp<RootStackParamList, 'SupportProfile'>>();
-  const uid = route.params?.uid;
+  const uid = route.params?.uid; // 후원자(프로필 주인) id
+  console.log(uid);
 
   // 기본적인 프로필 정보
-  const [profileData, setProfileData] =
+  const [userProfile, setUserProfile] =
     useRecoilState<SupportProfileStateType>(supportProfileState);
 
   // 뱃지 정보
-  const [profileBadge, setProfileBadge] = useState<number>();
+  const [badge, setBadge] = useState<BadgeStateType>();
+  const [badgeList, setBadgeList] =
+    useRecoilState<BadgeStateType[]>(badgeListState);
 
   // 정기후원 여부 검사
   const [onSupport, setOnSupport] = useState<boolean>(false);
@@ -178,12 +162,9 @@ export default function SupportProfile(): JSX.Element {
   // 후원정보 입력 모달
   const [modal, setModal] = useState<boolean>(false);
 
-  const getProfileData = async () => {
-    const supportProfileData: SupportProfileStateType | undefined =
-      await checkProfile(uid);
-    if (supportProfileData) {
-      setProfileData(supportProfileData);
-    }
+  const fetchData = () => {
+    checkProfile(uid).then((data) => setUserProfile(data));
+    getBadgeList(uid).then((data) => setBadgeList(data));
   };
 
   const handleSupportPress = () => {
@@ -197,12 +178,18 @@ export default function SupportProfile(): JSX.Element {
     setModal(false);
   };
 
+  const handleBadgePress = (badge: BadgeStateType) => {
+    console.log('뱃지 디테일 모달이 푸슝~');
+    setBadge(badge);
+    setModal((prev) => !prev);
+  };
+
   const handleSupportDone = () => {
     setOnSupport((prop) => !prop);
   };
 
   useEffect(() => {
-    getProfileData();
+    fetchData();
   }, []);
 
   return (
@@ -210,14 +197,19 @@ export default function SupportProfile(): JSX.Element {
       <View style={styles.container}>
         <View style={styles.profileContainer}>
           <View style={styles.profileBox}>
-            <Image
-              style={styles.profileImage}
-              source={require('../../assets/images/sample.png')}
-              // source={
-              //   profileData.imagePath ? require(profileData.imagePath) : null
-              // }
-            />
-            <Text style={styles.nickname}>{profileData?.nickname}</Text>
+            {userProfile.imagePath ? (
+              <Image
+                source={{ uri: userProfile?.imagePath }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <Image
+                // 기본 이미지로 넣어둬
+                source={{ uri: 'https://i.stack.imgur.com/l60Hf.png' }}
+                style={styles.profileImage}
+              />
+            )}
+            <Text style={styles.nickname}>{userProfile?.nickname}</Text>
             {onSupport ? (
               <>
                 <View style={styles.supportBox}>
@@ -233,7 +225,7 @@ export default function SupportProfile(): JSX.Element {
               <>
                 <View style={styles.supportBox}>
                   <Text style={styles.supportGuide}>
-                    정기후원으로 {profileData.nickname}님의 꿈을 응원해주세요 🎉
+                    정기후원으로 {userProfile.nickname}님의 꿈을 응원해주세요 🎉
                   </Text>
                 </View>
                 <Pressable style={styles.support} onPress={handleSupportPress}>
@@ -243,16 +235,27 @@ export default function SupportProfile(): JSX.Element {
             )}
           </View>
         </View>
-        <FlatList
-          ListHeaderComponent={
-            <Text style={styles.userIntro}>{profileData?.introduction}</Text>
-          }
-          contentContainerStyle={styles.badgeContainer}
-          data={badgeData}
-          renderItem={({ item }) => <Badge id={item.id} num={item.num} />}
-          numColumns={3}
-          keyExtractor={(item) => item.id.toString()}
-        />
+        <View style={styles.badgeContainer}>
+          <Text style={styles.userIntro}>{userProfile.introduction}</Text>
+          {badgeList ? (
+            <FlatList
+              data={badgeList}
+              renderItem={(badge) => (
+                <TouchableOpacity
+                  style={styles.uniBadge}
+                  onPress={() => handleBadgePress(badge.item)}
+                  activeOpacity={0.6}>
+                  <Badge key={badge.item.id} badge={badge.item} />
+                </TouchableOpacity>
+              )}
+              numColumns={3}
+            />
+          ) : (
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyText}>뱃지를 수집중입니다 👊</Text>
+            </View>
+          )}
+        </View>
       </View>
       {modal ? (
         <RegularSupportModal onToggleDelete={handleToggleDelete} />

@@ -113,3 +113,9 @@ export const sortType = atom<number>({
   key: 'sortType',
   default: 1,
 });
+
+// flag
+export const flag = atom<boolean>({
+  key: 'flag',
+  default: false,
+});

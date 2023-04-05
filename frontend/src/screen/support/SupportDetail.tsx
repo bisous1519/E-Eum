@@ -27,10 +27,16 @@ import SupportModal from '../../components/support/SupportModal';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { supportDetail } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
-import { supportDetailState } from '../../modules/apis/support/supportAtoms';
+import {
+  flag,
+  supportDetailState,
+} from '../../modules/apis/support/supportAtoms';
 import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import TextRender from '../../components/common/editor/TextRender';
+import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
+import { badgeListState } from '../../modules/apis/user/userAtoms';
+import useNav from '../../hooks/useNav';
 // ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -161,21 +167,32 @@ const styles = StyleSheet.create({
 
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
+  const loginUser = useState<number>(1); // 로그인한 user id
+
   const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
   const sid = route.params?.sid;
 
+  const [badgeList, setBadgeList] =
+    useRecoilState<BadgeStateType[]>(badgeListState);
+
   const [detailData, setDetailData] =
     useRecoilState<SupportDetailStateType>(supportDetailState);
+  const [check, setCheck] = useRecoilState<boolean>(flag);
 
+  const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleSupporterClick = (uid: number) => {
-    nav.navigate('SupportProfile', { uid: uid });
-    console.log('후원자(sponsorId) 프로필로 푸슝~');
+    // nav.navigate('SupportProfile', { uid: uid });
+    console.log('후원자 뱃지만 보여줘..');
   };
 
   const handleFeedPress = (uid: number, tid: number) => {
-    nav.navigate('SupportRecord', { uid: uid, tid: tid });
+    if (uid === loginUser) {
+      navigation.navigate('Mypage');
+    } else {
+      nav.navigate('SupportRecord', { uid: uid, tid: tid });
+    }
   };
 
   // ============================================================================
@@ -193,6 +210,7 @@ export default function SupportDetail(): JSX.Element {
     // 사용자 포인트 잔고가 있으면 setSupportModal(true);
     // 사용자 포인트 잔고가 없으면 setChargeModal(true);
     setSupportModal(true);
+    setCheck((prev) => !prev);
   };
 
   // 모달 밖의 화면을 눌렀을 때의 작업

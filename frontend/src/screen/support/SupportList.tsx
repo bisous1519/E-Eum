@@ -16,6 +16,7 @@ import { getSupports } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
 import {
+  flag,
   sortType,
   supportsState,
 } from '../../modules/apis/support/supportAtoms';
@@ -129,6 +130,7 @@ const Item = ({
 export default function SupportList(): JSX.Element {
   const [supports, setSupports] =
     useRecoilState<SupportsStateType[]>(supportsState);
+  const [check, setCheck] = useRecoilState<boolean>(flag);
 
   // 정렬 기준
   const [sort, setSort] = useRecoilState<number>(sortType);
@@ -152,7 +154,7 @@ export default function SupportList(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-  }, [sort]);
+  }, [sort, check]);
 
   return (
     <View style={styles.container}>
@@ -163,8 +165,7 @@ export default function SupportList(): JSX.Element {
             style={styles.item}
             onPress={() => onPressDetail(item.sid)}
             activeOpacity={0.6}
-            key={item.sid}
-          >
+            key={item.sid}>
             <Item
               sid={item.sid}
               userNickname={item.userNickname}
