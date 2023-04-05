@@ -28,6 +28,7 @@ import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.service.APIRequestService;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
@@ -248,6 +249,24 @@ public class BottleController {
 			List<ReceivedTypeReqBottleDto> reqBottleDtos = bottleService.findAllUserReqBottleByReceiverIdAndType(receiverId, 2);
 			for(ReceivedTypeReqBottleDto reqBottleDto : reqBottleDtos) {
 				if(!reqBottleDto.isReceiverRead()) {
+					unread = true;
+					break;
+				}
+			}
+			return new ResponseEntity<>(unread, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@GetMapping("/receiver/{uid}/res-new")
+	ResponseEntity<?> getResBottleUnread(@PathVariable("uid") Long receiverId) {
+		try {
+			boolean unread = false;
+			List<ReceivedUserReqBottleDto> userReqBottleDtos = bottleService.findAllUserReqBottleByReceiverId(receiverId);
+			for(ReceivedUserReqBottleDto userReqBottleDto : userReqBottleDtos) {
+				if(!userReqBottleDto.getReqBottle().isResRead()) {
 					unread = true;
 					break;
 				}
