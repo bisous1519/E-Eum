@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Text,
   View,
@@ -128,7 +128,7 @@ const Item = ({
 // 초기 꿈후원 목록 화면
 export default function SupportList(): JSX.Element {
   const [supports, setSupports] =
-    useRecoilState<SupportsStateType>(supportsState);
+    useRecoilState<SupportsStateType[]>(supportsState);
 
   // 정렬 기준
   const [sort, setSort] = useRecoilState<number>(sortType);
@@ -144,16 +144,15 @@ export default function SupportList(): JSX.Element {
     navigation.push('NewSupport');
   };
 
-  const fetchData = async () => {
-    const supportsData: SupportsStateType | undefined = await getSupports(sort);
-    if (supportsData) {
-      setSupports(supportsData);
-    }
+  const fetchData = () => {
+    getSupports(sort).then((data) => {
+      setSupports(data);
+    });
   };
 
   useEffect(() => {
     fetchData();
-  }, [sort, supports]);
+  }, [sort]);
 
   return (
     <View style={styles.container}>
@@ -164,7 +163,8 @@ export default function SupportList(): JSX.Element {
             style={styles.item}
             onPress={() => onPressDetail(item.sid)}
             activeOpacity={0.6}
-            key={item.sid}>
+            key={item.sid}
+          >
             <Item
               sid={item.sid}
               userNickname={item.userNickname}

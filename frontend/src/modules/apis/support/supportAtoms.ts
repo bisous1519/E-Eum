@@ -74,9 +74,9 @@ const regularSupportInitialState: RegularSupportStateType = {
 };
 
 // 후원글 목록
-export const supportsState = atom<SupportsStateType>({
+export const supportsState = atom<SupportsStateType[]>({
   key: 'supportsState${v1}',
-  default: supportsInitialState,
+  default: [supportsInitialState],
 });
 
 // 후원 상세 정보

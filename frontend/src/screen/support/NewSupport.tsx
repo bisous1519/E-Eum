@@ -276,7 +276,8 @@ export default function NewSupport(): JSX.Element {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={styles.tagList}>
+                style={styles.tagList}
+              >
                 {tags
                   ? tags.map((tag, index) => (
                       <Tag

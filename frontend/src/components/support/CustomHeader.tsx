@@ -4,7 +4,11 @@ import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { searchSupports } from '../../modules/apis/support/supportApis';
+import {
+  getMySupports,
+  getSupports,
+  searchSupports,
+} from '../../modules/apis/support/supportApis';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
 import {
@@ -64,8 +68,10 @@ const styles = StyleSheet.create({
 });
 
 export default function CustomHeader(): JSX.Element {
+  const loginUser: number = 1;
+
   const [supports, setSupports] =
-    useRecoilState<SupportsStateType>(supportsState);
+    useRecoilState<SupportsStateType[]>(supportsState);
   const sort = useRecoilValue<number>(sortType);
 
   const [sortPressed, setSortPressed] = useState<boolean>(false);
@@ -87,14 +93,10 @@ export default function CustomHeader(): JSX.Element {
   };
 
   // 검색 API를 푸슝
-  const handleSearch = async () => {
-    const searchData: SupportsStateType | undefined = await searchSupports(
-      keyword
-    );
-    if (searchData) {
-      setSupports(searchData);
-    }
-    console.log('검색 API로 결과 목록 가져오기');
+  const handleSearch = () => {
+    searchSupports(keyword).then((data) => {
+      setSupports(data);
+    });
   };
 
   const handleSortPress = () => {
@@ -104,9 +106,13 @@ export default function CustomHeader(): JSX.Element {
   const handleSupportPress = () => {
     setSupportPressed((prev) => !prev);
     if (supportPressed) {
-      console.log('전체 후원을 보여주는 API');
+      getSupports(sort).then((data) => {
+        setSupports(data);
+      });
     } else {
-      console.log('내 후원만 보여주는 API');
+      getMySupports(loginUser).then((data) => {
+        setSupports(data);
+      });
     }
   };
 
@@ -140,13 +146,15 @@ export default function CustomHeader(): JSX.Element {
           {supportPressed ? (
             <Pressable
               style={styles.mySupportSelected}
-              onPress={handleSupportPress}>
+              onPress={handleSupportPress}
+            >
               <Text>내 후원</Text>
             </Pressable>
           ) : (
             <Pressable
               style={styles.mySupportNotSelected}
-              onPress={handleSupportPress}>
+              onPress={handleSupportPress}
+            >
               <Text>내 후원</Text>
             </Pressable>
           )}
