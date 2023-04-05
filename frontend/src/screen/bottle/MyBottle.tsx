@@ -25,13 +25,19 @@ export default function MyBottle(): JSX.Element {
     useRecoilState<MyBottleStateType[]>(myBottlesState);
 
   const [detailModal, setDetailModal] = useState<boolean>(false);
+  const [bottleId, setBottleId] = useState<number>();
 
-  const onToggleDetailModal = (): void => {
+  const onToggleDetailModal = (bottleId?: number): void => {
+    if (bottleId) {
+      setBottleId(bottleId);
+    }
     setDetailModal((prev) => !prev);
   };
 
   const fetchData = () => {
-    getMyBottles(1).then((data: MyBottleStateType[]) => setMyBottles(data));
+    getMyBottles(1).then((data: MyBottleStateType[]) => {
+      setMyBottles(data);
+    });
   };
 
   useEffect(() => {
@@ -53,12 +59,14 @@ export default function MyBottle(): JSX.Element {
       ) : (
         <EmptyMessage text='작성된 해류병이 없습니다' marginBottom={50} />
       )}
-      {detailModal ? (
-        <MyBottleModal onToggleDetailModal={onToggleDetailModal} />
+      {detailModal && bottleId ? (
+        <MyBottleModal
+          bottleId={bottleId}
+          onToggleDetailModal={onToggleDetailModal}
+        />
       ) : (
         <></>
       )}
     </SafeAreaView>
   );
 }
-

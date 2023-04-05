@@ -10,6 +10,7 @@ import {
 } from '../../modules/apis/bottle/bottleAtomTypes';
 import { useRecoilState } from 'recoil';
 import { myBottleResState } from '../../modules/apis/bottle/bottleAtoms';
+import { getMyBottleRes } from '../../modules/apis/bottle/bottleApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const { LETTER_WIDTH, LETTER_HEIGHT } = useLetterSize();
@@ -29,11 +30,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function CarouselComp(): JSX.Element {
+type CarouselCompPropsType = {
+  bottleId: number;
+};
+
+export default function CarouselComp({
+  bottleId,
+}: CarouselCompPropsType): JSX.Element {
   const [myBottleRes, setMyBottleRes] =
     useRecoilState<MyBottleResStateType>(myBottleResState);
 
   const [letters, setLetters] = useState<ResBottleStateType[]>();
+
+  const fetchData = () => {
+    getMyBottleRes(bottleId).then((data: MyBottleResStateType) => {
+      setMyBottleRes(data);
+    });
+  };
 
   useEffect(() => {
     if (myBottleRes) {
@@ -52,6 +65,10 @@ export default function CarouselComp(): JSX.Element {
       ]);
     }
   }, [myBottleRes]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <View style={styles.carouselWrapper}>
       {letters ? (
@@ -90,4 +107,3 @@ export default function CarouselComp(): JSX.Element {
     </View>
   );
 }
-

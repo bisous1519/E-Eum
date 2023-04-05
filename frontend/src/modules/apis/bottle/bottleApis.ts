@@ -76,7 +76,19 @@ export async function postNewBottle(
     return data;
   } catch (error: unknown) {
     console.log('새 해류병 질문 작성 오류');
+  }
+}
+
+// 수신된 답변 해류병 new 체크
+export async function getResNew(userId: number) {
+  try {
+    const { data } = await axios.get<boolean>(
+      `http://j8a607.p.ssafy.io/api/bottle/receiver/${userId}/res-new`
+    );
+    return data;
+  } catch (error: unknown) {
     console.error(error);
     throw new Error(error as string);
   }
 }
+

@@ -61,37 +61,25 @@ const styles = StyleSheet.create({
 
 type MyBottleItemPropsType = {
   item: MyBottleStateType;
-  onToggleDetailModal: () => void;
+  onToggleDetailModal: (bottleId: number) => void;
 };
 
 export default function MyBottleItem({
   item,
   onToggleDetailModal,
 }: MyBottleItemPropsType): JSX.Element {
-  const [myBottleRes, setMyBottleRes] =
-    useRecoilState<MyBottleResStateType>(myBottleResState);
-
   const [date, setNewDate] = useDate();
-  // const [date, setDate] = useState();
   const [type, setType] = useState<'고민 상담' | '전문가 상담'>();
+  const [resRead, setResRead] = useState<boolean>(true);
 
-  const onPressItem = (bottleId: number) => {
-    // getMyBottleRes(bottleId)
-    //   .then((data) => setMyBottleRes(data))
-    //   .then(() => {
-    //     // console.log(myBottleRes);
-    onToggleDetailModal();
-    //   });
+  const onPressItem = () => {
+    onToggleDetailModal(item.id);
   };
 
   const fetchData = () => {
-    getMyBottleRes(item.id).then((data: MyBottleResStateType) =>
-      setMyBottleRes(data)
-    );
-    // .then(() => {
-    //   // console.log(myBottleRes);
-    //   onToggleDetailModal();
-    // });
+    getMyBottleRes(item.id).then((data: MyBottleResStateType) => {
+      setResRead(data.resRead);
+    });
   };
 
   useEffect(() => {
@@ -110,10 +98,7 @@ export default function MyBottleItem({
   return (
     <>
       {item ? (
-        <Pressable
-          style={styles.container}
-          onPress={() => onPressItem(item.id)}
-        >
+        <Pressable style={styles.container} onPress={onPressItem}>
           <View style={styles.leftWrapper}>
             <View style={styles.header}>
               {date ? <Text style={styles.date}>{date as string}</Text> : <></>}
@@ -128,11 +113,7 @@ export default function MyBottleItem({
             </Text>
           </View>
           <View style={styles.countWrapper}>
-            {myBottleRes && !myBottleRes.resRead ? (
-              <View style={styles.newBadge}></View>
-            ) : (
-              <></>
-            )}
+            {!resRead ? <View style={styles.newBadge}></View> : <></>}
             <Text style={styles.count}>+{item.resCnt}</Text>
           </View>
         </Pressable>
@@ -142,4 +123,3 @@ export default function MyBottleItem({
     </>
   );
 }
-

@@ -22,15 +22,17 @@ const styles = StyleSheet.create({
 });
 
 type MyBottleModalPropsType = {
+  bottleId: number;
   onToggleDetailModal: () => void;
 };
 
 export default function MyBottleModal({
+  bottleId,
   onToggleDetailModal,
 }: MyBottleModalPropsType): JSX.Element {
   return (
     <Pressable style={styles.layer} onPress={onToggleDetailModal}>
-      <CarouselComp />
+      <CarouselComp bottleId={bottleId} />
     </Pressable>
   );
 }
