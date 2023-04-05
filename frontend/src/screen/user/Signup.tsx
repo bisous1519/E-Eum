@@ -25,10 +25,7 @@ import Postcode from '@actbase/react-daum-postcode';
 import { Modal } from 'react-native-paper';
 
 import { Entypo } from '@expo/vector-icons';
-import {
-  SignUpReturnType,
-  SignUpStateType,
-} from '../../modules/apis/user/userAtomTypes';
+import { SignUpStateType } from '../../modules/apis/user/userAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -226,7 +223,9 @@ export default function Signup(): JSX.Element {
     console.log('인증 버튼 눌림');
     setTimerOn(true);
     setTimeLeft(180);
-    postEmailVerify(userEmail).then((output) => setCodeFromEmail(output)); //인증 코드 전송
+    postEmailVerify(userEmail).then((output: string) =>
+      setCodeFromEmail(output)
+    ); //인증 코드 전송
     setNotChecked(true);
   };
 
@@ -387,14 +386,8 @@ export default function Signup(): JSX.Element {
   };
 
   //회원가입 완료
-  const handleSubmitSignup = (): void => {
+  const handleSubmitSignup = () => {
     console.log('회원가입 버튼');
-    console.log(userName);
-    console.log(userEmail);
-    console.log(userPW);
-    console.log(userNickName);
-    console.log(userGender);
-    console.log(userType);
     const postData: SignUpStateType = {
       name: userName,
       email: userEmail,
@@ -404,9 +397,7 @@ export default function Signup(): JSX.Element {
       // image: userProfileImage,
       type: userType,
     };
-    postSignUp(postData).then((returndata: SignUpReturnType) =>
-      console.log(returndata)
-    );
+    postSignUp(postData).then((returndata) => console.log(returndata));
   };
 
   return (

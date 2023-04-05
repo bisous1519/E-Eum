@@ -117,4 +117,3 @@ export type PostBottleReportReturnType = {
   regTime: Date;
   status: StatusType;
 };
-
