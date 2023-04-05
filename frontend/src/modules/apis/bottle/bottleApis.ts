@@ -1,11 +1,14 @@
 import axios from 'axios';
 import {
+  ExpertBottlesReturnType,
   LikeDtoType,
   MyBottleResStateType,
   MyBottleStateType,
+  NormalBottlesReturnType,
   PostBottleReportBodyType,
   PostBottleReportReturnType,
   PostNewBottleReturnType,
+  PostResponseBottleReturnType,
 } from './bottleAtomTypes';
 
 // 작성한 질문 해류병 목록 조회
@@ -66,16 +69,63 @@ export async function postBottleLike(userId: number, bottleId: number) {
 export async function postNewBottle(
   writerId: number,
   content: string,
-  type: number
+  type: number,
+  gender: number
 ) {
   try {
     const { data } = await axios.post<PostNewBottleReturnType>(
-      'http://j8a607.p.ssafy.io/api/bottle/req',
+      `http://j8a607.p.ssafy.io/api/bottle/req?gender=${gender}`,
       { writerId, content, type }
     );
     return data;
   } catch (error: unknown) {
     console.log('새 해류병 질문 작성 오류');
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 답변 해류병 작성
+export async function postResponseBottle(
+  userReqBottleId: number,
+  content: string
+) {
+  try {
+    const { data } = await axios.post<PostResponseBottleReturnType>(
+      `http://j8a607.p.ssafy.io/api/bottle/${userReqBottleId}/res`,
+      { content }
+    );
+    return data;
+  } catch (error: unknown) {
+    console.log('답변 해류병 작성 오류');
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 수신된 일반 해류병 목록 조회
+export async function getNormalBottles(userId: number) {
+  try {
+    const { data } = await axios.get<NormalBottlesReturnType>(
+      `http://j8a607.p.ssafy.io/api/bottle/receiver/${userId}/normal-list`
+    );
+    return data;
+  } catch (error: unknown) {
+    console.log('수신된 일반 해류병 목록 조회 오류');
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 수신된 일반 해류병 목록 조회
+export async function getExpertBottles(userId: number) {
+  try {
+    const { data } = await axios.get<ExpertBottlesReturnType>(
+      `http://j8a607.p.ssafy.io/api/bottle/receiver/${userId}/expert-list`
+    );
+    return data;
+  } catch (error: unknown) {
+    console.log('수신된 전문가 해류병 목록 조회 오류');
     console.error(error);
     throw new Error(error as string);
   }

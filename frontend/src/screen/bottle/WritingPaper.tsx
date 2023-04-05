@@ -11,6 +11,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FnqType from '../../models/bottle/fnqType';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import FnqModal from '../../components/bottle/FnqModal';
+import {
+  getExpertBottles,
+  getNormalBottles,
+  postNewBottle,
+  postResponseBottle,
+} from '../../modules/apis/bottle/bottleApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
     marginLeft: 60,
     marginRight: 60,
     marginTop: 15,
-    height: '83%',
+    height: '80%',
     fontFamily: theme.fontFamily.main,
     color: theme.textColor.main,
     fontSize: theme.fontSize.big,
@@ -68,9 +74,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     display: 'flex',
     flexDirection: 'row',
+    marginTop: 3,
     paddingTop: 5,
-    paddingLeft: 50,
-    paddingRight: 50,
+    paddingLeft: 60,
+    paddingRight: 60,
   },
   textLengthCountBox: {
     display: 'flex',
@@ -148,6 +155,7 @@ export default function WritingPaper(): JSX.Element {
 
   const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
   const messageNormal = route.params?.messageType === 1 ? true : false;
+  const newMessage = route.params?.newMessage;
   const inputRef = useRef<TextInput>(null);
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
@@ -164,10 +172,35 @@ export default function WritingPaper(): JSX.Element {
 
   const writtenTextLength = writtenTextValue.length;
 
-  const doneWriting = () => {
-    //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
-    console.log('전송버튼');
+  // const [writerId, setWriterId] = useState<number>(1);  //질문 작성하는 사람Id
+  const [gender, setGender] = useState<number>(1);
+  const [userId, setUserId] = useState<number>(1); //로그인 ID
+  const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
 
+  const doneWriting = () => {
+    if (writtenTextLength < 5) return;
+    //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
+    else {
+      newMessage
+        ? //질문 작성(일반 또는 전문 상담)
+          postNewBottle(
+            // writerId,
+            userId,
+            writtenTextValue,
+            messageNormal ? 1 : 2,
+            gender
+          ).then((data) => console.log('메시지 전송 return : ' + data.id))
+        : postResponseBottle(userReqBottleId, writtenTextValue).then((data) =>
+            console.log(
+              '답변 메시지 전송 return : ' +
+                data.content +
+                ', id : ' +
+                data.userReqBottleId
+            )
+          );
+    }
+
+    console.log('전송버튼');
     if (inputRef.current) {
       inputRef.current.blur(); //키보드 넣기
     }
@@ -190,9 +223,15 @@ export default function WritingPaper(): JSX.Element {
       setSended(true);
       console.log('문자 바뀜');
       setTimeout(() => {
-        console.log('fnq트루');
-        setFnqModal(true);
         setSendingModal(false);
+        if (newMessage) {
+          console.log('fnq트루');
+          setFnqModal(true);
+        } else {
+          messageNormal
+            ? navigation.navigate('BottleBlue')
+            : navigation.navigate('BottleGreen');
+        }
       }, 1000);
     }
   };
@@ -235,7 +274,11 @@ export default function WritingPaper(): JSX.Element {
       {visible && (
         <View style={StyleSheet.flatten([border.blue, styles.popupBox])}>
           <View style={styles.headerButtons}>
-            <ButtonComp text='보내기' onPressBtn={doneWriting} small={true} />
+            <ButtonComp
+              text={newMessage ? '보내기' : '답변하기'}
+              onPressBtn={doneWriting}
+              small={true}
+            />
             <ButtonComp text='다시 쓰기' onPressBtn={clearText} small={true} />
           </View>
           <View
@@ -245,7 +288,7 @@ export default function WritingPaper(): JSX.Element {
             ])}
           >
             <TextInput
-              style={StyleSheet.flatten([styles.paperInput])}
+              style={styles.paperInput}
               autoFocus={true}
               maxLength={500}
               multiline={true}

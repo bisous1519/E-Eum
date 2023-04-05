@@ -119,9 +119,12 @@ export default function SetNewPW(): JSX.Element {
 
   const [reCheck, setReCheck] = useState<boolean>(false);
 
+  const [userId, setUserId] = useState<number>(1);
+  //0406 userId 추가 헉
+
   const setNewPW = async () => {
     if (pwState) {
-      await putEditPW(userPW).then((returndata: EditPWType) =>
+      await putEditPW(userId, userPW).then((returndata: EditPWType) =>
         console.log(returndata)
       );
       navigation.push('Signin');
