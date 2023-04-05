@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ReceivedTypeReqBottleDto {
 	private long id;
+	private long userReqBottleId;
 	private long writerId;
 	private String content;
 	private int sentiment;
@@ -20,8 +21,9 @@ public class ReceivedTypeReqBottleDto {
 	private boolean receiverRead;
 
 	@QueryProjection
-	public ReceivedTypeReqBottleDto (long id, long writerId, String content, int sentiment, String ttsPath, String regTime, int status, boolean receiverRead) {
+	public ReceivedTypeReqBottleDto (long id, long userReqBottleId, long writerId, String content, int sentiment, String ttsPath, String regTime, int status, boolean receiverRead) {
 		this.id = id;
+		this.userReqBottleId = userReqBottleId;
 		this.writerId = writerId;
 		this.content = content;
 		this.sentiment = sentiment;
