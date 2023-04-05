@@ -16,8 +16,10 @@ import useNav from '../../hooks/useNav';
 import { FontAwesome } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import WritingPaperBlue from './WritingPaper';
-import { fnqMockup } from './WritingPaper';
-import FnqModal from '../../components/bottle/FnqModal';
+import { faqMockup } from './WritingPaper';
+import FaqModal from '../../components/bottle/FaqModal';
+import NewBadge from '../../components/common/NewBadge';
+import { getResNew } from '../../modules/apis/bottle/bottleApis';
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const borders = StyleSheet.create({
   red: {
@@ -200,6 +202,7 @@ export default function BottleBlue(): JSX.Element {
   };
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [resNew, setResNew] = useState<boolean>(false);
 
   const handleModalPop = () => {
     setModalVisible(true);
@@ -303,6 +306,14 @@ export default function BottleBlue(): JSX.Element {
     );
   };
 
+  const fetchData = () => {
+    getResNew(1).then((data: boolean) => setResNew(data));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     // <View>
     <View style={styles.container}>
@@ -390,8 +401,11 @@ export default function BottleBlue(): JSX.Element {
           style={styles.leftPageBottlesLocation}
           onPress={handleModalPop}
         />
-        <Pressable style={styles.myBottleBox} onPress={navigateToMyBottle} />
+        <Pressable style={styles.myBottleBox} onPress={navigateToMyBottle}>
+          {resNew && <NewBadge right={20} top={10} />}
+        </Pressable>
       </View>
     </View>
   );
 }
+

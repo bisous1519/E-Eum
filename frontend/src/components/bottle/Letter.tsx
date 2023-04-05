@@ -3,7 +3,7 @@ import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import useLetterSize from '../../hooks/useLetterSize';
 import { shadowStyle } from '../common/shadowStyle';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import theme from '../../utils/theme';
 import Badge from '../common/Badge';
 import BadgeType from '../../models/user/badgeType';
@@ -19,6 +19,7 @@ import {
   postBottleLike,
   postBottleReport,
 } from '../../modules/apis/bottle/bottleApis';
+import { Audio } from 'expo-av';
 
 const paperImage = require('../../assets/images/paper.png');
 const { LETTER_WIDTH, LETTER_HEIGHT } = useLetterSize();
@@ -39,16 +40,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  pages: {
+    fontSize: theme.fontSize.small,
+    color: theme.grayColor.lightGray,
+  },
   report: {
     fontSize: theme.fontSize.small,
-    color: theme.grayColor.darkGray,
+    color: theme.grayColor.lightGray,
   },
   reqDate: {
     fontSize: theme.fontSize.small,
   },
   kindof: {
     fontSize: theme.fontSize.small,
-    color: theme.textColor.light,
+    color: theme.grayColor.lightGray,
   },
   contentWrapper: {
     marginBottom: 20,
@@ -63,10 +68,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  pages: {
-    fontSize: theme.fontSize.small,
-    color: theme.grayColor.darkGray,
   },
   from: {
     fontSize: theme.fontSize.small,
@@ -101,6 +102,7 @@ type LetterPropsType = {
   type: BottleType | -1; // 답변일 경우 -1
   index: number;
   total: number;
+  // currentIdx: number;
 };
 
 export default function Letter({
@@ -109,13 +111,16 @@ export default function Letter({
   type,
   index,
   total,
-}: LetterPropsType): JSX.Element {
+}: // currentIdx,
+LetterPropsType): JSX.Element {
   const [date, setNewDate] = useDate();
   const [isLike, setisLike] = useState<boolean>(false);
   const [fromWhom, setFromWhom] = useState<string>('익명의 사용자');
   const [reqType, setReqType] = useState<'고민 상담' | '전문가 상담'>(
     '고민 상담'
   );
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [ttsSound, setTtsSound] = useState<Audio.Sound>();
 
   const onSendReport = (): void => {
     const postData: PostBottleReportBodyType = {
@@ -131,6 +136,26 @@ export default function Letter({
       setisLike((prev) => !prev);
     }
   };
+  const onPressTTSplay = async (): Promise<void> => {
+    if (item.ttsPath) {
+      const { sound } = await Audio.Sound.createAsync({
+        uri: item.ttsPath,
+      });
+      await sound.playAsync();
+    }
+  };
+  const onToggleIsPlaying = () => {
+    setIsPlaying((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (isPlaying) {
+      onPressTTSplay();
+      // onToggleIsPlaying();
+    } else {
+      ttsSound?.stopAsync();
+    }
+  }, [isPlaying]);
 
   useEffect(() => {
     if (item.userNickname) {
@@ -174,6 +199,9 @@ export default function Letter({
                 }
                 onPress={onPressLike}
               />
+              <Text style={styles.pages}>
+                {index} / {total}
+              </Text>
               <Text style={styles.report} onPress={onSendReport}>
                 신고
               </Text>
@@ -214,9 +242,16 @@ export default function Letter({
                 <></>
               )}
               <View style={styles.bottombottom}>
-                <Text style={styles.pages}>
-                  {index} / {total}
-                </Text>
+                <Entypo
+                  name={isPlaying ? 'controller-paus' : 'controller-play'}
+                  size={24}
+                  color={
+                    item.ttsPath
+                      ? theme.textColor.main
+                      : theme.grayColor.darkGray
+                  }
+                  onPress={onToggleIsPlaying}
+                />
                 <Text style={styles.from}>from.{fromWhom}</Text>
               </View>
             </View>
