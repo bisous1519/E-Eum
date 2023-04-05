@@ -27,6 +27,7 @@ import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
 import com.craypas.bottle.model.service.APIRequestService;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
@@ -216,6 +217,42 @@ public class BottleController {
 			return new ResponseEntity<>(bottleService.reportBottle(reportDto), HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@GetMapping("/receiver/{uid}/normal-new")
+	ResponseEntity<?> getReceivedNormalTypeBottleUnread(@PathVariable("uid") Long receiverId) {
+		try {
+			boolean unread = false;
+			List<ReceivedTypeReqBottleDto> reqBottleDtos = bottleService.findAllUserReqBottleByReceiverIdAndType(receiverId, 1);
+			for(ReceivedTypeReqBottleDto reqBottleDto : reqBottleDtos) {
+				if(!reqBottleDto.isReceiverRead()) {
+					unread = true;
+					break;
+				}
+			}
+			return new ResponseEntity<>(unread, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
+		}
+	}
+
+	@GetMapping("/receiver/{uid}/expert-new")
+	ResponseEntity<?> getReceivedExpertTypeBottleUnread(@PathVariable("uid") Long receiverId) {
+		try {
+			boolean unread = false;
+			List<ReceivedTypeReqBottleDto> reqBottleDtos = bottleService.findAllUserReqBottleByReceiverIdAndType(receiverId, 2);
+			for(ReceivedTypeReqBottleDto reqBottleDto : reqBottleDtos) {
+				if(!reqBottleDto.isReceiverRead()) {
+					unread = true;
+					break;
+				}
+			}
+			return new ResponseEntity<>(unread, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error("error: ", e);
 			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
