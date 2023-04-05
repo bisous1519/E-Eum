@@ -24,11 +24,14 @@ import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
+import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.LateUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
+import com.craypas.bottle.model.dto.response.UserBadgeDto;
 import com.craypas.bottle.model.service.APIRequestService;
 import com.craypas.bottle.model.service.BottleService;
 import com.craypas.bottle.model.service.FireBaseService;
@@ -116,7 +119,16 @@ public class BottleController {
 	@GetMapping("/req/{id}/res-list")
 	ResponseEntity<?> getDetailBottle(@PathVariable("id") Long id) {
 		try {
-			return new ResponseEntity<>(bottleService.findDetailReqBottle(id), HttpStatus.OK);
+			DetailReqBottleDto detailReqBottleDto = bottleService.findDetailReqBottle(id);
+			UserBadgeDto userBadgeDto;
+			for(CheckedResBottleDto resBottleDto : detailReqBottleDto.getResBottles()) {
+				userBadgeDto = apiRequestService.requestGetUserBadgeAPI(
+									userServerUrl+"/badge/"+resBottleDto.getResWriterId()
+								).getBody();
+				resBottleDto.setUserNickname(userBadgeDto.getUserNickname());
+				resBottleDto.setBadges(userBadgeDto.getBadgeList());
+			}
+			return new ResponseEntity<>(detailReqBottleDto, HttpStatus.OK);
 		} catch (CustomException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
 		} catch (Exception e) {

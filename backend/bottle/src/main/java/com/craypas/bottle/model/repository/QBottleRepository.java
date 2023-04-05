@@ -47,7 +47,7 @@ public class QBottleRepository {
 				reqBottle.id, reqBottle.writerId, reqBottle.content, reqBottle.type, reqBottle.sentiment,
 				Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime),
 				reqBottle.status, reqBottle.resRead,
-				list(new QCheckedResBottleDto(resBottle.id, resBottle.content, resBottle.ttsPath,
+				list(new QCheckedResBottleDto(resBottle.id, userReqBottle.receiverId, resBottle.content, resBottle.ttsPath,
 					Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime),
 					resBottle.status))
 			)));
@@ -74,7 +74,7 @@ public class QBottleRepository {
 			.transform(groupBy(reqBottle.id).as(new QSummaryBottleDto(
 				reqBottle.id, reqBottle.content, reqBottle.type, reqBottle.sentiment,
 				Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", reqBottle.regTime), reqBottle.type,
-				list(new QCheckedResBottleDto(resBottle.id, resBottle.content, resBottle.ttsPath,
+				list(new QCheckedResBottleDto(resBottle.id, userReqBottle.receiverId, resBottle.content, resBottle.ttsPath,
 					Expressions.stringTemplate("DATE_FORMAT({0},'%Y-%m-%d %H:%i:%s')", resBottle.regTime),
 					resBottle.status))
 			)));
