@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import styled, { css } from 'styled-components/native';
 import theme from '../../../utils/theme';
 
@@ -35,19 +35,22 @@ type ButtonCompPropsType = {
   text: string;
   onPressBtn: () => void;
   small?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
-// NOTE: props로 small={true} 주면 작은버튼, 안주면 큰버튼
+// NOTE: props로 small={true} 주면 작은버튼, 안주면 큰버튼, 따로 작성하고싶은 style은 style 프롭스로
 export default function ButtonComp({
   text,
   onPressBtn,
   small = false,
+  style,
 }: ButtonCompPropsType) {
   return (
-    <PressableBox small={small} onPress={onPressBtn}>
+    <PressableBox small={small} onPress={onPressBtn} style={style && style}>
       {({ pressed }) => (
         <TextBox style={pressed && styles.pressedText}>{text}</TextBox>
       )}
     </PressableBox>
   );
 }
+

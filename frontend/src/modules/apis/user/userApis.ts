@@ -1,11 +1,13 @@
 import axios from 'axios';
 import {
   EditPWType,
+  LoginUserStateType,
   SignUpReturnType,
   SignUpStateType,
   UserUpdateStateType,
 } from './userAtomTypes';
 import FaqType from '../../../models/user/faqType';
+import LoginType from '../../../models/user/loginType';
 
 // 프로필(마이페이지 / 후원자) 정보
 export async function getSponsorProfile(uid: number, sponsorId: number) {
@@ -122,10 +124,25 @@ export async function putEditPW(password: string) {
 }
 
 // 사용자 맞춤형 Faq 추천
-export async function postFaq(userId: number) {
+export async function postFaq(userId: number, content: string) {
   try {
     const { data } = await axios.post<FaqType>(
-      `http://j8a607.p.ssafy.io/api/user/faq/${userId}`
+      `http://j8a607.p.ssafy.io/api/user/faq/${userId}`,
+      { content }
+    );
+    return data;
+  } catch (error: unknown) {
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 로그인
+export async function login(loginData: LoginType) {
+  try {
+    const { data } = await axios.post<LoginUserStateType>(
+      `http://j8a607.p.ssafy.io/api/user/login`,
+      loginData
     );
     return data;
   } catch (error: unknown) {
