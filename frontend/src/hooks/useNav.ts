@@ -3,7 +3,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RecordStateType } from '../modules/apis/record/recordAtomTypes';
 
 export type RootStackParamList = {
-  BottleStack?: undefined;
+  // BottleStack?: undefined;
   RecordStack?: undefined;
   SupportStack?: undefined;
   MypageStack?: undefined;
@@ -24,6 +24,9 @@ export type RootStackParamList = {
   BottleBlue?: undefined;
   MyBottle?: undefined;
   WritingPaper?: { messageType: number; newMessage: boolean }; // 1:일반 상담, 2: 전문가 상담 // true: 새 질문, false: 질문 답장
+  AdminStack?: undefined;
+  AdminMain?: undefined;
+  Approve?: undefined;
 };
 
 // type RootStackParamList = {
@@ -43,3 +46,4 @@ export default function useNav() {
   //     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return useNav;
 }
+

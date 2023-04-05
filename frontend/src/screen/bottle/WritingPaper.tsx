@@ -215,7 +215,7 @@ export default function WritingPaper(): JSX.Element {
     // 해류병 전송 api
     //----here----
     // faq api요청
-    postFaq(1).then((data: FaqType) => setFaqData(data));
+    postFaq(1, writtenTextValue).then((data: FaqType) => setFaqData(data));
   };
 
   const handleRollingPaper = (status: any) => {

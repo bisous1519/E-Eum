@@ -45,3 +45,11 @@ export type EditPWType = {
   introduction: string;
   groupName: string;
 };
+
+// 로그인한 사용자 타입
+export type LoginUserStateType = {
+  uid: number;
+  nickname: string;
+  imagePath: string | null;
+};
+
