@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { UserUpdateStateType } from './userAtomTypes';
+import {
+  SignUpReturnType,
+  SignUpStateType,
+  UserUpdateStateType,
+} from './userAtomTypes';
 
 // 프로필(마이페이지 / 후원자) 정보
 export async function getSponsorProfile(uid: number, sponsorId: number) {
@@ -66,6 +70,21 @@ export async function chargePoint(uid: number, point: number) {
     );
     return data;
   } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+// 회원가입
+export async function postSignUp(postData: SignUpStateType) {
+  try {
+    const { data } = await axios.post<SignUpReturnType>(
+      `http://j8a607.p.ssafy.io/api/user`,
+      postData
+    );
+    return data;
+  } catch (e) {
+    console.log('회원가입 에러');
     console.error(e);
     throw e;
   }
