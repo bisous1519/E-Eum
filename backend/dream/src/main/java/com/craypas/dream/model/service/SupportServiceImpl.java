@@ -333,19 +333,19 @@ public class SupportServiceImpl implements SupportService {
 
 	// 후원했던 요청 목록 조회
 	@Override
-	public List<ResponseDto.Read> getUserSupportList(final Long uid) {
+	public List<ResponseDto.Preview> getUserSupportList(final Long uid) {
 		List<SupportUser> supportUserList = supportUserRepository.findAllByWriterIdOrderByRegTimeDesc(uid);
-		List<ResponseDto.Read> responseDto = new ArrayList<>(supportUserList.size());
+		List<ResponseDto.Preview> responseDto = new ArrayList<>(supportUserList.size());
 		for (SupportUser supportUser : supportUserList) {
-			responseDto.add(new ResponseDto.Read(supportUser.getSupport()));
+			responseDto.add(new ResponseDto.Preview(supportUser.getSupport()));
 		}
 		return responseDto;
 	}
 
 	// 작성한 후원요청 목록 조회
 	@Override
-	public List<ResponseDto.Read> getMySupportList(final Long uid) {
+	public List<ResponseDto.Preview> getMySupportList(final Long uid) {
 		List<Support> supportList = supportRepository.findAllByUserIdOrderByRegTimeDesc(uid);
-		return supportList.stream().map(ResponseDto.Read::new).collect(Collectors.toList());
+		return supportList.stream().map(ResponseDto.Preview::new).collect(Collectors.toList());
 	}
 }
