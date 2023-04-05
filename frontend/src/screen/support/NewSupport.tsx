@@ -165,22 +165,6 @@ export default function NewSupport(): JSX.Element {
     hideDatePicker();
   };
 
-  // ImagePicker 사용을 위한 부분
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images, // 사진 O, 동영상 X
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-  //   if (!result.canceled) {
-  //     const prevImage = [...addImage];
-  //     // 흠..일단은 넣어보겠는데 나중에 확인 ㄱㄱㄱ
-  //     prevImage.push(result.assets[0].uri);
-  //     setAddImage(prevImage);
-  //   }
-  // };
-
   const handleContextChange = (data: string) => {
     setContext(data);
   };
@@ -253,6 +237,26 @@ export default function NewSupport(): JSX.Element {
             <Text style={styles.mainTitle}>작성하기</Text>
           </View>
           <View style={styles.innerContainer}>
+            {/* 7. 배송지 입력 */}
+            {/* 카카오 지도 API를 활용해 주소를 입력받는 부분 */}
+            <View style={styles.write}>
+              <View style={styles.guideline}>
+                <Text style={styles.title}>배송지 목록</Text>
+                <Text style={{ fontSize: 8, marginLeft: 5 }}>
+                  * 물품을 배송받을 배송지를 입력해주세요
+                </Text>
+              </View>
+              <TextInput
+                placeholder='배송지를 입력하세요'
+                onPressOut={handleSelectedAddress}
+                value={mainAddress.substring(1, mainAddress.length - 1)}
+                style={styles.addressDetail}
+              />
+              <TextInput
+                placeholder='상세주소를 입력하세요'
+                onChange={handleDetailAddressInput}
+              />
+            </View>
             {/* 0. 제목 */}
             <View style={styles.write}>
               <Text style={styles.title}>제목</Text>
@@ -272,8 +276,7 @@ export default function NewSupport(): JSX.Element {
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={styles.tagList}
-              >
+                style={styles.tagList}>
                 {tags
                   ? tags.map((tag, index) => (
                       <Tag
@@ -369,26 +372,6 @@ export default function NewSupport(): JSX.Element {
                 />
                 <Text>{due}</Text>
               </Pressable>
-            </View>
-            {/* 7. 배송지 입력 */}
-            {/* 카카오 지도 API를 활용해 주소를 입력받는 부분 */}
-            <View style={styles.write}>
-              <View style={styles.guideline}>
-                <Text style={styles.title}>배송지 목록</Text>
-                <Text style={{ fontSize: 8, marginLeft: 5 }}>
-                  * 물품을 배송받을 배송지를 입력해주세요
-                </Text>
-              </View>
-              <TextInput
-                placeholder='배송지를 입력하세요'
-                onPressOut={handleSelectedAddress}
-                value={mainAddress.substring(1, mainAddress.length - 1)}
-                style={styles.addressDetail}
-              />
-              <TextInput
-                placeholder='상세주소를 입력하세요'
-                onChange={handleDetailAddressInput}
-              />
             </View>
           </View>
         </ScrollView>

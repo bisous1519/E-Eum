@@ -14,6 +14,7 @@ export type RootStackParamList = {
   RecordEditor?: { item: RecordStateType } | undefined;
   Signup?: undefined;
   SupportDetail?: undefined;
+  SupportProfile?: { uid: number } | undefined;
   NewSupport?: undefined;
   SupportRecord?: { uid: number; tid: number };
   JoinPW?: undefined;

@@ -15,7 +15,10 @@ import useNav from '../../hooks/useNav';
 import { getSupports } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
-import { supportsState } from '../../modules/apis/support/supportAtoms';
+import {
+  sortType,
+  supportsState,
+} from '../../modules/apis/support/supportAtoms';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigator/SupportStack';
@@ -128,7 +131,7 @@ export default function SupportList(): JSX.Element {
     useRecoilState<SupportsStateType>(supportsState);
 
   // 정렬 기준
-  const [sortType, setSortType] = useState<number>(1);
+  const [sort, setSort] = useRecoilState<number>(sortType);
 
   const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -142,9 +145,7 @@ export default function SupportList(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const supportsData: SupportsStateType | undefined = await getSupports(
-      sortType
-    );
+    const supportsData: SupportsStateType | undefined = await getSupports(sort);
     if (supportsData) {
       setSupports(supportsData);
     }
@@ -152,7 +153,7 @@ export default function SupportList(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-  }, [sortType, supports]);
+  }, [sort, supports]);
 
   return (
     <View style={styles.container}>
@@ -163,8 +164,7 @@ export default function SupportList(): JSX.Element {
             style={styles.item}
             onPress={() => onPressDetail(item.sid)}
             activeOpacity={0.6}
-            key={item.sid}
-          >
+            key={item.sid}>
             <Item
               sid={item.sid}
               userNickname={item.userNickname}

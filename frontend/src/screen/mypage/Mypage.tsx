@@ -34,6 +34,7 @@ import Badge from '../../components/common/Badge';
 import { RecordProfileStateType } from '../../modules/apis/record/recordAtomTypes';
 import { getProfileData } from '../../modules/apis/record/recordApis';
 import { recordProfileState } from '../../modules/apis/record/recordAtoms';
+import BadgeModal from '../../components/support/BadgeModal';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -112,8 +113,8 @@ const styles = StyleSheet.create({
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
     borderRadius: 5,
     width: DEVICE_WIDTH * 0.12,
     height: DEVICE_WIDTH * 0.12,
@@ -144,7 +145,8 @@ export default function Mypage(): JSX.Element {
     useInputText();
 
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
-  // const [isModal, setIsModal] = useState<boolean>(false);
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const [badge, setBadge] = useState<BadgeStateType>();
   const [badgeList, setBadgeList] =
     useRecoilState<BadgeStateType[]>(badgeListState);
   const [userProfile, setUserProfile] =
@@ -170,18 +172,15 @@ export default function Mypage(): JSX.Element {
     navigation.push('PointCharge');
   };
 
-  const handleBadgePress = () =>
-    // imagePath: string,
-    // name: string,
-    // description: string
-    {
-      console.log('뱃지 디테일 모달이 푸슝~');
-      // setIsModal((prev) => !prev);
-    };
+  const handleBadgePress = (badge: BadgeStateType) => {
+    console.log('뱃지 디테일 모달이 푸슝~');
+    setBadge(badge);
+    setIsModal((prev) => !prev);
+  };
 
-  // const handleModalClose = () => {
-  //   setIsModal((prev) => !prev);
-  // };
+  const handleModalClose = () => {
+    setIsModal((prev) => !prev);
+  };
 
   const fetchData = async () => {
     const badgeData: BadgeStateType[] | undefined = await getBadgeList(
@@ -238,8 +237,7 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}
-              >
+                activeOpacity={0.6}>
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -303,8 +301,7 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}
-              >
+                activeOpacity={0.6}>
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -317,9 +314,8 @@ export default function Mypage(): JSX.Element {
                 renderItem={(badge) => (
                   <TouchableOpacity
                     style={styles.uniBadge}
-                    onPress={handleBadgePress}
-                    activeOpacity={0.6}
-                  >
+                    onPress={() => handleBadgePress(badge.item)}
+                    activeOpacity={0.6}>
                     <Badge key={badge.item.id} badge={badge.item} />
                   </TouchableOpacity>
                 )}
@@ -330,6 +326,9 @@ export default function Mypage(): JSX.Element {
                 <Text style={styles.emptyText}>뱃지를 수집중입니다 👊</Text>
               </View>
             )}
+            {isModal ? (
+              <BadgeModal badge={badge} onToggleModal={handleModalClose} />
+            ) : null}
           </View>
           <ModifyButton onPressModifyBtn={onPressModifyBtn} />
         </View>

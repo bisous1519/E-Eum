@@ -112,6 +112,8 @@ const styles = StyleSheet.create({
   },
   leftText: {
     marginLeft: DEVICE_WIDTH * 0.015,
+    height: DEVICE_HEIGHT * 0.045,
+    justifyContent: 'space-between',
   },
   writerName: {
     fontWeight: '700',
@@ -174,7 +176,6 @@ export default function SupportDetail(): JSX.Element {
 
   const handleFeedPress = (uid: number, tid: number) => {
     nav.navigate('SupportRecord', { uid: uid, tid: tid });
-    console.log('작성자 꿈피드로 푸슝~');
   };
 
   // ============================================================================
@@ -221,7 +222,6 @@ export default function SupportDetail(): JSX.Element {
       <ScrollView style={styles.container}>
         <Image
           style={styles.picture}
-          // source={imagePath ? require(imagePath) : null}
           source={require('../../assets/images/sample.png')}
           resizeMode='cover'
         />
@@ -238,8 +238,7 @@ export default function SupportDetail(): JSX.Element {
             <TouchableOpacity
               onPress={() => link()}
               activeOpacity={0.6}
-              style={styles.productLink}
-            >
+              style={styles.productLink}>
               <Text style={styles.linkText}>참고링크</Text>
             </TouchableOpacity>
           </View>
@@ -281,8 +280,7 @@ export default function SupportDetail(): JSX.Element {
                       key={idx}
                       onPress={() =>
                         handleSupporterClick(detailData.sponsorIdList[idx])
-                      }
-                    >
+                      }>
                       {/* 주석 풀어야해 */}
                       <Image
                         // source={{uri: detailData?.sponsorImagePathList[idx]}}
@@ -306,8 +304,7 @@ export default function SupportDetail(): JSX.Element {
           <View style={styles.group}>
             <TouchableOpacity
               onPress={() => handleFeedPress(detailData.uid, detailData.tid)}
-              activeOpacity={0.6}
-            >
+              activeOpacity={0.6}>
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image

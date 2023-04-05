@@ -167,9 +167,15 @@ export default function Record(): JSX.Element {
     console.log('bottomSheet changed', idx);
     setExpandFeed(idx === 1 ? true : false);
   };
+
+  const handleProfilePress = () => {
+    navigation.navigate('SupportProfile');
+  };
+
   const onPressPlusBtn = (): void => {
     navigation.push('RecordEditor');
   };
+
   const onToggleDelete = (recordId?: number): void => {
     if (recordId || recordId === 0) {
       setDelTargetContentId(recordId);
@@ -233,8 +239,7 @@ export default function Record(): JSX.Element {
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
-      >
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
         {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
@@ -244,8 +249,7 @@ export default function Record(): JSX.Element {
               '100%',
             ]}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}
-          >
+            style={{ alignItems: 'center' }}>
             {records ? (
               <BottomSheetFlatList
                 contentContainerStyle={styles.contentContainer}
@@ -281,8 +285,7 @@ export default function Record(): JSX.Element {
               left: imgOffsetXY.x,
             },
           ])}
-          onPress={() => console.log('클릭이얌')}
-        ></Pressable>
+          onPress={handleProfilePress}></Pressable>
       ) : (
         <></>
       )}
@@ -294,8 +297,7 @@ export default function Record(): JSX.Element {
             stylesTag.container,
             { top: profileHeight },
           ])}
-          onLayout={onLayoutTag}
-        >
+          onLayout={onLayoutTag}>
           {tags ? (
             <TagList
               tags={tags}
@@ -335,4 +337,3 @@ export default function Record(): JSX.Element {
     </View>
   );
 }
-
