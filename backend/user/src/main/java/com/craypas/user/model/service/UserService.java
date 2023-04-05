@@ -74,4 +74,7 @@ public interface UserService {
 
 	// 회원 로그인
 	ResponseDto.GetUserPreview loginUser(final RequestDto.LoginUser requestDto);
+
+	// 사용자 맞춤형 FAQ 추천
+	ResponseDto.GetFaq getFaq(final Long uid, final Map<String, String> requestMap);
 }

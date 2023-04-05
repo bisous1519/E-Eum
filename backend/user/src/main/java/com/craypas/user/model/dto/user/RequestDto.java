@@ -30,6 +30,7 @@ public class RequestDto {
 		private Integer type; // 회원구분(자립준비청년 / 기타사용자)
 		private MultipartFile image; // 프로필 사진
 		private MultipartFile certificateFile; // 증빙 자료
+		private String region;
 
 		@Builder
 		public User toEntity() {
@@ -43,6 +44,7 @@ public class RequestDto {
 				.point(0)
 				.regTime(LocalDateTime.now())
 				.status(0)
+				.region(region)
 				.build();
 		}
 	}

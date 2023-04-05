@@ -1,11 +1,16 @@
 package com.craypas.user.model.service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -17,9 +22,11 @@ import com.craypas.user.exception.ErrorCode;
 import com.craypas.user.model.dto.user.RequestDto;
 import com.craypas.user.model.dto.user.ResponseDto;
 import com.craypas.user.model.entity.Badge;
+import com.craypas.user.model.entity.Faq;
 import com.craypas.user.model.entity.User;
 import com.craypas.user.model.entity.UserBadge;
 import com.craypas.user.model.repository.BadgeRepository;
+import com.craypas.user.model.repository.FaqRepository;
 import com.craypas.user.model.repository.UserBadgeRepository;
 import com.craypas.user.model.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,10 +36,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-	final private UserRepository userRepository;
-	final private BadgeRepository badgeRepository;
-	final private UserBadgeRepository userBadgeRepository;
-	final private FireBaseService fireBaseService;
+	private final UserRepository userRepository;
+	private final BadgeRepository badgeRepository;
+	private final UserBadgeRepository userBadgeRepository;
+	private final FaqRepository faqRepository;
+	private final FireBaseService fireBaseService;
 
 	// 회원정보 등록
 	@Override
@@ -75,6 +83,9 @@ public class UserServiceImpl implements UserService {
 	// 이메일 중복 확인(중복 시 예외 호출)
 	@Override
 	public void isEmailUnique(final String email) {
+		if (email == null) {
+			throw new CustomException(ErrorCode.EMAIL_IS_NULL);
+		}
 		if (userRepository.countByEmail(email) > 0) {
 			throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
 		}
@@ -340,5 +351,107 @@ public class UserServiceImpl implements UserService {
 			throw new CustomException(ErrorCode.LOGIN_FAILED);
 		}
 		return new ResponseDto.GetUserPreview(user);
+	}
+
+	// 사용자 맞춤형 FAQ 추천
+	@Override
+	public ResponseDto.GetFaq getFaq(final Long uid, final Map<String, String> requestMap) {
+		// 카테고리 리스트에 요소 추가
+		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+		List<String> categories = new ArrayList<>();
+		categories.add("주거");
+		categories.add("금융");
+		categories.add("심리");
+		final String pattern = "[^\\uAC00-\\uD7A3]+";
+
+		// 카테고리마다 전처리 데이터셋을 가져와 map에 저장
+		// map에는 (keyword, [2의 idx제곱]) 의 value가 저장됨
+		// 이미 존재하는 key일 경우에는 기존 value에 덧셈하여 저장
+		Map<String, Integer> wordMap = new HashMap<>();
+		for (int idx = 0; idx < categories.size(); idx++) {
+			try {
+				BufferedReader br = new BufferedReader(
+					new FileReader("src/main/resources/keywords/output" + categories.get(idx)));
+				String line = "";
+				while ((line = br.readLine()) != null) {
+					String[] arr = line.split(pattern);
+					// 이미 등록되어 있는 키워드면 value에 추가
+					for (String str : arr) {
+						Integer value = (1 << idx);
+						if (wordMap.get(str) != null) {
+							value += wordMap.get(str);
+						}
+						// map에 갱신
+						wordMap.put(str, value);
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// 어떤 카테고리와 가장 연관이 많은지 검사
+		String content = requestMap.get("content");
+		String[] words = content.split(pattern);
+		int[] scores = new int[categories.size()];
+		for (String word : words) {
+			Integer value = wordMap.get(word);
+			// System.out.println(word + ": " + value);
+			if (value == null) {
+				continue;
+			}
+			// 비트마스킹을 사용하여 각 카테고리에 등장한 횟수 체크
+			for (int idx = 0; idx < categories.size(); idx++) {
+				scores[idx] += (value >> (idx)) & 1;
+			}
+		}
+
+		// 가장 연관있는 카테고리 찾기
+		int maxValueIdx = -1;
+		int maxValue = -1;
+		for (int i = 0; i < scores.length; i++) {
+			System.out.println(categories.get(i) + ": " + scores[i] + "점");
+			if (maxValue < scores[i]) {
+				maxValueIdx = i;
+				maxValue = scores[i];
+			}
+		}
+		String recommendedCategory = categories.get(maxValueIdx);
+
+		// 카테고리 기반에 해당되는 FAQ 리스트 가져오기
+		List<Faq> faqList = faqRepository.findAllByCategory(recommendedCategory);
+		Queue<Faq> nonRegionFaqs = new LinkedList<>();
+
+		// 사용자 지역에서 시 이름을 추출
+		String cityName = "무관";
+		if (user.getRegion() != null) {
+			String[] regions = user.getRegion().split(" ");
+			cityName = regions[0];
+		}
+		// 시 이름의 기준을 변경할 경우 문자열 조작 필요
+		// for (String region : regions) {
+		// 	char ch = region.charAt(region.length() - 1);
+		// 	if (ch == '시' || ch == '군') {
+		// 		for (int i = 0; i < region.length() - 1; i++) {
+		// 			cityName += region.charAt(i);
+		// 		}
+		// 		break;
+		// 	}
+		// }
+
+		// 사용자의 지역이 일치하는 FAQ가 있으면 반환
+		for (Faq faq : faqList) {
+			if (faq.getRegion().equals("무관")) {
+				nonRegionFaqs.add(faq);
+			} else if (faq.getRegion().equals(cityName)) {
+				return new ResponseDto.GetFaq(faq);
+			}
+		}
+
+		// 사용자와 지역이 일치하는 FAQ가 없으면 무관한 것들 중 하나를 뽑아 반환
+		if (!nonRegionFaqs.isEmpty()) {
+			return new ResponseDto.GetFaq(nonRegionFaqs.poll());
+		}
+		return new ResponseDto.GetFaq();
 	}
 }
