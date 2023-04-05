@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Image,
   Platform,
@@ -9,8 +9,6 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import theme from '../../../utils/theme';
-
-type FileUploaderCompPropsType = {};
 
 const styles = StyleSheet.create({
   container: {
@@ -60,9 +58,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function FileUploaderComp({}: FileUploaderCompPropsType) {
+type FileUploaderCompPropsType = {
+  imageUri: string; //기본으로 설정하는 이미지 uri Input
+  onChangeImageUri: (newImageUri: string) => void; //선택한 이미지를 export하는 onChange 함수
+};
+
+export default function FileUploaderComp(props: FileUploaderCompPropsType) {
   const noImage = require('../../../assets/images/defaultimage(noimage).jpg');
-  const [image, setImage] = useState<string>('');
+  const [image, setImage] = useState<string>(props.imageUri);
 
   const getPermissionSelect = async () => {
     if (Platform.OS !== 'web') {
@@ -87,9 +90,13 @@ export default function FileUploaderComp({}: FileUploaderCompPropsType) {
     });
 
     if (!imageData.canceled) {
-      await setImage(imageData.assets[0].uri);
+      setImage(imageData.assets[0].uri);
     }
   };
+  useEffect(() => {
+    console.log('FileUploader Comp image: ' + image);
+    props.onChangeImageUri(image);
+  }, [image]);
 
   const handlePressSelectImage = async () => {
     if (await getPermissionSelect()) {

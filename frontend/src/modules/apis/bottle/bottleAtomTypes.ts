@@ -118,3 +118,21 @@ export type PostBottleReportReturnType = {
   status: StatusType;
 };
 
+// 해류병 좋아요 리턴 타입
+export type PostBottleLikeReturnType = {
+  id: number;
+  userId: number;
+  resBottleId: number;
+};
+
+// 새 해류병 질문 작성 리턴 타입
+export type PostNewBottleReturnType = {
+  id: number;
+  writerId: number;
+  content: string;
+  type: number;
+  sentiment: number;
+  ttsPath: string;
+  regTime: string;
+  status: number;
+};

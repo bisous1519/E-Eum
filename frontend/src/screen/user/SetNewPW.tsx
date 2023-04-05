@@ -14,6 +14,8 @@ import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
+import { putEditPW } from '../../modules/apis/user/userApis';
+import { EditPWType } from '../../modules/apis/user/userAtomTypes';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -81,27 +83,51 @@ const stylesSignupInput = StyleSheet.create({
 export default function SetNewPW(): JSX.Element {
   const navigation = useNav();
 
+  const [pwState, setPwState] = useState<boolean>(false);
+
   //비밀번호
   const { text: userPW, onChangeText: onChangeUserText } = useInputText();
   const PWRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/;
   const [checkRegexPW, setCheckRegexPW] = useState<boolean>(false);
+  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
+
   useEffect(() => {
     if (userPW !== '') {
       if (!PWRegex.test(userPW)) setCheckRegexPW(false);
-      else setCheckRegexPW(true);
+      else {
+        setCheckRegexPW(true);
+      }
+      setPwState(false);
       setCheckSamePW(false);
     }
   }, [userPW]);
+
   const { text: userVerifPW, onChangeText: onChangeUserVerifPW } =
     useInputText();
-  const [checkSamePW, setCheckSamePW] = useState<boolean>(false);
-  useEffect(() => {
-    if (userPW === userVerifPW) setCheckSamePW(true);
-    else setCheckSamePW(false);
-  }, [userVerifPW]);
 
-  const NavToSignIn = () => {
-    navigation.push('Signin');
+  useEffect(() => {
+    if (userPW !== '' && userPW === userVerifPW) {
+      setCheckSamePW(true);
+      setPwState(true);
+    } else checkPwStateFalse();
+  }, [userVerifPW, userPW]);
+
+  const checkPwStateFalse = () => {
+    setCheckSamePW(false);
+    setPwState(false);
+  };
+
+  const [reCheck, setReCheck] = useState<boolean>(false);
+
+  const setNewPW = async () => {
+    if (pwState) {
+      await putEditPW(userPW).then((returndata: EditPWType) =>
+        console.log(returndata)
+      );
+      navigation.push('Signin');
+    } else {
+      setReCheck(true);
+    }
   };
 
   return (
@@ -152,7 +178,10 @@ export default function SetNewPW(): JSX.Element {
             />
           </View>
           <View style={{ marginTop: 20 }}>
-            <ButtonComp text={'로그인 화면으로'} onPressBtn={NavToSignIn} />
+            <ButtonComp
+              text={reCheck ? '다시 시도' : '설정 완료'}
+              onPressBtn={setNewPW}
+            />
           </View>
         </View>
         {/* inner container */}

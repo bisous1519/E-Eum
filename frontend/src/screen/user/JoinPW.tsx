@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Dimensions,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
+import { getNameAndEmail } from '../../modules/apis/user/userApis';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -83,33 +76,13 @@ export default function JoinPW(): JSX.Element {
 
   //이메일 인증
   const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
-  const requestVerifCode = () => {
-    setTimerOn(true);
-    console.log('인증 버튼 눌림');
-  };
-  const { text: verifCode, onChangeText: onChangeVerifCode } = useInputText();
-  const [timerOn, setTimerOn] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState<number>(5);
-  const checkVerifCode = () => {
-    console.log('인증 확인 버튼 눌림');
-  };
-  useEffect(() => {
-    let interval: any;
-    console.log('카운트다운');
-    if (timerOn && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
-      }, 1000);
-    } else {
-      setTimerOn(false);
-      setTimeLeft(5);
-    }
-    return () => clearInterval(interval);
-  }, [timerOn, timeLeft]);
 
-  const NavToSetNewPW = () => {
-    navigation.push('SetNewPW');
+  const checkAndNext = () => {
+    getNameAndEmail(userName, userEmail).then((returndata) =>
+      returndata ? navigation.push('SetNewPW') : setReCheck(true)
+    );
   };
+  const [reCheck, setReCheck] = useState<boolean>(false);
 
   return (
     <ScrollView style={stylesGlobalContainer.scrollContainer}>
@@ -148,36 +121,13 @@ export default function JoinPW(): JSX.Element {
               name={'이메일'}
               text={userEmail}
               onChangeText={onChangeUserEmail}
-              btn={true}
-              btnText={
-                timerOn
-                  ? `${Math.floor(timeLeft / 60)
-                      .toString()
-                      .padStart(2, '0')}:${(timeLeft % 60)
-                      .toString()
-                      .padStart(2, '0')}`
-                  : '인증'
-              }
-              onPressBtn={requestVerifCode}
-            />
-          </View>
-          <View
-            style={StyleSheet.flatten([
-              stylesTempBorder.Yellow,
-              stylesSignupInput.box,
-            ])}
-          >
-            <InputComp
-              name={'인증 코드'}
-              text={verifCode}
-              onChangeText={onChangeVerifCode}
-              btn={true}
-              btnText={'확인'}
-              onPressBtn={checkVerifCode}
             />
           </View>
           <View style={{ marginTop: 20 }}>
-            <ButtonComp text={'비밀번호 설정'} onPressBtn={NavToSetNewPW} />
+            <ButtonComp
+              text={reCheck ? '다시 시도' : '인증 및 다음'}
+              onPressBtn={checkAndNext}
+            />
           </View>
         </View>
         {/* inner container */}

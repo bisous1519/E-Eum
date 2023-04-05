@@ -16,12 +16,12 @@ const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const border = StyleSheet.create({
   red: {
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   blue: {
-    borderWidth: 1,
-    borderColor: 'blue',
+    // borderWidth: 1,
+    // borderColor: 'blue',
   },
 });
 
@@ -113,6 +113,8 @@ const modalstyle = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomWidth: 5,
+    borderColor: 'white',
     // borderWidth: 1,
     // borderColor: 'green',
   },
@@ -163,28 +165,36 @@ export default function WritingPaper(): JSX.Element {
   const writtenTextLength = writtenTextValue.length;
 
   const doneWriting = () => {
-    setStartVideo(true);
+    //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
+    console.log('전송버튼');
+
     if (inputRef.current) {
-      inputRef.current.blur();
+      inputRef.current.blur(); //키보드 넣기
     }
-    // setWrittenTextValue('');
-    setVisible(false);
-    // setTimeout(() => {
-    //   messageNormal
-    //     ? navigation.navigate('BottleBlue')
-    //     : navigation.navigate('BottleGreen');
-    // }, 8600);
-    setTimeout(() => {
-      setSendingModal(true);
-    }, 4000);
-    setTimeout(() => {
+    setVisible(false); //  양피지 뺴고 다 숨기기
+    console.log('첫 숨김');
+    setStartVideo(true); //양피지 말기 재생
+  };
+
+  const handleRollingPaper = (status: any) => {
+    //양피지 재생 끝나면 Modal 나타내기
+    if (status.didJustFinish) {
+      console.log('양피지 재생 끝');
+      setSendingModal(true); //모달 나타나고 동영상도 재생
+    }
+  };
+
+  const handleFloatingBottle = (status: any) => {
+    //모달 내부 floating 재생 끝나면 문자 바꾸고 1초 뒤에 돌아가기
+    if (status.didJustFinish) {
       setSended(true);
-    }, 7000);
-    setTimeout(() => {
-      // 여기가 맞나?
-      setFnqModal(true);
-      setSendingModal(false);
-    }, 8500);
+      console.log('문자 바뀜');
+      setTimeout(() => {
+        console.log('fnq트루');
+        setFnqModal(true);
+        setSendingModal(false);
+      }, 1000);
+    }
   };
 
   const onCloseFnqModal = () => {
@@ -199,6 +209,7 @@ export default function WritingPaper(): JSX.Element {
   };
 
   const clearText = () => {
+    console.log('지우기');
     setWrittenTextValue('');
   };
 
@@ -207,6 +218,7 @@ export default function WritingPaper(): JSX.Element {
       <View style={styles.backgroundVideo}>
         <Video
           source={paperVideo}
+          onPlaybackStatusUpdate={handleRollingPaper}
           rate={1.0}
           // volume={1.0}
           isMuted={true}
@@ -263,6 +275,7 @@ export default function WritingPaper(): JSX.Element {
                 <View style={modalstyle.sendingVideoBox}>
                   <Video
                     source={sendingVideoPath}
+                    onPlaybackStatusUpdate={handleFloatingBottle}
                     rate={1.0}
                     // volume={1.0}
                     isMuted={true}
