@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +23,7 @@ import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.craypas.bottle.model.entity.Like;
 import com.craypas.bottle.model.entity.ReqBottle;
@@ -95,6 +97,19 @@ public class BottleService {
 	public List<ReceivedTypeReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) {
 		List<ReceivedTypeReqBottleDto> receivedReqBottleDtos = qBottleRepository.findAllResBottleByReqWriterIdAndType(receiverId, reqBottletype);
 
+		List<ReceivedTypeReqBottleDto> resultReqBottleDtos = new ArrayList<>();
+		for(ReceivedTypeReqBottleDto receivedReqBottleDto : receivedReqBottleDtos) {
+			resultReqBottleDtos.add(ReceivedTypeReqBottleDto.builder()
+											.id(receivedReqBottleDto.getId())
+											.writerId(receivedReqBottleDto.getWriterId())
+											.content(receivedReqBottleDto.getContent())
+											.sentiment(receivedReqBottleDto.getSentiment())
+											.ttsPath(receivedReqBottleDto.getTtsPath())
+											.regTime(receivedReqBottleDto.getRegTime())
+											.status(receivedReqBottleDto.getStatus())
+											.receiverRead(receivedReqBottleDto.isReceiverRead())
+											.build());
+		}
 		UserReqBottle userReqBottle;
 		for(ReceivedTypeReqBottleDto innerDto : receivedReqBottleDtos) {
 			userReqBottle = userReqBottleRepository.findByReceiverIdAndReqBottle(
@@ -104,7 +119,7 @@ public class BottleService {
 			userReqBottle.updateReceiverRead(true);
 			userReqBottleRepository.save(userReqBottle);
 		}
-		return receivedReqBottleDtos;
+		return resultReqBottleDtos;
 	}
 
 	@Transactional
@@ -145,4 +160,11 @@ public class BottleService {
 		}
 		return reportRepository.save(reportDto.toEntity()).toCreatedDto();
 	}
+
+	public List<ReceivedUserReqBottleDto> findAllUserReqBottleByReceiverId(Long receiverId) {
+		return userReqBottleRepository.findAllByReceiverId(receiverId).stream()
+			.map(UserReqBottle::toCreatedReqDto)
+			.collect(Collectors.toList());
+	}
+
 }
