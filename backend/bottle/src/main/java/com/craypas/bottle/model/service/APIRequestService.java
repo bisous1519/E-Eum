@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
+import com.craypas.bottle.model.dto.response.UserBadgeDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,14 +29,13 @@ public class APIRequestService {
 		return restTemplate.getForEntity(uri, List.class);
 	}
 
-	public ResponseEntity<List> requestGetUserAPI(String urlStr, String path) {
+	public ResponseEntity<UserBadgeDto> requestGetUserBadgeAPI(String urlStr) {
 		URI uri = UriComponentsBuilder
 			.fromUriString(urlStr)
-			.path(path)
 			.build()
 			.toUri();
 		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForEntity(uri, List.class);
+		return restTemplate.getForEntity(uri, UserBadgeDto.class);
 	}
 
 	public ResponseEntity<AbuseResultDto> requestPostAbuseAnalysisAPI(String urlStr, String key, String content) {
