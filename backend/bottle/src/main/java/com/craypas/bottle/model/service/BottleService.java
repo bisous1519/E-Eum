@@ -142,6 +142,9 @@ public class BottleService {
 		if(!resBottleRepository.findById(likeDto.getResBottleId()).isPresent()) {
 			throw new CustomException(ErrorCode.RES_BOTTLE_NOT_FOUND);
 		}
+		else if(likeRepository.findByUserIdAndResBottleId(likeDto.getUserId(), likeDto.getResBottleId()).isPresent()) {
+			throw new CustomException(ErrorCode.DUPLICATE_LIKE);
+		}
 		return likeRepository.save(likeDto.toEntity()).toCreatedDto();
 	}
 
