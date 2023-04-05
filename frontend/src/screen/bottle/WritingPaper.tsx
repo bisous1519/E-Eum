@@ -16,12 +16,12 @@ const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
 const border = StyleSheet.create({
   red: {
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   blue: {
-    borderWidth: 1,
-    borderColor: 'blue',
+    // borderWidth: 1,
+    // borderColor: 'blue',
   },
 });
 
@@ -113,6 +113,8 @@ const modalstyle = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomWidth: 5,
+    borderColor: 'white',
     // borderWidth: 1,
     // borderColor: 'green',
   },
@@ -186,12 +188,11 @@ export default function WritingPaper(): JSX.Element {
     //모달 내부 floating 재생 끝나면 문자 바꾸고 1초 뒤에 돌아가기
     if (status.didJustFinish) {
       setSended(true);
+      console.log('문자 바뀜');
       setTimeout(() => {
-        setSendingModal(false);
+        console.log('fnq트루');
         setFnqModal(true);
-        messageNormal
-          ? navigation.navigate('BottleBlue')
-          : navigation.navigate('BottleGreen');
+        setSendingModal(false);
       }, 1000);
     }
   };
