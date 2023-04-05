@@ -1,9 +1,7 @@
 package com.craypas.bottle.model.dto.response;
 
-import com.craypas.bottle.model.entity.ReqBottle;
 import com.querydsl.core.annotations.QueryProjection;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
