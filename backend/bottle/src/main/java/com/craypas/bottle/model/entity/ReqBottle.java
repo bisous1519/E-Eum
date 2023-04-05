@@ -61,9 +61,6 @@ public class ReqBottle {
 	@Column(name = "status")
 	private int status;
 
-	@Column(name = "is_read")
-	private boolean read;
-
 	@Column(name = "is_res_read")
 	private boolean resRead;
 
@@ -80,7 +77,6 @@ public class ReqBottle {
 			.regTime(stringConverter(regTime))
 			.status(status)
 			.resRead(resRead)
-			.read(read)
 			.build();
 	}
 

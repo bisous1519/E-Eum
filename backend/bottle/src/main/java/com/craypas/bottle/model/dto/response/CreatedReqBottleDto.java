@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.craypas.bottle.model.entity.ReqBottle;
-import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,19 +25,7 @@ public class CreatedReqBottleDto {
 	private String ttsPath;
 	private String regTime;
 	private int status;
-	private boolean read;
 	private boolean resRead;
-
-	@QueryProjection
-	public CreatedReqBottleDto (long id, long writerId, String content, int sentiment, String ttsPath, String regTime, int status) {
-		this.id = id;
-		this.writerId = writerId;
-		this.content = content;
-		this.sentiment = sentiment;
-		this.ttsPath = ttsPath;
-		this.regTime = regTime;
-		this.status = status;
-	}
 
 	public ReqBottle toEntity() throws ParseException {
 		return ReqBottle.builder()
@@ -49,7 +36,6 @@ public class CreatedReqBottleDto {
 			.ttsPath(ttsPath)
 			.regTime(dateConverter(regTime))
 			.status(status)
-			.read(read)
 			.resRead(resRead)
 			.build();
 	}

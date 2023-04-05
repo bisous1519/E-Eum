@@ -44,6 +44,9 @@ public class UserReqBottle {
 	@JoinColumn(name = "user_req_bottle_id")
 	private List<ResBottle> resBottles;
 
+	@Column(name="is_read")
+	private boolean receiverRead;
+
 	public ReceivedUserReqBottleDto toCreatedReqDto() {
 		return ReceivedUserReqBottleDto.builder().user_req_bottle_id(id).reqBottle(reqBottle.toCreatedDto()).build();
 	}
@@ -52,5 +55,9 @@ public class UserReqBottle {
 		return ReceivedUserResBottleDto.builder().user_req_bottle_id(id).resBottles(
 			resBottles.stream().map(ResBottle::toCreatedDto).collect(Collectors.toList())
 		).build();
+	}
+
+	public void updateReceiverRead(boolean receiverRead) {
+		this.receiverRead = receiverRead;
 	}
 }

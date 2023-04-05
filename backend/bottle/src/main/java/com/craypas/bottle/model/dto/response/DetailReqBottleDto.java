@@ -20,11 +20,12 @@ public class DetailReqBottleDto {
 	private Integer type;
 	private Integer sentiment;
 	private String regTime;
-	private Integer status;
+	private Integer status;;
+	private boolean resRead;
 	private List<CheckedResBottleDto> resBottles;
 
 	@QueryProjection
-	public DetailReqBottleDto(long id, long writerId, String content, int type, int sentiment, String regTime, int status, List<CheckedResBottleDto> resBottles) {
+	public DetailReqBottleDto(long id, long writerId, String content, int type, int sentiment, String regTime, int status, boolean resRead, List<CheckedResBottleDto> resBottles) {
 		this.id = id;
 		this.writerId = writerId;
 		this.content = content;
@@ -32,6 +33,7 @@ public class DetailReqBottleDto {
 		this.sentiment = sentiment;
 		this.regTime = regTime;
 		this.status = status;
+		this.resRead = resRead;
 		this.resBottles = resBottles;
 	}
 }
