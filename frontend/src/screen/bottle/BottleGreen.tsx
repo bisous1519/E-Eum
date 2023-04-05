@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Modal,
   Pressable,
@@ -51,10 +51,8 @@ const styles = StyleSheet.create({
   leftPageBottlesLocation: {
     position: 'absolute',
     width: 200,
-    height: 170,
-    borderWidth: 1,
-    borderColor: 'red',
-    top: 290,
+    height: 190,
+    top: 250,
     left: 160,
   },
   bluePageRedPressable: {
@@ -190,6 +188,21 @@ export default function BottleBlue(): JSX.Element {
   };
   const handleModalClose = () => {
     setModalVisible(false);
+  };
+
+  const videoRef = useRef<Video>(null);
+  const [playable, setPlayable] = useState<boolean>(true);
+
+  const handlePlayable = async (status: any) => {
+    if (status.didJustFinish) {
+      console.log('다시 재생');
+      // setPlayable(false);
+      setTimeout(() => {
+        if (videoRef.current) videoRef.current.replayAsync();
+        setPlayable(true);
+        console.log('true 재생');
+      }, 100);
+    }
   };
 
   const messageList = [
@@ -329,7 +342,8 @@ export default function BottleBlue(): JSX.Element {
           // volume={1.0}
           isMuted={true}
           // resizeMode='cover'
-          shouldPlay
+          shouldPlay={playable}
+          onPlaybackStatusUpdate={handlePlayable}
           isLooping={true}
           style={{ width: '100%', height: '100%' }}
           onError={(error) => {
