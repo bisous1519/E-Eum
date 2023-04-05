@@ -76,22 +76,20 @@ public class BottleService {
 		if (!reqBottleRepository.findById(id).isPresent()) {
 			throw new CustomException(ErrorCode.BOTTLE_NOT_FOUND);
 		}
-		DetailReqBottleDto resultReqBottleDto = qBottleRepository.findAllResBottleByReqBottleId(id);
+		DetailReqBottleDto detailReqBottleDto = qBottleRepository.findAllResBottleByReqBottleId(id);
 
 		CreatedReqBottleDto reqBottleDto = reqBottleRepository.findById(id).get().toCreatedDto();
 		reqBottleDto.setResRead(true);
 		reqBottleRepository.save(reqBottleDto.toEntity());
 
 		Optional<Like> queryResult;
-
-		DetailReqBottleDto detailReqBottleDto = qBottleRepository.findAllResBottleByReqBottleId(id);
 		for(CheckedResBottleDto resBottleDto : detailReqBottleDto.getResBottles()) {
 			queryResult = likeRepository.findByUserIdAndResBottleId(detailReqBottleDto.getWriterId(), resBottleDto.getId());
 			if(queryResult.isPresent()) {
 				resBottleDto.setLikeDto(queryResult.get().toCreatedDto());
 			}
 		}
-		return resultReqBottleDto;
+		return detailReqBottleDto;
 	}
 
 	public List<ReceivedTypeReqBottleDto> findAllUserReqBottleByReceiverIdAndType(Long receiverId, Integer reqBottletype) {

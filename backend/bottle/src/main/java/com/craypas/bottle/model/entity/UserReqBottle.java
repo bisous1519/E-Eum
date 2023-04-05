@@ -48,7 +48,7 @@ public class UserReqBottle {
 	private boolean receiverRead;
 
 	public ReceivedUserReqBottleDto toCreatedReqDto() {
-		return ReceivedUserReqBottleDto.builder().user_req_bottle_id(id).reqBottle(reqBottle.toCreatedDto()).build();
+		return ReceivedUserReqBottleDto.builder().userReqBottleId(id).reqBottle(reqBottle.toCreatedDto()).build();
 	}
 
 	public ReceivedUserResBottleDto toCreatedResDto() {

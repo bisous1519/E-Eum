@@ -19,6 +19,7 @@ import com.craypas.bottle.model.dto.response.QDetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.QReceivedTypeReqBottleDto;
 import com.craypas.bottle.model.dto.response.QSummaryBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
+import com.craypas.bottle.model.dto.response.ReceivedUserResBottleDto;
 import com.craypas.bottle.model.dto.response.SummaryBottleDto;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -95,4 +96,8 @@ public class QBottleRepository {
 			.where(userReqBottle.receiverId.eq(id), reqBottle.type.eq(reqBottletype))
 			.fetch();
 	}
+
+	// public ReceivedUserResBottleDto findAllUserResBottleByRegTime() {
+	// 	return jpaQueryFactory.select()
+	// }
 }
