@@ -8,9 +8,10 @@ import useNav, { RootStackParamList } from '../../hooks/useNav';
 import theme from '../../utils/theme';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import FnqType from '../../models/bottle/fnqType';
+import FaqType from '../../models/user/faqType';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import FnqModal from '../../components/bottle/FnqModal';
+import FaqModal from '../../components/bottle/FaqModal';
+import { postFaq } from '../../modules/apis/user/userApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -135,12 +136,14 @@ type WritingPaperProp = NativeStackNavigationProp<
   'WritingPaper'
 >;
 
-export const fnqMockup: FnqType = {
-  id: 1,
+export const faqMockup: FaqType = {
+  category: '주거',
+  region: '경기도',
   title: '주거 관련 정보',
   content:
     '<div>경기도 내 아동복지시설 보호종료 5년이내 또는 종료예정인 자립준비청년을 대상으로  자립준비청년 주거기반 자립지원 참여자를 모집 중에 있습니다.<br><br> 매월 15일까지 온라인 또는 방문접수가 가능합니다.</div>',
-  linkTo: 'http://naver.com',
+  urlName: '정부지원홈페이지',
+  urlLink: 'http://naver.com',
 };
 
 export default function WritingPaper(): JSX.Element {
@@ -160,7 +163,8 @@ export default function WritingPaper(): JSX.Element {
   const sendingVideoPath = messageNormal
     ? require('../../assets/videos/sendingbottle(round).mp4')
     : require('../../assets/videos/sendingbottle(long).mp4');
-  const [fnqModal, setFnqModal] = useState<boolean>(false);
+  const [faqModal, setFaqModal] = useState<boolean>(false);
+  const [faqData, setFaqData] = useState<FaqType>();
 
   const writtenTextLength = writtenTextValue.length;
 
@@ -174,6 +178,11 @@ export default function WritingPaper(): JSX.Element {
     setVisible(false); //  양피지 뺴고 다 숨기기
     console.log('첫 숨김');
     setStartVideo(true); //양피지 말기 재생
+
+    // 해류병 전송 api
+    //----here----
+    // faq api요청
+    postFaq(1).then((data: FaqType) => setFaqData(data));
   };
 
   const handleRollingPaper = (status: any) => {
@@ -190,15 +199,15 @@ export default function WritingPaper(): JSX.Element {
       setSended(true);
       console.log('문자 바뀜');
       setTimeout(() => {
-        console.log('fnq트루');
-        setFnqModal(true);
+        console.log('faq트루');
+        setFaqModal(true);
         setSendingModal(false);
       }, 1000);
     }
   };
 
-  const onCloseFnqModal = () => {
-    setFnqModal(false);
+  const onCloseFaqModal = () => {
+    setFaqModal(false);
     messageNormal
       ? navigation.navigate('BottleBlue')
       : navigation.navigate('BottleGreen');
@@ -296,11 +305,12 @@ export default function WritingPaper(): JSX.Element {
           </Modal>
         </View>
       )}
-      {fnqModal ? (
-        <FnqModal data={fnqMockup} onCloseFnqModal={onCloseFnqModal} />
+      {faqModal && faqData ? (
+        <FaqModal data={faqData} onCloseFaqModal={onCloseFaqModal} />
       ) : (
         <></>
       )}
     </View>
   );
 }
+

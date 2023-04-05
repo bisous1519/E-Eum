@@ -40,16 +40,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  pages: {
+    fontSize: theme.fontSize.small,
+    color: theme.grayColor.lightGray,
+  },
   report: {
     fontSize: theme.fontSize.small,
-    color: theme.grayColor.darkGray,
+    color: theme.grayColor.lightGray,
   },
   reqDate: {
     fontSize: theme.fontSize.small,
   },
   kindof: {
     fontSize: theme.fontSize.small,
-    color: theme.textColor.light,
+    color: theme.grayColor.lightGray,
   },
   contentWrapper: {
     marginBottom: 20,
@@ -64,10 +68,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  pages: {
-    fontSize: theme.fontSize.small,
-    color: theme.grayColor.darkGray,
   },
   from: {
     fontSize: theme.fontSize.small,
@@ -265,3 +265,4 @@ LetterPropsType): JSX.Element {
     </ImageBackground>
   );
 }
+

@@ -16,8 +16,8 @@ import useNav from '../../hooks/useNav';
 import { FontAwesome } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import WritingPaperBlue from './WritingPaper';
-import { fnqMockup } from './WritingPaper';
-import FnqModal from '../../components/bottle/FnqModal';
+import { faqMockup } from './WritingPaper';
+import FaqModal from '../../components/bottle/FaqModal';
 import NewBadge from '../../components/common/NewBadge';
 import { getResNew } from '../../modules/apis/bottle/bottleApis';
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
@@ -408,3 +408,4 @@ export default function BottleBlue(): JSX.Element {
     </View>
   );
 }
+
