@@ -34,8 +34,8 @@ public interface SupportService {
 	ResponseDto.Read deleteSupportUser(final Long sid, final Long uid);
 
 	// 후원했던 요청 목록 조회
-	List<ResponseDto.Read> getUserSupportList(final Long uid);
+	List<ResponseDto.Preview> getUserSupportList(final Long uid);
 
 	// 작성한 후원요청 목록 조회
-	List<ResponseDto.Read> getMySupportList(final Long uid);
+	List<ResponseDto.Preview> getMySupportList(final Long uid);
 }
