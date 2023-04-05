@@ -18,7 +18,8 @@ public enum ErrorCode {
 	BADGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "뱃지가 존재하지 않습니다."),
 	USER_BADGE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 획득한 뱃지입니다."),
 	EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자 정보가 없습니다."),
-	LOGIN_FAILED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+	LOGIN_FAILED(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+	EMAIL_IS_NULL(HttpStatus.BAD_REQUEST, "이메일 값이 정상적으로 들어오지 않았습니다.");
 
 	private HttpStatus httpStatus;
 	private String message;

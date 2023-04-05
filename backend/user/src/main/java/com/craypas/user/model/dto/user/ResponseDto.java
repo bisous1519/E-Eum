@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.craypas.user.model.entity.Badge;
+import com.craypas.user.model.entity.Faq;
 import com.craypas.user.model.entity.Sponsorship;
 import com.craypas.user.model.entity.User;
 
@@ -146,4 +147,26 @@ public class ResponseDto {
 			this.badgeList = badgeList;
 		}
 	}
+
+	@Getter
+	@NoArgsConstructor
+	public static class GetFaq {
+		private String category;
+		private String region;
+		private String title;
+		private String content;
+		private String urlName;
+		private String urlLink;
+
+		@Builder
+		public GetFaq(Faq faq) {
+			this.category = faq.getCategory();
+			this.region = faq.getRegion();
+			this.title = faq.getTitle();
+			this.content = faq.getContent();
+			this.urlName = faq.getUrlName();
+			this.urlLink = faq.getUrlLink();
+		}
+	}
+
 }

@@ -1,9 +1,7 @@
 package com.craypas.user.model.service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
@@ -61,9 +59,9 @@ public class EmailServiceImpl implements EmailService {
 	public String sendSimpleMessage(String to) throws Exception {
 		String ePw = createKey();
 		MimeMessage message = createMessage(to, ePw);
-		try{//예외처리
+		try {//예외처리
 			emailSender.send(message);
-		}catch(MailException es){
+		} catch (MailException es) {
 			es.printStackTrace();
 			throw new IllegalArgumentException();
 		}

@@ -179,4 +179,11 @@ public class UserController {
 	public ResponseEntity<?> loginUser(@Valid @RequestBody final RequestDto.LoginUser requestDto) {
 		return new ResponseEntity<>(userService.loginUser(requestDto), HttpStatus.OK);
 	}
+
+	// 사용자 맞춤형 FAQ 추천
+	@PostMapping("/faq/{uid}")
+	public ResponseEntity<?> getFaq(@PathVariable final Long uid, @RequestBody final Map<String, String> requestMap) {
+		return new ResponseEntity<>(userService.getFaq(uid, requestMap), HttpStatus.OK);
+	}
+
 }

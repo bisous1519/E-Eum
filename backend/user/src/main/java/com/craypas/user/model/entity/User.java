@@ -67,10 +67,13 @@ public class User {
 	@Column(name = "group_name")
 	private String groupName;
 
+	@Column(name = "region")
+	private String region;
+
 	@Builder
 	public User(Long id, String email, String password, String pin, String name, String nickname, Integer gender,
 		String imagePath, Integer type, String certificatePath, Integer point, LocalDateTime regTime,
-		Integer status, String introduction, String groupName) {
+		Integer status, String introduction, String groupName, String region) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
@@ -86,6 +89,7 @@ public class User {
 		this.status = status;
 		this.introduction = introduction;
 		this.groupName = groupName;
+		this.region = region;
 	}
 
 	public void updateUser(String password, String introduction, String groupName) {
