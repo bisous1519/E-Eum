@@ -203,6 +203,30 @@ export default function Signup(): JSX.Element {
   const [docsImageState, setDocsImageState] = useState<boolean>(false);
   const [addressState, setAddressState] = useState<boolean>(false);
 
+  const [showFinalButton, setShowFinalButton] = useState<boolean>(false);
+
+  useEffect(() => {
+    nameState &&
+    emailState &&
+    pwState &&
+    nickState &&
+    genderState &&
+    profileImageState &&
+    addressState &&
+    (userType === 3 ? true : docsImageState)
+      ? setShowFinalButton(true)
+      : setShowFinalButton(false);
+  }, [
+    nameState,
+    emailState,
+    pwState,
+    nickState,
+    genderState,
+    profileImageState,
+    docsImageState,
+    addressState,
+  ]);
+
   //이름
   const { text: userName, onChangeText: onChangeUserName } = useInputText();
   useEffect(() => {
@@ -693,21 +717,14 @@ export default function Signup(): JSX.Element {
               />
             </View>
           </View>
-          {nameState &&
-            emailState &&
-            pwState &&
-            nickState &&
-            genderState &&
-            profileImageState &&
-            addressState &&
-            (userType === 3 ? true : docsImageState) && (
-              <View style={stylesSignupButton.container}>
-                <ButtonComp
-                  text='회원가입 완료'
-                  onPressBtn={handleSubmitSignup}
-                />
-              </View>
-            )}
+          {showFinalButton && (
+            <View style={stylesSignupButton.container}>
+              <ButtonComp
+                text='회원가입 완료'
+                onPressBtn={handleSubmitSignup}
+              />
+            </View>
+          )}
         </View>
       </ScrollView>
     </>
