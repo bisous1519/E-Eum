@@ -23,3 +23,19 @@ export type SponsorStateType = {
   countFromRegDate: number | undefined;
   myPoint: number | undefined;
 };
+
+export type SignUpStateType = {
+  name: string;
+  email: string;
+  password: string;
+  nickname: string;
+  gender: number;
+  // image: string | undefined;
+  type: number;
+};
+
+export type SignUpReturnType = {
+  name: string;
+  introduction: string;
+  groupName: string;
+};

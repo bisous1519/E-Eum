@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Dimensions,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
