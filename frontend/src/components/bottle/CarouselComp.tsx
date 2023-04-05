@@ -45,17 +45,8 @@ export default function CarouselComp(): JSX.Element {
           content: myBottleRes.content,
           regTime: myBottleRes.regTime,
           status: myBottleRes.status,
-        },
-        ...myBottleRes.resBottles,
-      ]);
-      console.log([
-        {
-          id: myBottleRes.id,
-          userNickname: null,
-          userBadges: null,
-          content: myBottleRes.content,
-          regTime: myBottleRes.regTime,
-          status: myBottleRes.status,
+          ttsPath: null,
+          likeDto: null,
         },
         ...myBottleRes.resBottles,
       ]);
@@ -99,3 +90,4 @@ export default function CarouselComp(): JSX.Element {
     </View>
   );
 }
+

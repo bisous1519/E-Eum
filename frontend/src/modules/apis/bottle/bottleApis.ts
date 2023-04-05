@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {
+  LikeDtoType,
   MyBottleResStateType,
   MyBottleStateType,
-  PostBottleLikeReturnType,
   PostBottleReportBodyType,
   PostBottleReportReturnType,
   PostNewBottleReturnType,
@@ -51,7 +51,7 @@ export async function postBottleReport(postData: PostBottleReportBodyType) {
 // 해류병 답변에 좋아요
 export async function postBottleLike(userId: number, bottleId: number) {
   try {
-    const { data } = await axios.post<PostBottleLikeReturnType>(
+    const { data } = await axios.post<LikeDtoType>(
       `http://j8a607.p.ssafy.io/api/bottle/res/${bottleId}/like`,
       { userId }
     );

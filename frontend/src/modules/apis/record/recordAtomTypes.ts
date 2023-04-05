@@ -21,3 +21,12 @@ export type TagStateType = {
   id: number;
   name: string;
 };
+
+// 꿈피드 회원정보
+export type RecordProfileStateType = {
+  nickname: string;
+  imagePath: string | undefined;
+  introduction: string | undefined;
+  groupName: string | undefined;
+  dayCnt: number | undefined;
+};

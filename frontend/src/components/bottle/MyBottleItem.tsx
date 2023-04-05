@@ -76,12 +76,22 @@ export default function MyBottleItem({
   const [type, setType] = useState<'고민 상담' | '전문가 상담'>();
 
   const onPressItem = (bottleId: number) => {
-    getMyBottleRes(bottleId)
-      .then((data) => setMyBottleRes(data))
-      .then(() => {
-        // console.log(myBottleRes);
-        onToggleDetailModal();
-      });
+    // getMyBottleRes(bottleId)
+    //   .then((data) => setMyBottleRes(data))
+    //   .then(() => {
+    //     // console.log(myBottleRes);
+    onToggleDetailModal();
+    //   });
+  };
+
+  const fetchData = () => {
+    getMyBottleRes(item.id).then((data: MyBottleResStateType) =>
+      setMyBottleRes(data)
+    );
+    // .then(() => {
+    //   // console.log(myBottleRes);
+    //   onToggleDetailModal();
+    // });
   };
 
   useEffect(() => {
@@ -92,6 +102,11 @@ export default function MyBottleItem({
       item.type === 1 ? setType('고민 상담') : setType('전문가 상담');
     }
   }, [item]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
       {item ? (
@@ -113,7 +128,11 @@ export default function MyBottleItem({
             </Text>
           </View>
           <View style={styles.countWrapper}>
-            <View style={styles.newBadge}></View>
+            {myBottleRes && !myBottleRes.resRead ? (
+              <View style={styles.newBadge}></View>
+            ) : (
+              <></>
+            )}
             <Text style={styles.count}>+{item.resCnt}</Text>
           </View>
         </Pressable>
@@ -123,3 +142,4 @@ export default function MyBottleItem({
     </>
   );
 }
+

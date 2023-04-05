@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, View, LayoutChangeEvent } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  LayoutChangeEvent,
+  Pressable,
+} from 'react-native';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import theme from '../../utils/theme';
 import ItemContainer from '../../components/record/ItemContainer';
@@ -62,6 +69,14 @@ const stylesProfile = StyleSheet.create({
     fontSize: theme.fontSize.regular,
     color: theme.textColor.light,
   },
+  imgPressBox: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    // borderWidth: 1,
+    // borderColor: 'red',
+    position: 'absolute',
+  },
 });
 
 const stylesFeed = StyleSheet.create({
@@ -101,16 +116,27 @@ export default function SupportRecord(): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
 
   const sheetRef = useRef<BottomSheet>(null);
+  const imageRef = useRef<Image>(null);
   const [profileHeight, setProfileHeight] = useState<number>(0);
   const [delTargetContentId, setDelTargetContentId] = useState<number>();
+  const [expandFeed, setExpandFeed] = useState<boolean>(false);
+  const [imgOffsetXY, setImgOffsetXY] = useState<{ x: number; y: number }>();
 
   const onLayoutProfile = (e: LayoutChangeEvent): void => {
     const { height } = e.nativeEvent.layout;
     setProfileHeight(height);
   };
 
+  const onLayoutImage = (): void => {
+    imageRef.current?.measureInWindow((x, y) => {
+      console.log(x, y);
+      setImgOffsetXY({ x, y });
+    });
+  };
+
   const handleSheetChange = (idx: number): void => {
     console.log('bottomSheet changed', idx);
+    setExpandFeed(idx === 1 ? true : false);
   };
   const onToggleDelete = (recordId?: number): void => {
     if (recordId || recordId === 0) {
@@ -145,8 +171,7 @@ export default function SupportRecord(): JSX.Element {
         <View style={stylesProfile.infoWrapper}>
           <TouchableOpacity
             activeOpacity={0.6}
-            onPress={() => handleProfilePress(1)}
-          >
+            onPress={() => handleProfilePress(1)}>
             <Image
               style={stylesProfile.infoImg}
               source={require('../../assets/images/profileImg.png')}
@@ -173,16 +198,14 @@ export default function SupportRecord(): JSX.Element {
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
-      >
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
         {profileHeight && profileHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
             index={0}
             snapPoints={[DEVICE_HEIGHT - (profileHeight + 50), '100%']}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}
-          >
+            style={{ alignItems: 'center' }}>
             {records ? (
               <BottomSheetFlatList
                 contentContainerStyle={styles.contentContainer}
@@ -204,6 +227,21 @@ export default function SupportRecord(): JSX.Element {
           <></>
         )}
       </View>
+
+      {/* 사용자 이미지 클릭 섹션*/}
+      {imgOffsetXY && !expandFeed ? (
+        <Pressable
+          onPress={handleProfilePress}
+          style={StyleSheet.flatten([
+            stylesProfile.imgPressBox,
+            {
+              top: imgOffsetXY.y,
+              left: imgOffsetXY.x,
+            },
+          ])}></Pressable>
+      ) : (
+        <></>
+      )}
     </View>
   );
 }

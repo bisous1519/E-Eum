@@ -5,9 +5,13 @@ import theme from '../../utils/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { searchSupports } from '../../modules/apis/support/supportApis';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { SupportsStateType } from '../../modules/apis/support/supportAtomTypes';
-import { supportsState } from '../../modules/apis/support/supportAtoms';
+import {
+  sortType,
+  supportsState,
+} from '../../modules/apis/support/supportAtoms';
+import SortModal from './SortModal';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -62,9 +66,17 @@ const styles = StyleSheet.create({
 export default function CustomHeader(): JSX.Element {
   const [supports, setSupports] =
     useRecoilState<SupportsStateType>(supportsState);
+  const sort = useRecoilValue<number>(sortType);
 
   const [sortPressed, setSortPressed] = useState<boolean>(false);
   const [supportPressed, setSupportPressed] = useState<boolean>(false);
+
+  const sortName: string[] = [
+    '최신순',
+    '마감 임박 순',
+    '달성률 높은 순',
+    '달성률 낮은 순',
+  ];
 
   // 검색 input값
   const [keyword, setKeyword] = useState<string>('');
@@ -85,6 +97,10 @@ export default function CustomHeader(): JSX.Element {
     console.log('검색 API로 결과 목록 가져오기');
   };
 
+  const handleSortPress = () => {
+    setSortPressed(true);
+  };
+
   const handleSupportPress = () => {
     setSupportPressed((prev) => !prev);
     if (supportPressed) {
@@ -94,44 +110,49 @@ export default function CustomHeader(): JSX.Element {
     }
   };
 
+  const handleToggleDelete = () => {
+    setSortPressed(false);
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.search}>
-        <Ionicons name='search' size={22} style={styles.searchIcon} />
-        <TextInput
-          value={keyword}
-          onChange={handleInput}
-          onSubmitEditing={handleSearch}
-          style={styles.searchInput}
-        />
-      </View>
-      <View style={styles.rightContent}>
-        <Pressable style={styles.sort}>
-          <View style={styles.sortBox}>
-            <MaterialIcons
-              name='keyboard-arrow-down'
-              size={24}
-              color={theme.mainColor.dark}
-            />
-            <Text>최신순</Text>
-          </View>
-        </Pressable>
-        {supportPressed ? (
-          <Pressable
-            style={styles.mySupportSelected}
-            onPress={handleSupportPress}
-          >
-            <Text>내 후원</Text>
+    <>
+      <View style={styles.container}>
+        <View style={styles.search}>
+          <Ionicons name='search' size={22} style={styles.searchIcon} />
+          <TextInput
+            value={keyword}
+            onChange={handleInput}
+            onSubmitEditing={handleSearch}
+            style={styles.searchInput}
+          />
+        </View>
+        <View style={styles.rightContent}>
+          <Pressable style={styles.sort} onPress={handleSortPress}>
+            <View style={styles.sortBox}>
+              <MaterialIcons
+                name='keyboard-arrow-down'
+                size={24}
+                color={theme.mainColor.dark}
+              />
+              <Text>{sortName[sort - 1]}</Text>
+            </View>
           </Pressable>
-        ) : (
-          <Pressable
-            style={styles.mySupportNotSelected}
-            onPress={handleSupportPress}
-          >
-            <Text>내 후원</Text>
-          </Pressable>
-        )}
+          {supportPressed ? (
+            <Pressable
+              style={styles.mySupportSelected}
+              onPress={handleSupportPress}>
+              <Text>내 후원</Text>
+            </Pressable>
+          ) : (
+            <Pressable
+              style={styles.mySupportNotSelected}
+              onPress={handleSupportPress}>
+              <Text>내 후원</Text>
+            </Pressable>
+          )}
+        </View>
       </View>
-    </View>
+      {sortPressed && <SortModal onToggleDelete={handleToggleDelete} />}
+    </>
   );
 }

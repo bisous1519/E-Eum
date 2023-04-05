@@ -10,6 +10,7 @@ import { getMyBottles } from '../../modules/apis/bottle/bottleApis';
 import { MyBottleStateType } from '../../modules/apis/bottle/bottleAtomTypes';
 import { useRecoilState } from 'recoil';
 import { myBottlesState } from '../../modules/apis/bottle/bottleAtoms';
+import EmptyMessage from '../../components/common/EmptyMessage';
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +51,7 @@ export default function MyBottle(): JSX.Element {
           )}
         />
       ) : (
-        <></>
+        <EmptyMessage text='작성된 해류병이 없습니다' marginBottom={50} />
       )}
       {detailModal ? (
         <MyBottleModal onToggleDetailModal={onToggleDetailModal} />
