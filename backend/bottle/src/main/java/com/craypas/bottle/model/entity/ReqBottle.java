@@ -93,6 +93,9 @@ public class ReqBottle {
 	public void updateUserReqBottles(List<UserReqBottle> userReqBottles) {
 		this.userReqBottles = userReqBottles;
 	}
+	public void updateResRead(boolean resRead) {
+		this.resRead = resRead;
+	}
 
 	public String stringConverter(Date input){
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
