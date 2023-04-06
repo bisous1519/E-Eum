@@ -172,7 +172,7 @@ public class ResponseDto {
 	@Getter
 	@NoArgsConstructor
 	public static class GetLoginUser {
-		private Long id;
+		private Long uid;
 		private String email;
 		private String name;
 		private String nickname;
@@ -187,7 +187,7 @@ public class ResponseDto {
 
 		@Builder
 		public GetLoginUser(User user) {
-			this.id = user.getId();
+			this.uid = user.getId();
 			this.email = user.getEmail();
 			this.name = user.getName();
 			this.nickname = user.getNickname();
