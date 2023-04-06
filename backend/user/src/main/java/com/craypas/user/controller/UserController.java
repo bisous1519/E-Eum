@@ -72,10 +72,9 @@ public class UserController {
 	}
 
 	// 비밀번호 재설정
-	@PutMapping("/findpw/{uid}")
-	public ResponseEntity<?> updatePassword(@PathVariable final Long uid,
-		@RequestBody final Map<String, String> requestMap) {
-		return new ResponseEntity<>(userService.updatePassword(uid, requestMap), HttpStatus.OK);
+	@PutMapping("/findpw")
+	public ResponseEntity<?> updatePassword(@RequestBody final Map<String, String> requestMap) {
+		return new ResponseEntity<>(userService.updatePassword(requestMap), HttpStatus.OK);
 	}
 
 	// 회원 정보 단일 조회(꿈 후원글)
