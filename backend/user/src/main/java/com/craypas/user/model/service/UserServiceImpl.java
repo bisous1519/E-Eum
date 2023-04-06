@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService {
 	// 이메일 중복 확인(중복 시 예외 호출)
 	@Override
 	public void isEmailUnique(final String email) {
-		if (email == null) {
-			throw new CustomException(ErrorCode.EMAIL_IS_NULL);
+		if (email.isEmpty()) {
+			throw new CustomException(ErrorCode.EMAIL_IS_EMPTY);
 		}
 		if (userRepository.countByEmail(email) > 0) {
 			throw new CustomException(ErrorCode.EMAIL_ALREADY_EXIST);
@@ -117,8 +117,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public ResponseDto.GetUser updatePassword(final Map<String, String> requestMap) {
-		User user = userRepository.findByEmail(requestMap.get("email"));
-		user.updatePassword(requestMap.get("password"));
+		User user;
+		try {
+			user = userRepository.findByEmail(requestMap.get("email"));
+			user.updatePassword(requestMap.get("password"));
+		} catch (NullPointerException e) {
+			throw new CustomException(ErrorCode.USER_NOT_FOUND);
+		}
 		return new ResponseDto.GetUser(user);
 	}
 
