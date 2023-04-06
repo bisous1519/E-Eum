@@ -5,6 +5,9 @@ import { chargePoint } from '../../modules/apis/user/userApis';
 import theme from '../../utils/theme';
 import useDimension from '../../hooks/useDimension';
 import NumberPad from '../../components/support/NumberPad';
+import { useRecoilValue } from 'recoil';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -49,6 +52,7 @@ const styles = StyleSheet.create({
 });
 
 export default function PointCharge() {
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const navigation = useNav();
 
   // 충전하려는 포인트 변수
@@ -64,7 +68,7 @@ export default function PointCharge() {
   };
 
   const handlePointCharge = () => {
-    chargePoint(1, Number(point));
+    chargePoint(loginUser.uid, Number(point));
     navigation.popToTop();
   };
 

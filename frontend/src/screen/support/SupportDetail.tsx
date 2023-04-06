@@ -340,7 +340,8 @@ export default function SupportDetail(): JSX.Element {
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image
-                    source={require('../../assets/images/sample.png')}
+                    // source={require('../../assets/images/sample.png')}
+                    source={{ uri: detailData?.userImagePath }}
                     style={styles.profilePicture}
                   />
                   <View style={styles.leftText}>

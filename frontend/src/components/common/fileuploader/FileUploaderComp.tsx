@@ -93,6 +93,7 @@ export default function FileUploaderComp(props: FileUploaderCompPropsType) {
       setImage(imageData.assets[0].uri);
     }
   };
+
   useEffect(() => {
     console.log('FileUploader Comp image: ' + image);
     props.onChangeImageUri(image);

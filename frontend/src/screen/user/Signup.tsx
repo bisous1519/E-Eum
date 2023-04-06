@@ -419,7 +419,7 @@ export default function Signup(): JSX.Element {
       password: userPW,
       nickname: userNickName,
       gender: userGender,
-      image: userProfileImage,
+      // image: userProfileImage,
       type: userType,
     };
     postSignUp(postData).then((returndata) => console.log(returndata));

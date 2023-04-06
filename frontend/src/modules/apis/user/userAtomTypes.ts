@@ -30,7 +30,7 @@ export type SignUpStateType = {
   password: string;
   nickname: string;
   gender: number;
-  image?: string | undefined;
+  // image?: string | undefined;
   type: number;
 };
 
