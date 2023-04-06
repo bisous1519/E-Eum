@@ -10,7 +10,11 @@ const Stack = createNativeStackNavigator();
 const SigninStack = () => {
   return (
     <Stack.Navigator initialRouteName='Signin'>
-      <Stack.Screen name='Signin' component={Signin} />
+      <Stack.Screen
+        name='Signin'
+        component={Signin}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name='SigninWithPin' component={SigninWithPin} />
       <Stack.Screen name='Signup' component={Signup} />
       <Stack.Screen name='JoinPW' component={JoinPW} />
@@ -20,3 +24,4 @@ const SigninStack = () => {
 };
 
 export default SigninStack;
+

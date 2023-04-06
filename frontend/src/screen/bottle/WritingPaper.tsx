@@ -8,9 +8,16 @@ import useNav, { RootStackParamList } from '../../hooks/useNav';
 import theme from '../../utils/theme';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import FnqType from '../../models/bottle/fnqType';
+import FaqType from '../../models/user/faqType';
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
-import FnqModal from '../../components/bottle/FnqModal';
+import {
+  getExpertBottles,
+  getNormalBottles,
+  postNewBottle,
+  postResponseBottle,
+} from '../../modules/apis/bottle/bottleApis';
+import FaqModal from '../../components/bottle/FaqModal';
+import { postFaq } from '../../modules/apis/user/userApis';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -53,7 +60,7 @@ const styles = StyleSheet.create({
     marginLeft: 60,
     marginRight: 60,
     marginTop: 15,
-    height: '83%',
+    height: '80%',
     fontFamily: theme.fontFamily.main,
     color: theme.textColor.main,
     fontSize: theme.fontSize.big,
@@ -68,9 +75,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     display: 'flex',
     flexDirection: 'row',
+    marginTop: 3,
     paddingTop: 5,
-    paddingLeft: 50,
-    paddingRight: 50,
+    paddingLeft: 60,
+    paddingRight: 60,
   },
   textLengthCountBox: {
     display: 'flex',
@@ -135,12 +143,14 @@ type WritingPaperProp = NativeStackNavigationProp<
   'WritingPaper'
 >;
 
-export const fnqMockup: FnqType = {
-  id: 1,
+export const faqMockup: FaqType = {
+  category: '주거',
+  region: '경기도',
   title: '주거 관련 정보',
   content:
     '<div>경기도 내 아동복지시설 보호종료 5년이내 또는 종료예정인 자립준비청년을 대상으로  자립준비청년 주거기반 자립지원 참여자를 모집 중에 있습니다.<br><br> 매월 15일까지 온라인 또는 방문접수가 가능합니다.</div>',
-  linkTo: 'http://naver.com',
+  urlName: '정부지원홈페이지',
+  urlLink: 'http://naver.com',
 };
 
 export default function WritingPaper(): JSX.Element {
@@ -148,6 +158,7 @@ export default function WritingPaper(): JSX.Element {
 
   const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
   const messageNormal = route.params?.messageType === 1 ? true : false;
+  const newMessage = route.params?.newMessage;
   const inputRef = useRef<TextInput>(null);
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
@@ -160,20 +171,51 @@ export default function WritingPaper(): JSX.Element {
   const sendingVideoPath = messageNormal
     ? require('../../assets/videos/sendingbottle(round).mp4')
     : require('../../assets/videos/sendingbottle(long).mp4');
-  const [fnqModal, setFnqModal] = useState<boolean>(false);
+  const [faqModal, setFaqModal] = useState<boolean>(false);
+  const [faqData, setFaqData] = useState<FaqType>();
 
   const writtenTextLength = writtenTextValue.length;
 
-  const doneWriting = () => {
-    //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
-    console.log('전송버튼');
+  // const [writerId, setWriterId] = useState<number>(1);  //질문 작성하는 사람Id
+  const [gender, setGender] = useState<number>(1);
+  const [userId, setUserId] = useState<number>(1); //로그인 ID
+  const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
 
+  const doneWriting = () => {
+    if (writtenTextLength < 5) return;
+    //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
+    else {
+      newMessage
+        ? //질문 작성(일반 또는 전문 상담)
+          postNewBottle(
+            // writerId,
+            userId,
+            writtenTextValue,
+            messageNormal ? 1 : 2,
+            gender
+          ).then((data) => console.log('메시지 전송 return : ' + data?.id))
+        : postResponseBottle(userReqBottleId, writtenTextValue).then((data) =>
+            console.log(
+              '답변 메시지 전송 return : ' +
+                data.content +
+                ', id : ' +
+                data.userReqBottleId
+            )
+          );
+    }
+
+    console.log('전송버튼');
     if (inputRef.current) {
       inputRef.current.blur(); //키보드 넣기
     }
     setVisible(false); //  양피지 뺴고 다 숨기기
     console.log('첫 숨김');
     setStartVideo(true); //양피지 말기 재생
+
+    // 해류병 전송 api
+    //----here----
+    // faq api요청
+    postFaq(1, writtenTextValue).then((data: FaqType) => setFaqData(data));
   };
 
   const handleRollingPaper = (status: any) => {
@@ -190,15 +232,21 @@ export default function WritingPaper(): JSX.Element {
       setSended(true);
       console.log('문자 바뀜');
       setTimeout(() => {
-        console.log('fnq트루');
-        setFnqModal(true);
         setSendingModal(false);
+        if (newMessage) {
+          console.log('faq트루');
+          setFaqModal(true);
+        } else {
+          messageNormal
+            ? navigation.navigate('BottleBlue')
+            : navigation.navigate('BottleGreen');
+        }
       }, 1000);
     }
   };
 
-  const onCloseFnqModal = () => {
-    setFnqModal(false);
+  const onCloseFaqModal = () => {
+    setFaqModal(false);
     messageNormal
       ? navigation.navigate('BottleBlue')
       : navigation.navigate('BottleGreen');
@@ -235,7 +283,11 @@ export default function WritingPaper(): JSX.Element {
       {visible && (
         <View style={StyleSheet.flatten([border.blue, styles.popupBox])}>
           <View style={styles.headerButtons}>
-            <ButtonComp text='보내기' onPressBtn={doneWriting} small={true} />
+            <ButtonComp
+              text={newMessage ? '보내기' : '답변하기'}
+              onPressBtn={doneWriting}
+              small={true}
+            />
             <ButtonComp text='다시 쓰기' onPressBtn={clearText} small={true} />
           </View>
           <View
@@ -245,7 +297,7 @@ export default function WritingPaper(): JSX.Element {
             ])}
           >
             <TextInput
-              style={StyleSheet.flatten([styles.paperInput])}
+              style={styles.paperInput}
               autoFocus={true}
               maxLength={500}
               multiline={true}
@@ -296,8 +348,8 @@ export default function WritingPaper(): JSX.Element {
           </Modal>
         </View>
       )}
-      {fnqModal ? (
-        <FnqModal data={fnqMockup} onCloseFnqModal={onCloseFnqModal} />
+      {faqModal && faqData ? (
+        <FaqModal data={faqData} onCloseFaqModal={onCloseFaqModal} />
       ) : (
         <></>
       )}

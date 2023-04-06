@@ -10,6 +10,9 @@ import { getMyBottleRes } from '../../modules/apis/bottle/bottleApis';
 import { useRecoilState } from 'recoil';
 import { myBottleResState } from '../../modules/apis/bottle/bottleAtoms';
 import useDate from '../../hooks/useDate';
+import ApproveItemType from '../../models/admin/ApproveItemType';
+import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,70 +33,49 @@ const styles = StyleSheet.create({
     marginHorizontal: 7,
   },
   date: {
+    color: theme.textColor.light,
     fontSize: theme.fontSize.small,
   },
   kindof: {
     fontSize: theme.fontSize.small,
-    color: theme.textColor.light,
+    color: theme.textColor.main,
   },
   content: {
     fontSize: theme.fontSize.regular,
   },
   countWrapper: {
+    flexDirection: 'row',
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
-  newBadge: {
-    backgroundColor: theme.textColor.error,
-    width: 6,
-    height: 6,
-    borderRadius: 6,
-    position: 'absolute',
-    right: 0,
-  },
   count: {
     color: theme.mainColor.dark,
-    fontSize: theme.fontSize.regular,
+    // fontSize: theme.fontSize.regular,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    // backgroundColor: 'orange',
   },
 });
 
-type MyBottleItemPropsType = {
-  item: MyBottleStateType;
-  onToggleDetailModal: (bottleId: number) => void;
+type ApproveItemPropsType = {
+  item: ApproveItemType;
+  index: number;
+  onPressConfirm: (index: number) => void;
+  onToggleDetailModal: () => void;
 };
 
-export default function MyBottleItem({
+export default function ApproveItem({
   item,
+  index,
+  onPressConfirm,
   onToggleDetailModal,
-}: MyBottleItemPropsType): JSX.Element {
-  const [date, setNewDate] = useDate();
-  const [type, setType] = useState<'고민 상담' | '전문가 상담'>();
-  const [resRead, setResRead] = useState<boolean>(true);
-
+}: ApproveItemPropsType): JSX.Element {
   const onPressItem = () => {
-    onToggleDetailModal(item.id);
+    onToggleDetailModal();
   };
-
-  const fetchData = () => {
-    getMyBottleRes(item.id).then((data: MyBottleResStateType) => {
-      setResRead(data.resRead);
-    });
-  };
-
-  useEffect(() => {
-    if (item) {
-      // // 날짜 형식 세팅
-      (setNewDate as (regTime: Date) => void)(item.regTime);
-      // 타입 세팅
-      item.type === 1 ? setType('고민 상담') : setType('전문가 상담');
-    }
-  }, [item]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <>
@@ -101,20 +83,34 @@ export default function MyBottleItem({
         <Pressable style={styles.container} onPress={onPressItem}>
           <View style={styles.leftWrapper}>
             <View style={styles.header}>
-              {date ? <Text style={styles.date}>{date as string}</Text> : <></>}
+              <Text style={styles.kindof}>
+                {item.type === 1 ? '자문단 신청' : '자립준비청년 인증'}
+              </Text>
               <Text style={styles.headerDivider}>.</Text>
-              <Text style={styles.kindof}>{type}</Text>
+              <Text style={styles.date}>{item.date}</Text>
             </View>
             <Text
               style={styles.content}
               // numberOfLines={2}
             >
-              {item.content}
+              {`${item.name} (${item.email})`}
             </Text>
           </View>
           <View style={styles.countWrapper}>
-            {!resRead ? <View style={styles.newBadge}></View> : <></>}
-            <Text style={styles.count}>+{item.resCnt}</Text>
+            <Feather
+              name='check'
+              size={24}
+              style={styles.count}
+              onPress={() => onPressConfirm(index)}
+            />
+            <AntDesign
+              name='close'
+              size={24}
+              style={StyleSheet.flatten([
+                styles.count,
+                { color: theme.textColor.error },
+              ])}
+            />
           </View>
         </Pressable>
       ) : (
@@ -123,3 +119,4 @@ export default function MyBottleItem({
     </>
   );
 }
+

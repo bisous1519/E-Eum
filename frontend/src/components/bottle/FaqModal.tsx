@@ -6,7 +6,7 @@ import BottomSheet, {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Text, Pressable, Linking } from 'react-native';
 import useDimension from '../../hooks/useDimension';
-import FnqType from '../../models/bottle/fnqType';
+import FaqType from '../../models/user/faqType';
 import theme from '../../utils/theme';
 import TextRender from '../common/editor/TextRender';
 
@@ -25,17 +25,17 @@ const styles = StyleSheet.create({
   contentWrapper: {
     width: DEVICE_WIDTH * 0.7,
   },
-  fnqTitle: {
+  faqTitle: {
     textAlign: 'center',
     fontSize: theme.fontSize.big,
     color: theme.textColor.main,
     marginVertical: 20,
   },
-  fnqContent: {
+  faqContent: {
     fontSize: theme.fontSize.regular,
     color: theme.textColor.main,
   },
-  fnqLinkTo: {
+  faqLinkTo: {
     fontSize: theme.fontSize.regular,
     color: theme.mainColor.dark,
     textDecorationLine: 'underline',
@@ -53,23 +53,22 @@ const styles = StyleSheet.create({
   },
 });
 
-type FnqModalPropsType = {
-  data: FnqType;
-  onCloseFnqModal: () => void;
+type FaqModalPropsType = {
+  data: FaqType;
+  onCloseFaqModal: () => void;
 };
 
-export default function FnqModal({
+export default function FaqModal({
   data,
-  onCloseFnqModal,
-}: FnqModalPropsType): JSX.Element {
+  onCloseFaqModal,
+}: FaqModalPropsType): JSX.Element {
   const sheetRef = useRef<BottomSheet>(null);
   const [content, setContent] = useState<string>(
     '<div>작성하신 내용을 바탕으로 추천된 정보입니다.<br></div>'
   );
 
   const onPressLink = () => {
-    console.log('음 링크 클릭 음');
-    Linking.openURL(data.linkTo);
+    Linking.openURL(data.urlLink);
   };
 
   const onCloseBottomSheet = () => {
@@ -116,7 +115,7 @@ export default function FnqModal({
       style={styles.container}
       backdropComponent={renderBackdrop}
       footerComponent={renderFooterBtn}
-      onClose={onCloseFnqModal}
+      onClose={onCloseFaqModal}
     >
       {data ? (
         <BottomSheetFlatList
@@ -125,10 +124,10 @@ export default function FnqModal({
           data={[data]}
           renderItem={({ item }) => (
             <View style={styles.contentWrapper}>
-              <Text style={styles.fnqTitle}>{item.title}</Text>
+              <Text style={styles.faqTitle}>{item.title}</Text>
               <TextRender content={content} style={{ marginVertical: 10 }} />
-              <Text onPress={onPressLink} style={styles.fnqLinkTo}>
-                {item.linkTo}
+              <Text onPress={onPressLink} style={styles.faqLinkTo}>
+                {item.urlName}
               </Text>
             </View>
           )}
@@ -139,3 +138,4 @@ export default function FnqModal({
     </BottomSheet>
   );
 }
+

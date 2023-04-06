@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 import {
   BadgeStateType,
+  LoginUserStateType,
   SponsorStateType,
   UserUpdateStateType,
 } from './userAtomTypes';
@@ -31,6 +32,12 @@ const sponsorInitialState: SponsorStateType = {
   myPoint: 0,
 };
 
+const loginUserInitialState: LoginUserStateType = {
+  uid: 1,
+  nickname: '',
+  imagePath: null,
+};
+
 // 회원정보 수정
 export const updateProfileState = atom<UserUpdateStateType>({
   key: 'updateProfileState',
@@ -47,4 +54,10 @@ export const badgeListState = atom<BadgeStateType[]>({
 export const sponsorState = atom<SponsorStateType>({
   key: 'sponsorState',
   default: sponsorInitialState,
+});
+
+// 로그인한 사용자
+export const loginUserState = atom<LoginUserStateType>({
+  key: 'loggedInUserState',
+  default: loginUserInitialState,
 });

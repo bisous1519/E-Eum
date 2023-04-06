@@ -21,11 +21,13 @@ import {
 } from '../../modules/apis/user/userApis';
 import {
   BadgeStateType,
+  LoginUserStateType,
   SponsorStateType,
 } from '../../modules/apis/user/userAtomTypes';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   badgeListState,
+  loginUserState,
   sponsorState,
 } from '../../modules/apis/user/userAtoms';
 import InputComp from '../../components/common/input/InputComp';
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     paddingBottom: DEVICE_HEIGHT * 0.15,
   },
   emptyText: {
-    fontSize: theme.fontSize.big,
+    fontSize: theme.fontSize.regular,
   },
   badgeContainer: {
     backgroundColor: theme.mainColor.light,
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
 
 export default function Mypage(): JSX.Element {
   // 유저 아이디
-  const loginUser: number = 1;
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const navigation = useNav();
 
   const { text: userIntro, onChangeText: setUserIntro } = useInputText();
@@ -153,12 +155,12 @@ export default function Mypage(): JSX.Element {
     useRecoilState<RecordProfileStateType>(recordProfileState);
 
   const onPressModifyBtn = () => {
-    setIsUpdate((props) => !props);
+    setIsUpdate((prev) => !prev);
   };
 
   const onPressConfirmBtn = () => {
     setIsUpdate((props) => !props);
-    updateProfile(loginUser, {
+    updateProfile(loginUser.uid, {
       password: newPassword,
       introduction: userIntro,
       groupName: userGroup,
@@ -179,14 +181,14 @@ export default function Mypage(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const badgeData: any = await getBadgeList(loginUser);
+    const badgeData: any = await getBadgeList(loginUser.uid);
     const userData: SponsorStateType | undefined = await getSponsorProfile(
-      1,
-      loginUser
+      loginUser.uid,
+      loginUser.uid
     );
 
     const profileData: RecordProfileStateType | undefined =
-      await getProfileData(loginUser);
+      await getProfileData(loginUser.uid);
     if (badgeData) {
       setBadgeList(badgeData.badgeList);
     }
@@ -242,15 +244,13 @@ export default function Mypage(): JSX.Element {
             <View style={styles.modifyInfo}>
               <InputComp
                 name={'자기소개'}
-                text={
-                  recordProfile.introduction ? recordProfile.introduction : ''
-                }
+                text={userIntro}
                 onChangeText={setUserIntro}
               />
               <View style={styles.emptySpace} />
               <InputComp
                 name={'출신 보육원 및 소속'}
-                text={recordProfile.groupName ? recordProfile.groupName : ''}
+                text={userGroup}
                 onChangeText={setUserGroup}
               />
               <InputComp
@@ -307,7 +307,7 @@ export default function Mypage(): JSX.Element {
           </View>
           <View style={styles.badgeContainer}>
             <Text style={styles.userIntro}>{recordProfile.introduction}</Text>
-            {badgeList ? (
+            {badgeList.length > 0 ? (
               <FlatList
                 data={badgeList}
                 renderItem={(badge) => (

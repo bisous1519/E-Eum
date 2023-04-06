@@ -4,18 +4,25 @@ import BottleStack from './BottleStack';
 import MypageStack from './MypageStack';
 import RecordStack from './RecordStack';
 import SupportStack from './SupportStack';
+import SigninStack from './SigninStack';
+import AdminStack from './AdminStack';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   return (
     <Tab.Navigator
-      initialRouteName='BottleStack'
+      initialRouteName='SigninStack'
       screenOptions={{ headerShown: false }}
       tabBar={() => null}
     >
       <Tab.Screen
-        name='BottleStack'
+        name='SigninStack'
+        component={SigninStack}
+        options={{ title: '로그인' }}
+      />
+      <Tab.Screen
+        name='BottleBlue'
         component={BottleStack}
         options={{ title: '해류병 목록' }}
       />
@@ -39,6 +46,12 @@ export default function TabNavigator() {
         component={Notice}
         options={{ title: '알림' }}
       />
+      <Tab.Screen
+        name='AdminStack'
+        component={AdminStack}
+        options={{ title: '관리자' }}
+      />
     </Tab.Navigator>
   );
 }
+

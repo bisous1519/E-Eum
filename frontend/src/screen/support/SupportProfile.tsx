@@ -29,11 +29,13 @@ import {
 } from '../../modules/apis/user/userApis';
 import {
   BadgeStateType,
+  LoginUserStateType,
   SponsorStateType,
 } from '../../modules/apis/user/userAtomTypes';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   badgeListState,
+  loginUserState,
   sponsorState,
 } from '../../modules/apis/user/userAtoms';
 import Badge from '../../components/common/Badge';
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
 
 export default function SupportProfile(): JSX.Element {
   // 로그인 유저 id
-  const loginUser: number = 1;
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
   const route = useRoute<RouteProp<RootStackParamList, 'SupportProfile'>>();
   const uid = route.params?.uid; // 후원자(프로필 주인) id

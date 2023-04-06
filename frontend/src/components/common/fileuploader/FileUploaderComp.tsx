@@ -64,7 +64,7 @@ type FileUploaderCompPropsType = {
 };
 
 export default function FileUploaderComp(props: FileUploaderCompPropsType) {
-  const noImage = require('../../../assets/images/defaultimage(noimage).jpg');
+  // const noImage = require('../../../assets/images/defaultimage(noimage).jpg');
   const [image, setImage] = useState<string>(props.imageUri);
 
   const getPermissionSelect = async () => {
@@ -101,48 +101,11 @@ export default function FileUploaderComp(props: FileUploaderCompPropsType) {
   const handlePressSelectImage = async () => {
     if (await getPermissionSelect()) {
       await selectImage();
-      // console.log('imageData(pick) : ' + image);
     }
   };
 
-  // const getPermissionTake = async () => {
-  //   if (Platform.OS !== 'web') {
-  //     //웹이가 모바일이가 니 (헉)
-  //     const { status } = await ImagePicker.requestCameraPermissionsAsync();
-  //     if (status !== 'granted') {
-  //       alert('카메라 접근 권한이 필요합니다.');
-  //       return false;
-  //     }
-  //     return true;
-  //   }
-  // };
-
-  // const takeImage = async () => {
-  //   console.log('이미지 촬영하기');
-  //   let imageData = await ImagePicker.launchCameraAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All, //모든 이미지 타입
-  //     allowsEditing: true, //이미지 수정 여부
-  //     aspect: [4, 4], //이미지 비율
-  //     quality: 1, //용량수정
-  //   });
-
-  //   if (!imageData.canceled) {
-  //     setImage(imageData.assets[0].uri);
-  //   }
-  // };
-
-  // const handlePressTakeImage = async () => {
-  //   if (await getPermissionTake()) {
-  //     await takeImage();
-  //     // console.log('imageData(take) : ' + image);
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
-      {/* <Pressable onPress={handlePressTakeImage}>
-        <Text>이미지 촬영</Text>
-      </Pressable> */}
       <View style={styles.defaultBox}>
         <Pressable
           style={image === '' ? styles.addButton : null}

@@ -358,6 +358,7 @@ export default function Signup(): JSX.Element {
   const handleUserProfileImage = (input: string) => {
     setUserProfileImage(input);
   };
+
   useEffect(() => {
     console.log('바뀐 프사 uri : ' + userProfileImage);
     if (userProfileImage !== '') setProfileImageState(true);
@@ -418,7 +419,7 @@ export default function Signup(): JSX.Element {
       password: userPW,
       nickname: userNickName,
       gender: userGender,
-      // image: userProfileImage,
+      image: userProfileImage,
       type: userType,
     };
     postSignUp(postData).then((returndata) => console.log(returndata));

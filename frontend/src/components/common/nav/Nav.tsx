@@ -80,7 +80,7 @@ export default function Nav(): JSX.Element {
   const onPressNavList = (to: string): void => {
     setIsOpenNav(false);
     to === 'BottleStack'
-      ? navigation.navigate('BottleStack')
+      ? navigation.navigate('BottleBlue')
       : to === 'RecordStack'
       ? navigation.navigate('RecordStack')
       : to === 'SupportStack'
@@ -117,3 +117,4 @@ export default function Nav(): JSX.Element {
     </View>
   );
 }
+

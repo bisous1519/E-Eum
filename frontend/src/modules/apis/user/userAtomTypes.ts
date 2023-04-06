@@ -30,7 +30,7 @@ export type SignUpStateType = {
   password: string;
   nickname: string;
   gender: number;
-  // image: string | undefined;
+  image?: string | undefined;
   type: number;
 };
 
@@ -44,4 +44,11 @@ export type EditPWType = {
   name: string;
   introduction: string;
   groupName: string;
+};
+
+// 로그인한 사용자 타입
+export type LoginUserStateType = {
+  uid: number;
+  nickname: string;
+  imagePath: string | null;
 };

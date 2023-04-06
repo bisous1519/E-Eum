@@ -16,8 +16,15 @@ import useNav from '../../hooks/useNav';
 import { FontAwesome } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
 import WritingPaperBlue from './WritingPaper';
-import { fnqMockup } from './WritingPaper';
-import FnqModal from '../../components/bottle/FnqModal';
+import { getNormalBottles } from '../../modules/apis/bottle/bottleApis';
+import {
+  NormalBottleType,
+  NormalBottlesReturnType,
+} from '../../modules/apis/bottle/bottleAtomTypes';
+import { faqMockup } from './WritingPaper';
+import FaqModal from '../../components/bottle/FaqModal';
+import NewBadge from '../../components/common/NewBadge';
+import { getResNew } from '../../modules/apis/bottle/bottleApis';
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const borders = StyleSheet.create({
   red: {
@@ -140,8 +147,8 @@ const modalstyles = StyleSheet.create({
     alignItems: 'center',
   },
   closeButton: {
-    width: 50,
-    height: 30,
+    width: 55,
+    height: 35,
     borderWidth: 3,
     borderRadius: 20,
     borderColor: theme.textColor.error,
@@ -193,6 +200,7 @@ export default function BottleBlue(): JSX.Element {
 
   const convertBottle = () => {
     navigation.push('BottleGreen');
+    setPlayable(false);
   };
 
   const navigateToMyBottle = () => {
@@ -200,6 +208,7 @@ export default function BottleBlue(): JSX.Element {
   };
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [resNew, setResNew] = useState<boolean>(false);
 
   const handleModalPop = () => {
     setModalVisible(true);
@@ -213,7 +222,7 @@ export default function BottleBlue(): JSX.Element {
 
   const handlePlayable = async (status: any) => {
     if (status.didJustFinish) {
-      console.log('다시 재생');
+      console.log('Blue 멈춤');
       // setPlayable(false);
       setTimeout(() => {
         if (videoRef.current) videoRef.current.replayAsync();
@@ -223,57 +232,23 @@ export default function BottleBlue(): JSX.Element {
     }
   };
 
-  const messageList = [
-    {
-      id: 1,
-      userReqBottleId: 1,
-      content: '힝 너무너무 슬프고 힘들어요 안아주세요?',
-      sentiment: -1,
-      ttsPath: null,
-      regTime: '2023-03-25 22:38:45',
-      status: 1,
-    },
-    {
-      id: 1,
-      userReqBottleId: 1,
-      writerId: 1,
-      content:
-        '학교다니는게 너무 재밌어요. 근데 다른 친구들 다 여유로우니까 재밌게 노는거고 저는 상황이 좋지 않으니까 이 친구들 따라서 놀면 안될 것 같은데 자꾸 놀고싶고 그래요..',
-      sentiment: 0,
-      ttsPath:
-        'https://firebasestorage.googleapis.com/v0/b/ardent-bulwark-380505.appspot.com/o/tts-mp3%2F481564219018800?alt=media',
-      regTime: '2023-03-25 22:38:39',
-      status: 0,
-    },
-    {
-      id: 1,
-      userReqBottleId: 1,
-      content: '헉 너무너무 조아요 근데 이게 고민이에요',
-      sentiment: 1,
-      ttsPath: null,
-      regTime: '2023-03-25 22:38:45',
-      status: 1,
-    },
-  ];
+  const [userId, setUserId] = useState<number>(2);
 
-  type messageDataType = {
-    id: number;
-    userReqBottleId: number;
-    content: string;
-    sentiment: number;
-    ttsPath: string | null;
-    regTime: string;
-    status: number;
-  };
+  useEffect(() => {
+    getNormalBottles(userId).then((data) => setReceivedNormalMessages(data));
+  }, []);
+
+  const [receivedNormalMessages, setReceivedNormalMessages] =
+    useState<NormalBottlesReturnType>();
 
   const popupPaper = () => {
-    // navigation.push('MessagePaper');
+    navigation.push('WritingPaper', { messageType: 1, newMessage: false });
   };
   const moveToWritingPaper = () => {
-    navigation.push('WritingPaper', { messageType: 1 });
+    navigation.push('WritingPaper', { messageType: 1, newMessage: true });
   };
 
-  const modalMessageItem = ({ item }: { item: messageDataType }) => {
+  const modalMessageItem = ({ item }: { item: NormalBottleType }) => {
     let messageBoxBackgroundColor = '';
 
     if (item.sentiment === -1) {
@@ -303,6 +278,14 @@ export default function BottleBlue(): JSX.Element {
     );
   };
 
+  const fetchData = () => {
+    getResNew(1).then((data: boolean) => setResNew(data));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     // <View>
     <View style={styles.container}>
@@ -331,18 +314,22 @@ export default function BottleBlue(): JSX.Element {
                     style={StyleSheet.flatten([modalstyles.closeButton])}
                     onPress={handleModalClose}
                   >
-                    <FontAwesome
-                      name='close'
-                      size={20}
-                      color={theme.textColor.error}
-                    />
+                    <Text
+                      style={{
+                        fontSize: theme.fontSize.regular,
+                        color: theme.textColor.error,
+                        fontFamily: theme.fontFamily.mainBold,
+                      }}
+                    >
+                      닫기
+                    </Text>
                   </Pressable>
                 </View>
                 <View
                   style={StyleSheet.flatten([borders.red, modalstyles.listBox])}
                 >
                   <FlatList
-                    data={messageList}
+                    data={receivedNormalMessages}
                     renderItem={modalMessageItem}
                     // renderItem={({ item }) => <Text>{item.id}</Text>}
                     keyExtractor={(item, index) => index.toString()}
@@ -390,7 +377,9 @@ export default function BottleBlue(): JSX.Element {
           style={styles.leftPageBottlesLocation}
           onPress={handleModalPop}
         />
-        <Pressable style={styles.myBottleBox} onPress={navigateToMyBottle} />
+        <Pressable style={styles.myBottleBox} onPress={navigateToMyBottle}>
+          {resNew && <NewBadge right={20} top={10} />}
+        </Pressable>
       </View>
     </View>
   );

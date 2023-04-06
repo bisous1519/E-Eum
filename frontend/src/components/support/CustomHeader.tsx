@@ -16,6 +16,8 @@ import {
   supportsState,
 } from '../../modules/apis/support/supportAtoms';
 import SortModal from './SortModal';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
 });
 
 export default function CustomHeader(): JSX.Element {
-  const loginUser: number = 1;
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
   const [supports, setSupports] =
     useRecoilState<SupportsStateType[]>(supportsState);
@@ -109,7 +111,7 @@ export default function CustomHeader(): JSX.Element {
         setSupports(data);
       });
     } else {
-      getMySupports(loginUser).then((data) => {
+      getMySupports(loginUser.uid).then((data) => {
         setSupports(data);
       });
     }

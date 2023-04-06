@@ -24,7 +24,7 @@ import ChargeAlertModal from '../../components/support/ChargeAlertModal';
 import SupportModal from '../../components/support/SupportModal';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { supportDetail } from '../../modules/apis/support/supportApis';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   flag,
   sortType,
@@ -33,8 +33,14 @@ import {
 import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import TextRender from '../../components/common/editor/TextRender';
-import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
-import { badgeListState } from '../../modules/apis/user/userAtoms';
+import {
+  BadgeStateType,
+  LoginUserStateType,
+} from '../../modules/apis/user/userAtomTypes';
+import {
+  badgeListState,
+  loginUserState,
+} from '../../modules/apis/user/userAtoms';
 import useNav from '../../hooks/useNav';
 import BadgeListModal from '../../components/support/BadgeListModal';
 // ===========================================================
@@ -167,7 +173,7 @@ const styles = StyleSheet.create({
 
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
-  const loginUser = useState<number>(1); // 로그인한 user id
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
   const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
   const sid = route.params?.sid;

@@ -13,6 +13,10 @@ import useDimension from '../../hooks/useDimension';
 import useInputText from '../../hooks/useInputText';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
+import { login } from '../../modules/apis/user/userApis';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { useRecoilState } from 'recoil';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
@@ -40,10 +44,10 @@ const stylesGlobalContainer = StyleSheet.create({
   },
   //가장 큰 페이지
   container: {
-    flex: 1,
+    height: DEVICE_HEIGHT,
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: theme.background,
+    justifyContent: 'center',
     padding: 0,
   },
 });
@@ -51,14 +55,13 @@ const stylesGlobalContainer = StyleSheet.create({
 const stylesInnerContainer = StyleSheet.create({
   //내부 내용 global container
   container: {
-    // backgroundColor: 'black',
-    // flex: 1,
     flexDirection: 'column',
     // justifyContent: 'center',
     alignItems: 'center',
     margin: 0,
     padding: 0,
     width: DEVICE_WIDTH * 0.8,
+    marginBottom: 50,
   },
 });
 
@@ -87,7 +90,8 @@ const stylesSignin = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 10,
     paddingRight: 10,
-    // marginTop: 20,
+    marginTop: 10,
+    marginBottom: 50,
   },
   box: {
     width: '100%',
@@ -114,7 +118,7 @@ const stylesSocialSignin = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     flexDirection: 'row',
-    marginTop: 50,
+    marginTop: 10,
   },
   socialButtonFrame: {
     width: '50%',
@@ -132,6 +136,8 @@ const stylesSocialSignin = StyleSheet.create({
 
 export default function Signin(): JSX.Element {
   const navigation = useNav();
+  const [loginUser, setLoginUser] =
+    useRecoilState<LoginUserStateType>(loginUserState);
 
   const onPressSignup = () => {
     navigation.push('Signup');
@@ -140,16 +146,32 @@ export default function Signin(): JSX.Element {
     navigation.push('JoinPW');
   };
 
-  const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
-  const { text: userPW, onChangeText: onChangeUserPW } = useInputText();
+  const { text: email, onChangeText: onChangeEmail } = useInputText();
+  const { text: password, onChangeText: onChangePassword } = useInputText();
 
   const handleSubmit = () => {
-    console.log(userEmail + ', ' + userPW);
-    navigation.push('BottleStack');
+    if (email && password) {
+      login({ email, password })
+        .then((data: LoginUserStateType) => {
+          setLoginUser(data);
+          if (data.uid === 11) {
+            // 관리자
+            navigation.navigate('AdminStack');
+          } else {
+            navigation.navigate('BottleBlue');
+          }
+        })
+        .catch((e) => {
+          alert('아이디와 비밀번호를 다시 확인해주세요');
+        });
+    }
   };
 
   return (
-    <ScrollView style={stylesGlobalContainer.scrollContainer}>
+    <ScrollView
+      style={stylesGlobalContainer.scrollContainer}
+      scrollEnabled={false}
+    >
       <View
         style={StyleSheet.flatten([
           stylesTempBorder.Blue,
@@ -163,6 +185,7 @@ export default function Signin(): JSX.Element {
             stylesInnerContainer.container,
           ])}
         >
+          {/* 로고 */}
           <View
             testID='innerFirst'
             /* 첫번째 */ style={StyleSheet.flatten([
@@ -175,7 +198,7 @@ export default function Signin(): JSX.Element {
               source={require('../../assets/images/logoWithText.png')}
             />
           </View>
-          {/* 로고 */}
+          {/* 아이디비번 input */}
           <View
             testID='innerSecond'
             /* 두번쨰 */ style={StyleSheet.flatten([
@@ -187,26 +210,25 @@ export default function Signin(): JSX.Element {
               style={StyleSheet.flatten([
                 stylesTempBorder.Yellow,
                 stylesSignin.box,
-                // stylesSignin.alignLeft,
+                { marginBottom: 10 },
               ])}
             >
               <InputComp
                 name={'EMAIL'}
-                text={userEmail}
-                onChangeText={onChangeUserEmail}
+                text={email}
+                onChangeText={onChangeEmail}
               />
             </View>
             <View
               style={StyleSheet.flatten([
                 stylesTempBorder.Yellow,
                 stylesSignin.box,
-                // stylesSignin.alignLeft,
               ])}
             >
               <InputComp
                 name={'PW'}
-                text={userPW}
-                onChangeText={onChangeUserPW}
+                text={password}
+                onChangeText={onChangePassword}
                 pw={true}
               />
             </View>
@@ -215,7 +237,7 @@ export default function Signin(): JSX.Element {
               style={StyleSheet.flatten([
                 stylesTempBorder.Yellow,
                 stylesSignin.box,
-                { marginTop: 20 },
+                { marginTop: 30 },
               ])}
             >
               <ButtonComp text={'로그인'} onPressBtn={handleSubmit} />
@@ -226,7 +248,7 @@ export default function Signin(): JSX.Element {
                 stylesTempBorder.Red,
                 stylesSignin.box,
                 stylesSignin.dividedTwo,
-                { marginTop: 40 },
+                { marginTop: 50 },
               ])}
             >
               <View
@@ -253,6 +275,7 @@ export default function Signin(): JSX.Element {
               </View>
             </View>
           </View>
+          {/* 소셜로그인 */}
           <View
             testID='innerThird'
             /* 세번째 */ style={StyleSheet.flatten([
