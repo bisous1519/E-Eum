@@ -188,7 +188,6 @@ export default function SupportProfile(): JSX.Element {
   const handleStartSupport = () => {
     // regularSupport(uid, loginUser.uid);
     setModal(true);
-    console.log('start응애');
   };
 
   const handleToggleDelete = () => {
@@ -270,7 +269,13 @@ export default function SupportProfile(): JSX.Element {
           )}
         </View>
       </View>
-      {modal && <RegularSupportModal onToggleDelete={handleToggleDelete} />}
+      {modal && (
+        <RegularSupportModal
+          onToggleDelete={handleToggleDelete}
+          uid={uid}
+          sid={loginUser.uid}
+        />
+      )}
     </>
   );
 }

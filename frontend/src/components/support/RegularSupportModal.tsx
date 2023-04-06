@@ -66,10 +66,14 @@ const styles = StyleSheet.create({
 });
 
 type RegularSupportModalPropsType = {
+  uid: number;
+  sid: number;
   onToggleDelete: () => void;
 };
 
 export default function RegularSupportModal({
+  uid,
+  sid,
   onToggleDelete,
 }: RegularSupportModalPropsType): JSX.Element {
   const [supportPoint, setSupportPoint] = useState<number>(0);
@@ -84,11 +88,10 @@ export default function RegularSupportModal({
 
   const handleDatePress = (data: number) => {
     setDate(data);
-    console.log(data);
   };
 
   const handleRegularSupport = async () => {
-    await regularSupport(1, 1, supportPoint, date);
+    await regularSupport(uid, sid, supportPoint, date);
     onToggleDelete();
     console.log('정기후원 등록 API');
   };
