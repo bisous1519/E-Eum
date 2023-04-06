@@ -9,6 +9,7 @@ import {
   PostBottleReportReturnType,
   PostNewBottleReturnType,
   PostResponseBottleReturnType,
+  TossBottleReturnType,
 } from './bottleAtomTypes';
 
 // 작성한 질문 해류병 목록 조회
@@ -83,19 +84,6 @@ export async function postNewBottle(
   }
 }
 
-// 수신된 답변 해류병 new 체크
-export async function getResNew(userId: number) {
-  try {
-    const { data } = await axios.get<boolean>(
-      `http://j8a607.p.ssafy.io/api/bottle/receiver/${userId}/res-new`
-    );
-    return data;
-  } catch (error: unknown) {
-    console.error(error);
-    throw new Error(error as string);
-  }
-}
-
 // 답변 해류병 작성
 export async function postResponseBottle(
   gender: number,
@@ -110,6 +98,19 @@ export async function postResponseBottle(
     return data;
   } catch (error: unknown) {
     console.log('답변 해류병 작성 오류');
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+// 수신된 답변 해류병 new 체크
+export async function getResNew(userId: number) {
+  try {
+    const { data } = await axios.get<boolean>(
+      `http://j8a607.p.ssafy.io/api/bottle/receiver/${userId}/res-new`
+    );
+    return data;
+  } catch (error: unknown) {
     console.error(error);
     throw new Error(error as string);
   }
@@ -138,6 +139,26 @@ export async function getExpertBottles(userId: number) {
     return data;
   } catch (error: unknown) {
     console.log('수신된 전문가 해류병 목록 조회 오류');
+    console.error(error);
+    throw new Error(error as string);
+  }
+}
+
+//다른 사람에게 해류병 토스
+export async function postTossBottle(
+  userReqBottleId: number,
+  reqBottleWriterId: number,
+  userId: number,
+  reqBottleType: number
+) {
+  try {
+    const { data } = await axios.post<TossBottleReturnType>(
+      `http://j8a607.p.ssafy.io/api/bottle/${userReqBottleId}/toss`,
+      { reqBottleWriterId, userId, reqBottleType }
+    );
+    return data;
+  } catch (error: unknown) {
+    console.log('해류병 토스 오류');
     console.error(error);
     throw new Error(error as string);
   }

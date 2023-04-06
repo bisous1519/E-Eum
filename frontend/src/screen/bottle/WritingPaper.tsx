@@ -18,6 +18,9 @@ import {
 } from '../../modules/apis/bottle/bottleApis';
 import FaqModal from '../../components/bottle/FaqModal';
 import { postFaq } from '../../modules/apis/user/userApis';
+import { useRecoilState } from 'recoil';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -156,6 +159,12 @@ export const faqMockup: FaqType = {
 export default function WritingPaper(): JSX.Element {
   const navigation = useNav();
 
+  const [loginUser, setLoginUser] =
+    useRecoilState<LoginUserStateType>(loginUserState);
+
+  const [userId, setUserId] = useState<number>(loginUser.uid);
+  const [gender, setGender] = useState<number>(loginUser.gender);
+
   const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
   const messageNormal = route.params?.messageType === 1 ? true : false;
   const newMessage = route.params?.newMessage;
@@ -178,8 +187,6 @@ export default function WritingPaper(): JSX.Element {
   const writtenTextLength = writtenTextValue.length;
 
   // const [writerId, setWriterId] = useState<number>(1);  //질문 작성하는 사람Id
-  const [gender, setGender] = useState<number>(1);
-  const [userId, setUserId] = useState<number>(1); //로그인 ID
   // const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
 
   const doneWriting = () => {

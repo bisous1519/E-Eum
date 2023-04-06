@@ -1,30 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 // import Video from 'react-native-video';
 import { Video } from 'expo-av';
+import { FlatList } from 'react-native-gesture-handler';
+import NewBadge from '../../components/common/NewBadge';
 import ButtonComp from '../../components/common/button/ButtonComp';
 import useNav from '../../hooks/useNav';
-import { FontAwesome } from '@expo/vector-icons';
-import { FlatList } from 'react-native-gesture-handler';
-import WritingPaperBlue from './WritingPaper';
-import { getNormalBottles } from '../../modules/apis/bottle/bottleApis';
+import {
+  getNormalBottles,
+  getResNew,
+} from '../../modules/apis/bottle/bottleApis';
 import {
   NormalBottleType,
   NormalBottlesReturnType,
 } from '../../modules/apis/bottle/bottleAtomTypes';
-import { faqMockup } from './WritingPaper';
-import FaqModal from '../../components/bottle/FaqModal';
-import NewBadge from '../../components/common/NewBadge';
-import { getResNew } from '../../modules/apis/bottle/bottleApis';
+import { useRecoilState } from 'recoil';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 const borders = StyleSheet.create({
   red: {
@@ -196,7 +190,21 @@ const modalstyles = StyleSheet.create({
 export default function BottleBlue(): JSX.Element {
   const navigation = useNav();
 
+  const [loginUser, setLoginUser] =
+    useRecoilState<LoginUserStateType>(loginUserState);
+
+  const [userId, setUserId] = useState<number>(loginUser.uid);
+
   const beachVideoBlue = require('../../assets/videos/beachblue.mp4');
+
+  const [playable, setPlayable] = useState<boolean>(true);
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [resNew, setResNew] = useState<boolean>(false);
+  const [receivedNormalMessages, setReceivedNormalMessages] =
+    useState<NormalBottlesReturnType>();
+
+  const videoRef = useRef<Video>(null);
 
   const convertBottle = () => {
     navigation.push('BottleGreen');
@@ -207,18 +215,12 @@ export default function BottleBlue(): JSX.Element {
     navigation.push('MyBottle');
   };
 
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [resNew, setResNew] = useState<boolean>(false);
-
   const handleModalPop = () => {
     setModalVisible(true);
   };
   const handleModalClose = () => {
     setModalVisible(false);
   };
-
-  const videoRef = useRef<Video>(null);
-  const [playable, setPlayable] = useState<boolean>(true);
 
   const handlePlayable = async (status: any) => {
     if (status.didJustFinish) {
@@ -231,15 +233,6 @@ export default function BottleBlue(): JSX.Element {
       }, 100);
     }
   };
-
-  const [userId, setUserId] = useState<number>(2);
-
-  useEffect(() => {
-    getNormalBottles(userId).then((data) => setReceivedNormalMessages(data));
-  }, []);
-
-  const [receivedNormalMessages, setReceivedNormalMessages] =
-    useState<NormalBottlesReturnType>();
 
   const moveToWritingPaper = () => {
     //새 질문
@@ -301,6 +294,10 @@ export default function BottleBlue(): JSX.Element {
     console.log('로딩');
   }, []);
 
+  useEffect(() => {
+    getNormalBottles(userId).then((data) => setReceivedNormalMessages(data));
+  }, []);
+
   console.log('modalVisible : ' + modalVisible);
 
   return (
@@ -325,7 +322,7 @@ export default function BottleBlue(): JSX.Element {
                       borders.red,
                     ])}
                   >
-                    받은 해류병 목록
+                    {loginUser.nickname}의 수신 해류병 목록
                   </Text>
                   <Pressable
                     style={StyleSheet.flatten([modalstyles.closeButton])}
