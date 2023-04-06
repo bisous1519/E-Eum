@@ -92,9 +92,11 @@ public class User {
 		this.region = region;
 	}
 
-	public void updateUser(String password, String introduction, String groupName) {
-		this.password = password;
+	public void updateIntroduction(String introduction) {
 		this.introduction = introduction;
+	}
+
+	public void updateGroupName(String groupName) {
 		this.groupName = groupName;
 	}
 

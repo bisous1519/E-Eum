@@ -109,7 +109,11 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public ResponseDto.GetUser updateUser(final Long uid, final RequestDto.UpdateUser requestDto) {
 		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-		user.updateUser(requestDto.getPassword(), requestDto.getIntroduction(), requestDto.getGroupName());
+		user.updateIntroduction(requestDto.getIntroduction());
+		user.updateGroupName(requestDto.getGroupName());
+		if (requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()) {
+			user.updatePassword(requestDto.getPassword());
+		}
 		return new ResponseDto.GetUser(user);
 	}
 
@@ -347,7 +351,7 @@ public class UserServiceImpl implements UserService {
 
 	// 회원 로그인
 	@Override
-	public ResponseDto.GetUserPreview loginUser(final RequestDto.LoginUser requestDto) {
+	public ResponseDto.GetLoginUser loginUser(final RequestDto.LoginUser requestDto) {
 		if (userRepository.countByEmail(requestDto.getEmail()) == 0) {
 			throw new CustomException(ErrorCode.EMAIL_NOT_FOUND);
 		}
@@ -355,7 +359,7 @@ public class UserServiceImpl implements UserService {
 		if (!user.getPassword().equals(requestDto.getPassword())) {
 			throw new CustomException(ErrorCode.LOGIN_FAILED);
 		}
-		return new ResponseDto.GetUserPreview(user);
+		return new ResponseDto.GetLoginUser(user);
 	}
 
 	// 사용자 맞춤형 FAQ 추천

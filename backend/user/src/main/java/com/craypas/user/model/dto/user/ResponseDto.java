@@ -169,4 +169,36 @@ public class ResponseDto {
 		}
 	}
 
+	@Getter
+	@NoArgsConstructor
+	public static class GetLoginUser {
+		private Long id;
+		private String email;
+		private String name;
+		private String nickname;
+		private Integer gender;
+		private String imagePath;
+		private Integer type;
+		private Integer point;
+		private Integer status;
+		private String introduction;
+		private String groupName;
+		private String region;
+
+		@Builder
+		public GetLoginUser(User user) {
+			this.id = user.getId();
+			this.email = user.getEmail();
+			this.name = user.getName();
+			this.nickname = user.getNickname();
+			this.gender = user.getGender();
+			this.imagePath = user.getImagePath();
+			this.type = user.getType();
+			this.point = user.getPoint();
+			this.status = user.getStatus();
+			this.introduction = user.getIntroduction();
+			this.groupName = user.getGroupName();
+			this.region = user.getRegion();
+		}
+	}
 }
