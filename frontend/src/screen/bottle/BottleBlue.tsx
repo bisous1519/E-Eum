@@ -307,7 +307,7 @@ export default function BottleBlue(): JSX.Element {
     //새 질문
     navigation.push('WritingPaper', {
       messageType: 1,
-      newMessage: false,
+      newMessage: true,
       userReqBottleId: null,
     });
   };
@@ -479,4 +479,3 @@ export default function BottleBlue(): JSX.Element {
     </View>
   );
 }
-

@@ -326,11 +326,13 @@ export default function BottleBlue(): JSX.Element {
     }
 
     const popupPaper = () => {
-      navigation.push('WritingPaper', {
-        messageType: 2,
-        newMessage: false,
-        userReqBottleId: item.userReqBottleId,
-      });
+      if (modalVisible) {
+        navigation.push('WritingPaper', {
+          messageType: 2,
+          newMessage: false,
+          userReqBottleId: item.userReqBottleId,
+        });
+      }
     };
     return (
       <Pressable onPress={popupPaper}>
@@ -471,4 +473,3 @@ export default function BottleBlue(): JSX.Element {
     </View>
   );
 }
-
