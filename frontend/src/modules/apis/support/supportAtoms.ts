@@ -5,6 +5,7 @@ import {
   SupportDetailStateType,
   SupportPointStateType,
   SupportProfileStateType,
+  SupportStatusStateType,
   SupportsStateType,
 } from './supportAtomTypes';
 
@@ -65,6 +66,19 @@ const supportPointInitialState: SupportPointStateType = {
   point: 1,
 };
 
+const supportStatusInitialState: SupportStatusStateType = {
+  uid: 1,
+  imagePath: '',
+  nickname: '',
+  isConnected: false,
+  sponsorId: 1,
+  sponsorshipId: 1,
+  sponsorshipPoint: 1,
+  sponsorshipPaymentDate: 1,
+  countFromRegDate: 1,
+  myPoint: 0,
+};
+
 const regularSupportInitialState: RegularSupportStateType = {
   sponsorId: 1,
   uid: 1,
@@ -102,6 +116,12 @@ export const supportPointState = atom<SupportPointStateType>({
   default: supportPointInitialState,
 });
 
+// 정기후원 여부 확인
+export const supportStatusState = atom<SupportStatusStateType>({
+  key: 'supportStatusState',
+  default: supportStatusInitialState,
+});
+
 // 정기 후원하기
 export const regularSupportState = atom<RegularSupportStateType>({
   key: 'regularSupportState',
@@ -117,5 +137,11 @@ export const sortType = atom<number>({
 // flag
 export const flag = atom<boolean>({
   key: 'flag',
+  default: false,
+});
+
+// 정기후원 확인
+export const isSupporting = atom<boolean>({
+  key: 'isSupporting',
   default: false,
 });

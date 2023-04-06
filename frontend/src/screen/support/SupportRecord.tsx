@@ -244,7 +244,7 @@ export default function SupportRecord(): JSX.Element {
               left: imgOffsetXY.x,
             },
           ])}
-          onPress={handleProfilePress}
+          onPress={() => handleProfilePress(uid)}
         />
       ) : (
         <></>

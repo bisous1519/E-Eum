@@ -118,3 +118,28 @@ export async function regularSupport(
     throw e;
   }
 }
+
+// 정기후원 현황 정보
+export async function supportStatus(uid: number, sid: number) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/user/sponsorship?uid=${uid}&sponsorId=${sid}`
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+// 정기후원 취소
+export async function stopSupport(uid: number, sid: number) {
+  try {
+    await axios.delete(
+      `http://j8a607.p.ssafy.io/api/user/sponsorship?uid=${uid}&sponsorId=${sid}`
+    );
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

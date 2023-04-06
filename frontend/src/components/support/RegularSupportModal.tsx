@@ -12,6 +12,8 @@ import {
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 import { regularSupport } from '../../modules/apis/support/supportApis';
+import { useRecoilState } from 'recoil';
+import { isSupporting } from '../../modules/apis/support/supportAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -41,16 +43,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateTag: {
-    height: DEVICE_HEIGHT * 0.03,
+    // height: DEVICE_HEIGHT * 0.03,
     width: DEVICE_WIDTH * 0.15,
     borderRadius: 15,
-    backgroundColor: theme.mainColor.main,
+    borderWidth: 2,
+    borderColor: theme.mainColor.main,
+    backgroundColor: theme.grayColor.lightGray,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: DEVICE_WIDTH * 0.02,
   },
   dateText: {
-    color: theme.textColor.white,
+    fontSize: theme.fontSize.small,
+  },
+  selectedTag: {
+    width: DEVICE_WIDTH * 0.15,
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: theme.mainColor.main,
+    backgroundColor: theme.mainColor.main,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: DEVICE_WIDTH * 0.02,
   },
   button: {
     borderTopWidth: 1,
@@ -74,6 +92,9 @@ export default function RegularSupportModal({
 }: RegularSupportModalPropsType): JSX.Element {
   const [supportPoint, setSupportPoint] = useState<number>(0);
   const [date, setDate] = useState<number>(5);
+  const [isSelected, setIsSelected] = useState<number>(0);
+
+  const [isSupport, setIsSupport] = useRecoilState<boolean>(isSupporting);
 
   // 정기후원 결제일자
   const dateArr: number[] = [5, 15, 25];
@@ -82,15 +103,16 @@ export default function RegularSupportModal({
     setSupportPoint(e);
   };
 
-  const handleDatePress = (data: number) => {
+  const handleDatePress = (data: number, idx: number) => {
     setDate(data);
-    console.log(data);
+    setIsSelected(idx);
   };
 
   const handleRegularSupport = async () => {
-    await regularSupport(1, 1, supportPoint, date);
+    // await regularSupport(uid, sid, supportPoint, date);
+    setIsSupport(true);
     onToggleDelete();
-    console.log('정기후원 등록 API');
+    // console.log('정기후원 등록 API');
   };
 
   return (
@@ -109,12 +131,12 @@ export default function RegularSupportModal({
         <View style={styles.dateBox}>
           <Text style={styles.miniTitle}>후원일자</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {dateArr.map((data) => (
+            {dateArr.map((data, idx) => (
               <TouchableOpacity
-                key={data}
-                style={styles.dateTag}
+                key={idx}
+                style={isSelected === idx ? styles.selectedTag : styles.dateTag}
                 activeOpacity={0.6}
-                onPress={() => handleDatePress(data)}
+                onPress={() => handleDatePress(data, idx)}
               >
                 <Text style={styles.dateText}>{data}일</Text>
               </TouchableOpacity>

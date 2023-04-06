@@ -12,9 +12,20 @@ import {
 import theme from '../../utils/theme';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
-import { SupportProfileStateType } from '../../modules/apis/support/supportAtomTypes';
-import { checkProfile } from '../../modules/apis/support/supportApis';
-import { supportProfileState } from '../../modules/apis/support/supportAtoms';
+import {
+  SupportProfileStateType,
+  SupportStatusStateType,
+} from '../../modules/apis/support/supportAtomTypes';
+import {
+  checkProfile,
+  stopSupport,
+  supportStatus,
+} from '../../modules/apis/support/supportApis';
+import {
+  isSupporting,
+  supportProfileState,
+  supportStatusState,
+} from '../../modules/apis/support/supportAtoms';
 import ModalComp from '../../components/common/ModalComp';
 import RegularSupportModal from '../../components/support/RegularSupportModal';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -52,7 +63,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
-  // 프로필 스타일 적용 ================
   profileContainer: {
     flex: 3,
     width: DEVICE_WIDTH,
@@ -62,7 +72,7 @@ const styles = StyleSheet.create({
   profileBox: {
     margin: 10,
     width: DEVICE_WIDTH * 0.6,
-    height: DEVICE_WIDTH * 0.6,
+    height: DEVICE_WIDTH * 0.63,
     borderColor: theme.mainColor.main,
     borderWidth: 5,
     borderTopLeftRadius: 10,
@@ -72,8 +82,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   profileImage: {
-    height: DEVICE_WIDTH * 0.3,
-    width: DEVICE_WIDTH * 0.3,
+    height: DEVICE_WIDTH * 0.25,
+    width: DEVICE_WIDTH * 0.25,
     borderRadius: 100,
     margin: DEVICE_HEIGHT * 0.01,
   },
@@ -90,6 +100,7 @@ const styles = StyleSheet.create({
   supportGuide: {
     fontSize: theme.fontSize.small,
     marginLeft: 5,
+    textAlign: 'center',
   },
   support: {
     backgroundColor: theme.mainColor.main,
@@ -102,7 +113,7 @@ const styles = StyleSheet.create({
     color: theme.textColor.white,
   },
   badgeContainer: {
-    backgroundColor: theme.mainColor.main,
+    backgroundColor: theme.mainColor.light,
     width: DEVICE_WIDTH,
     height: DEVICE_HEIGHT * 0.65,
     borderTopLeftRadius: 50,
@@ -119,8 +130,6 @@ const styles = StyleSheet.create({
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
     borderRadius: 5,
     width: DEVICE_WIDTH * 0.12,
     height: DEVICE_WIDTH * 0.12,
@@ -146,52 +155,58 @@ export default function SupportProfile(): JSX.Element {
   const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
   const route = useRoute<RouteProp<RootStackParamList, 'SupportProfile'>>();
-  const uid = route.params?.uid; // 후원자(프로필 주인) id
-  console.log(uid);
+  const uid = route.params?.uid; // 작성자(자립준비청년) id
 
   // 기본적인 프로필 정보
   const [userProfile, setUserProfile] =
     useRecoilState<SupportProfileStateType>(supportProfileState);
+
+  // 정기후원 여부 확인을 위한 정보
+  // const [supportData, setSupportData] =
+  //   useRecoilState<SupportStatusStateType>(supportStatusState);
 
   // 뱃지 정보
   const [badge, setBadge] = useState<BadgeStateType>();
   const [badgeList, setBadgeList] =
     useRecoilState<BadgeStateType[]>(badgeListState);
 
-  // 정기후원 여부 검사
-  const [onSupport, setOnSupport] = useState<boolean>(false);
+  // 후원 여부 확인
+  const [isSupport, setIsSupport] = useRecoilState<boolean>(isSupporting);
 
   // 후원정보 입력 모달
   const [modal, setModal] = useState<boolean>(false);
 
-  const fetchData = () => {
-    checkProfile(uid).then((data) => setUserProfile(data));
-    getBadgeList(uid).then((data) => setBadgeList(data));
+  const handleStopSupport = () => {
+    // stopSupport(uid, loginUser.uid);
+    // setModal(true);
+    setIsSupport(false);
   };
 
-  const handleSupportPress = () => {
-    setOnSupport((prop) => !prop);
-    if (!onSupport) {
-      setModal(true);
-    }
+  const handleStartSupport = () => {
+    // regularSupport(uid, loginUser.uid);
+    setModal(true);
   };
 
   const handleToggleDelete = () => {
     setModal(false);
+    setIsSupport(true);
   };
 
   const handleBadgePress = (badge: BadgeStateType) => {
     setBadge(badge);
-    setModal((prev) => !prev);
+    // setModal((prev) => !prev);
   };
 
-  const handleSupportDone = () => {
-    setOnSupport((prop) => !prop);
+  const fetchData = () => {
+    checkProfile(uid).then((data) => setUserProfile(data));
+    getBadgeList(uid).then((data) => setBadgeList(data));
+    // supportStatus(uid, loginUser.uid).then((data) => setSupportData(data));
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+  // }, [supportData]);
 
   return (
     <>
@@ -211,14 +226,16 @@ export default function SupportProfile(): JSX.Element {
               />
             )}
             <Text style={styles.nickname}>{userProfile?.nickname}</Text>
-            {onSupport ? (
+            {/* {supportData.isConnected ? ( */}
+            {isSupport ? (
               <>
                 <View style={styles.supportBox}>
                   <Text style={styles.supportGuide}>
-                    꿈을 응원한 지 N일째 😀
+                    {/* 꿈을 응원한 지 {supportData.countFromRegDate}일째 😀 */}
+                    꿈을 응원한 지 1일째 😀
                   </Text>
                 </View>
-                <Pressable style={styles.support} onPress={handleSupportPress}>
+                <Pressable style={styles.support} onPress={handleStopSupport}>
                   <Text style={styles.supportText}>후원중</Text>
                 </Pressable>
               </>
@@ -229,7 +246,7 @@ export default function SupportProfile(): JSX.Element {
                     정기후원으로 {userProfile.nickname}님의 꿈을 응원해주세요 🎉
                   </Text>
                 </View>
-                <Pressable style={styles.support} onPress={handleSupportPress}>
+                <Pressable style={styles.support} onPress={handleStartSupport}>
                   <Text style={styles.supportText}>후원하기</Text>
                 </Pressable>
               </>
@@ -258,10 +275,8 @@ export default function SupportProfile(): JSX.Element {
             </View>
           )}
         </View>
+        {modal && <RegularSupportModal onToggleDelete={handleToggleDelete} />}
       </View>
-      {modal ? (
-        <RegularSupportModal onToggleDelete={handleToggleDelete} />
-      ) : null}
     </>
   );
 }

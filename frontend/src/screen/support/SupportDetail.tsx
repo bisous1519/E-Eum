@@ -189,10 +189,7 @@ export default function SupportDetail(): JSX.Element {
   const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // const handleSupporterClick = (uid: number) => {
   const handleSupporterClick = () => {
-    // nav.navigate('SupportProfile', { uid: uid });
-    console.log('후원자 뱃지만 보여줘..');
     setBadgeModal(true);
   };
 
@@ -339,7 +336,6 @@ export default function SupportDetail(): JSX.Element {
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image
-                    // source={require('../../assets/images/sample.png')}
                     source={{ uri: detailData?.userImagePath }}
                     style={styles.profilePicture}
                   />

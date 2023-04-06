@@ -326,6 +326,9 @@ export default function Mypage(): JSX.Element {
             )}
           </View>
           <ModifyButton onPressModifyBtn={onPressModifyBtn} />
+          {isModal && (
+            <BadgeModal badge={badge} onToggleModal={handleModalClose} />
+          )}
         </View>
       )}
     </>
