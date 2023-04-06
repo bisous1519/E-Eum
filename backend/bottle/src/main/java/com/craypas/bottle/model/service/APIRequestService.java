@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.UserBadgeDto;
+import com.craypas.bottle.util.TimeoutClientHttpRequestFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +26,7 @@ public class APIRequestService {
 			.path(path)
 			.build()
 			.toUri();
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate(new TimeoutClientHttpRequestFactory());
 		return restTemplate.getForEntity(uri, List.class);
 	}
 
@@ -34,7 +35,7 @@ public class APIRequestService {
 			.fromUriString(urlStr)
 			.build()
 			.toUri();
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate(new TimeoutClientHttpRequestFactory());
 		return restTemplate.getForEntity(uri, UserBadgeDto.class);
 	}
 
@@ -45,7 +46,7 @@ public class APIRequestService {
 		String requestBody = "{\""+key+"\":\""+content+"\"}";
 
 		HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-		RestTemplate restTemplate = new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate(new TimeoutClientHttpRequestFactory());
 		return restTemplate.postForEntity(urlStr, request, AbuseResultDto.class);
 	}
 }
