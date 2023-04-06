@@ -12,9 +12,18 @@ import theme from '../../utils/theme';
 import ItemContainer from '../../components/record/ItemContainer';
 import useDimension from '../../hooks/useDimension';
 import { useRecoilState } from 'recoil';
-import { recordsState } from '../../modules/apis/record/recordAtoms';
-import { getRecordsWithTag } from '../../modules/apis/record/recordApis';
-import { RecordsStateType } from '../../modules/apis/record/recordAtomTypes';
+import {
+  recordProfileState,
+  recordsState,
+} from '../../modules/apis/record/recordAtoms';
+import {
+  getProfileData,
+  getRecordsWithTag,
+} from '../../modules/apis/record/recordApis';
+import {
+  RecordProfileStateType,
+  RecordsStateType,
+} from '../../modules/apis/record/recordAtomTypes';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -117,6 +126,8 @@ export default function SupportRecord(): JSX.Element {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+  const [profile, setProfile] =
+    useRecoilState<RecordProfileStateType>(recordProfileState);
 
   const sheetRef = useRef<BottomSheet>(null);
   const imageRef = useRef<Image>(null);
@@ -153,6 +164,7 @@ export default function SupportRecord(): JSX.Element {
 
   const fetchData = () => {
     getRecordsWithTag(uid, tid).then((data) => setRecords(data));
+    getProfileData(uid).then((data) => setProfile(data));
   };
 
   useEffect(() => {
@@ -163,13 +175,13 @@ export default function SupportRecord(): JSX.Element {
     <View style={stylesContainer.container}>
       {/* 프로필 */}
       <View style={stylesProfile.container} onLayout={onLayoutProfile}>
-        <Text style={stylesProfile.nickName}>나싸피임</Text>
+        <Text style={stylesProfile.nickName}>{profile.nickname}</Text>
         <View style={stylesProfile.infoWrapper}>
           <Image
             ref={imageRef}
             onLayout={onLayoutImage}
             style={stylesProfile.infoImg}
-            source={require('../../assets/images/profileImg.png')}
+            source={{ uri: profile.imagePath }}
           />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
@@ -180,14 +192,12 @@ export default function SupportRecord(): JSX.Element {
             </View>
 
             <View style={stylesProfile.infoItem}>
-              <Text style={stylesProfile.infoContent}>+23일</Text>
+              <Text style={stylesProfile.infoContent}>+{profile.dayCnt}일</Text>
               <Text style={stylesProfile.infoCaption}>꿈여정</Text>
             </View>
           </View>
         </View>
-        <Text style={stylesProfile.intro}>
-          #열정 #청춘 나싸피는 열정꾼이다 화이팅임
-        </Text>
+        <Text style={stylesProfile.intro}>{profile.introduction}</Text>
       </View>
 
       {/* 피드 */}
@@ -235,7 +245,7 @@ export default function SupportRecord(): JSX.Element {
             },
           ])}
           onPress={handleProfilePress}
-        ></Pressable>
+        />
       ) : (
         <></>
       )}

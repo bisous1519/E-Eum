@@ -333,9 +333,8 @@ export default function SupportDetail(): JSX.Element {
 
           {/* 여기는 이제.. 글쓴이 꿈피드로 가는 버튼 */}
           <View style={styles.group}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => handleFeedPress(detailData.uid, detailData.tid)}
-              activeOpacity={0.6}
             >
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
@@ -359,7 +358,7 @@ export default function SupportDetail(): JSX.Element {
                   color={theme.grayColor.darkGray}
                 />
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={styles.group}>

@@ -258,14 +258,12 @@ export default function Mypage(): JSX.Element {
                 text={newPassword}
                 onChangeText={setNewPassword}
                 pw={true}
-                check={true}
               />
               <InputComp
                 name={'비밀번호 확인'}
                 text={checkPassword}
                 onChangeText={setCheckPassword}
                 pw={true}
-                check={true}
               />
             </View>
           </View>
