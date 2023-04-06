@@ -352,7 +352,7 @@ export default function BottleBlue(): JSX.Element {
   };
 
   const fetchData = () => {
-    getResNew(1).then((data: boolean) => setResNew(data));
+    getResNew(loginUser.uid).then((data: boolean) => setResNew(data));
   };
 
   useEffect(() => {

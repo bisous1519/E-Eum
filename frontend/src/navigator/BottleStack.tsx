@@ -26,7 +26,11 @@ const BottleStack = () => {
           component={MyBottle}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name='WritingPaper' component={WritingPaper} />
+        <Stack.Screen
+          name='WritingPaper'
+          component={WritingPaper}
+          options={{ title: '해류병 작성' }}
+        />
       </Stack.Navigator>
       <Nav />
     </>

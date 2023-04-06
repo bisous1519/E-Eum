@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import {
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { FlatList, GestureHandlerRootView } from 'react-native-gesture-handler';
 import useLetterSize from '../../hooks/useLetterSize';
 import { shadowStyle } from '../common/shadowStyle';
 import { MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
@@ -43,6 +49,12 @@ const styles = StyleSheet.create({
   pages: {
     fontSize: theme.fontSize.small,
     color: theme.grayColor.lightGray,
+    // backgroundColor: 'orange',
+    flex: 1,
+    padding: 10,
+    textAlign: 'center',
+    // height: 30,
+    // justifyContent: 'center',
   },
   report: {
     fontSize: theme.fontSize.small,
@@ -188,7 +200,7 @@ LetterPropsType): JSX.Element {
       ])}
     >
       {item ? (
-        <View style={styles.container}>
+        <Pressable style={styles.container}>
           {isRes ? (
             <View style={styles.top}>
               <MaterialCommunityIcons
@@ -199,7 +211,7 @@ LetterPropsType): JSX.Element {
                 }
                 onPress={onPressLike}
               />
-              <Text style={styles.pages}>
+              <Text onPress={() => {}} style={styles.pages}>
                 {index} / {total}
               </Text>
               <Text style={styles.report} onPress={onSendReport}>
@@ -209,6 +221,8 @@ LetterPropsType): JSX.Element {
           ) : (
             <View style={styles.top}>
               <Text style={styles.reqDate}>{date as string}</Text>
+
+              <Text onPress={() => {}} style={styles.pages}></Text>
               <Text style={styles.kindof}>{reqType}</Text>
             </View>
           )}
@@ -221,23 +235,25 @@ LetterPropsType): JSX.Element {
             <View style={styles.bottom}>
               {/* 뱃지 */}
               {item.userBadges && item.status !== 3 ? (
-                <FlatList
-                  horizontal
-                  inverted
-                  contentContainerStyle={styles.badgesWrapper}
-                  data={item.userBadges}
-                  scrollEnabled={false}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        zIndex: badgeMockup.length - index + 1,
-                        right: 10 * index,
-                      }}
-                    >
-                      <Badge key={item.id} badge={item} />
-                    </View>
-                  )}
-                />
+                <GestureHandlerRootView>
+                  <FlatList
+                    horizontal
+                    inverted
+                    contentContainerStyle={styles.badgesWrapper}
+                    data={item.userBadges}
+                    scrollEnabled={false}
+                    renderItem={({ item, index }) => (
+                      <View
+                        style={{
+                          zIndex: badgeMockup.length - index + 1,
+                          right: 10 * index,
+                        }}
+                      >
+                        <Badge key={item.id} badge={item} />
+                      </View>
+                    )}
+                  />
+                </GestureHandlerRootView>
               ) : (
                 <></>
               )}
@@ -258,7 +274,7 @@ LetterPropsType): JSX.Element {
           ) : (
             <View style={styles.bottom}></View>
           )}
-        </View>
+        </Pressable>
       ) : (
         <></>
       )}

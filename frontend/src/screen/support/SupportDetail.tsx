@@ -368,7 +368,7 @@ export default function SupportDetail(): JSX.Element {
       </ScrollView>
       <SupportButton onPressSupportBtn={onPressSupportBtn} />
       {badgeModal ? (
-        <BadgeListModal uid={1} onToggleModal={onToggleDelete} />
+        <BadgeListModal uid={loginUser.uid} onToggleModal={onToggleDelete} />
       ) : (
         <></>
       )}
@@ -383,7 +383,7 @@ export default function SupportDetail(): JSX.Element {
           targetAmount={detailData?.targetAmount}
           currentAmount={detailData?.currentAmount}
           sid={sid}
-          uid={1}
+          uid={loginUser.uid}
         />
       ) : (
         <></>

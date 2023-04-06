@@ -19,7 +19,7 @@ import {
   putRecord,
 } from '../../modules/apis/record/recordApis';
 import Tag from '../../components/record/Tag';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   RecordsStateType,
   RecordStateType,
@@ -30,6 +30,8 @@ import TagList from '../../components/record/TagList';
 import TextEditor from '../../components/common/editor/TextEditor';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/RecordStack';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -68,6 +70,7 @@ export default function RecordEditor({}: // route,
 RecordEditorPropsType): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'RecordEditor'>>();
 
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
@@ -93,8 +96,8 @@ RecordEditorPropsType): JSX.Element {
       } else if (!selectedTag) {
         console.log('tag 선택 안함');
       } else {
-        postRecord({ content, writerId: 1, tid: selectedTag.id })
-          .then(() => getRecords(1))
+        postRecord({ content, writerId: loginUser.uid, tid: selectedTag.id })
+          .then(() => getRecords(loginUser.uid))
           .then((data: RecordsStateType) => {
             setRecords(data);
             navigation.popToTop();
@@ -110,10 +113,10 @@ RecordEditorPropsType): JSX.Element {
       } else if (route.params?.itemId) {
         putRecord(route.params.itemId, {
           content,
-          writerId: 1,
+          writerId: loginUser.uid,
           tid: selectedTag.id,
         })
-          .then(() => getRecords(1))
+          .then(() => getRecords(loginUser.uid))
           .then((data: RecordsStateType) => {
             setRecords(data);
             navigation.popToTop();
@@ -185,3 +188,4 @@ RecordEditorPropsType): JSX.Element {
     </SafeAreaView>
   );
 }
+

@@ -41,7 +41,7 @@ const TextRender = React.memo(function TextRender({
       fontSize: theme.fontSize.regular,
     },
     b: {
-      color: theme.textColor.main,
+      color: theme.mainColor.dark,
       fontSize: theme.fontSize.regular,
     },
   };
@@ -57,3 +57,4 @@ const TextRender = React.memo(function TextRender({
 });
 
 export default TextRender;
+
