@@ -9,25 +9,19 @@ const Stack = createNativeStackNavigator();
 
 const BottleStack = () => {
   return (
-    <Stack.Navigator initialRouteName='BottleBlue'>
-      <>
+    <>
+      <Stack.Navigator initialRouteName='BottleBlue'>
         <Stack.Screen name='BottleBlue' component={BottleBlue} />
-        <Nav />
-      </>
-      <>
         <Stack.Screen name='BottleGreen' component={BottleGreen} />
-        <Nav />
-      </>
-      <>
         <Stack.Screen
           name='MyBottle'
           component={MyBottle}
           options={{ headerShown: false }}
         />
-        <Nav />
-      </>
-      <Stack.Screen name='WritingPaper' component={WritingPaper} />
-    </Stack.Navigator>
+        <Stack.Screen name='WritingPaper' component={WritingPaper} />
+      </Stack.Navigator>
+      <Nav />
+    </>
   );
 };
 
