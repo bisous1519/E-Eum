@@ -181,9 +181,9 @@ export default function WritingPaper(): JSX.Element {
   const [gender, setGender] = useState<number>(1);
   const [userId, setUserId] = useState<number>(1); //로그인 ID
   // const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
-  console.log('답장의 userReqBottleId : ' + userReqBottleId);
 
   const doneWriting = () => {
+    console.log('답장의 userReqBottleId : ' + userReqBottleId);
     if (writtenTextLength < 5) return;
     //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
     else {
@@ -197,13 +197,16 @@ export default function WritingPaper(): JSX.Element {
             gender
           ).then((data) => console.log('메시지 전송 return : ' + data?.id))
         : postResponseBottle(
-            userReqBottleId ? userReqBottleId : 0,
+            //답변 작성
+            gender,
+            43,
+            // userReqBottleId ? userReqBottleId : 1,
             writtenTextValue
           ).then((data) =>
             console.log(
               '답변 메시지 전송 return : ' +
                 data.content +
-                ', id : ' +
+                ', 원문 메시지 id : ' +
                 data.userReqBottleId
             )
           );

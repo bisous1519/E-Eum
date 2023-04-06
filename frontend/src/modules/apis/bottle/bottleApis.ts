@@ -98,12 +98,13 @@ export async function getResNew(userId: number) {
 
 // 답변 해류병 작성
 export async function postResponseBottle(
+  gender: number,
   userReqBottleId: number,
   content: string
 ) {
   try {
     const { data } = await axios.post<PostResponseBottleReturnType>(
-      `http://j8a607.p.ssafy.io/api/bottle/${userReqBottleId}/res`,
+      `http://j8a607.p.ssafy.io/api/bottle/${userReqBottleId}/res?gender=${gender}`,
       { content }
     );
     return data;
