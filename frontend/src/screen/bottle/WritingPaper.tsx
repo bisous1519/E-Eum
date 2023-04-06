@@ -159,6 +159,7 @@ export default function WritingPaper(): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
   const messageNormal = route.params?.messageType === 1 ? true : false;
   const newMessage = route.params?.newMessage;
+  const userReqBottleId = route.params?.userReqBottleId;
   const inputRef = useRef<TextInput>(null);
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
@@ -179,7 +180,8 @@ export default function WritingPaper(): JSX.Element {
   // const [writerId, setWriterId] = useState<number>(1);  //질문 작성하는 사람Id
   const [gender, setGender] = useState<number>(1);
   const [userId, setUserId] = useState<number>(1); //로그인 ID
-  const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
+  // const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
+  console.log('답장의 userReqBottleId : ' + userReqBottleId);
 
   const doneWriting = () => {
     if (writtenTextLength < 5) return;
@@ -194,7 +196,10 @@ export default function WritingPaper(): JSX.Element {
             messageNormal ? 1 : 2,
             gender
           ).then((data) => console.log('메시지 전송 return : ' + data?.id))
-        : postResponseBottle(userReqBottleId, writtenTextValue).then((data) =>
+        : postResponseBottle(
+            userReqBottleId ? userReqBottleId : 0,
+            writtenTextValue
+          ).then((data) =>
             console.log(
               '답변 메시지 전송 return : ' +
                 data.content +

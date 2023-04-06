@@ -61,4 +61,3 @@ export const loginUserState = atom<LoginUserStateType>({
   key: 'loggedInUserState',
   default: loginUserInitialState,
 });
-

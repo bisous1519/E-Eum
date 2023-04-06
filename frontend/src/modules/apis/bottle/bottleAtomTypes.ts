@@ -153,6 +153,7 @@ export type NormalBottlesReturnType = NormalBottleType[];
 
 export type NormalBottleType = {
   id: number;
+  userReqBottleId: number;
   writerId: number;
   content: string;
   sentiment: number;
@@ -168,6 +169,7 @@ export type ExpertBottlesReturnType = ExpertBottleType[];
 
 export type ExpertBottleType = {
   id: number;
+  userReqBottleId: number;
   writerId: number;
   content: string;
   sentiment: number;
