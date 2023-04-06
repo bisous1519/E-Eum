@@ -21,11 +21,13 @@ import {
 } from '../../modules/apis/user/userApis';
 import {
   BadgeStateType,
+  LoginUserStateType,
   SponsorStateType,
 } from '../../modules/apis/user/userAtomTypes';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   badgeListState,
+  loginUserState,
   sponsorState,
 } from '../../modules/apis/user/userAtoms';
 import InputComp from '../../components/common/input/InputComp';
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     paddingBottom: DEVICE_HEIGHT * 0.15,
   },
   emptyText: {
-    fontSize: theme.fontSize.big,
+    fontSize: theme.fontSize.regular,
   },
   badgeContainer: {
     backgroundColor: theme.mainColor.light,
@@ -113,8 +115,6 @@ const styles = StyleSheet.create({
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
     borderRadius: 5,
     width: DEVICE_WIDTH * 0.12,
     height: DEVICE_WIDTH * 0.12,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
 
 export default function Mypage(): JSX.Element {
   // 유저 아이디
-  const loginUser: number = 1;
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const navigation = useNav();
 
   const { text: userIntro, onChangeText: setUserIntro } = useInputText();
@@ -155,12 +155,12 @@ export default function Mypage(): JSX.Element {
     useRecoilState<RecordProfileStateType>(recordProfileState);
 
   const onPressModifyBtn = () => {
-    setIsUpdate((props) => !props);
+    setIsUpdate((prev) => !prev);
   };
 
   const onPressConfirmBtn = () => {
     setIsUpdate((props) => !props);
-    updateProfile(loginUser, {
+    updateProfile(loginUser.uid, {
       password: newPassword,
       introduction: userIntro,
       groupName: userGroup,
@@ -168,12 +168,10 @@ export default function Mypage(): JSX.Element {
   };
 
   const handleChargePoint = () => {
-    console.log('포인트 충전 화면으로 푸슝');
     navigation.push('PointCharge');
   };
 
   const handleBadgePress = (badge: BadgeStateType) => {
-    console.log('뱃지 디테일 모달이 푸슝~');
     setBadge(badge);
     setIsModal((prev) => !prev);
   };
@@ -183,15 +181,14 @@ export default function Mypage(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const badgeData: BadgeStateType[] | undefined = await getBadgeList(
-      loginUser
-    );
+    const badgeData: any = await getBadgeList(loginUser.uid);
     const userData: SponsorStateType | undefined = await getSponsorProfile(
-      1,
-      loginUser
+      loginUser.uid,
+      loginUser.uid
     );
+
     const profileData: RecordProfileStateType | undefined =
-      await getProfileData(loginUser);
+      await getProfileData(loginUser.uid);
     if (badgeData) {
       setBadgeList(badgeData.badgeList);
     }
@@ -237,7 +234,8 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}>
+                activeOpacity={0.6}
+              >
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -249,7 +247,7 @@ export default function Mypage(): JSX.Element {
                 text={userIntro}
                 onChangeText={setUserIntro}
               />
-              <View style={styles.emptySpace}></View>
+              <View style={styles.emptySpace} />
               <InputComp
                 name={'출신 보육원 및 소속'}
                 text={userGroup}
@@ -260,14 +258,12 @@ export default function Mypage(): JSX.Element {
                 text={newPassword}
                 onChangeText={setNewPassword}
                 pw={true}
-                check={true}
               />
               <InputComp
                 name={'비밀번호 확인'}
                 text={checkPassword}
                 onChangeText={setCheckPassword}
                 pw={true}
-                check={true}
               />
             </View>
           </View>
@@ -301,21 +297,23 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}>
+                activeOpacity={0.6}
+              >
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.badgeContainer}>
             <Text style={styles.userIntro}>{recordProfile.introduction}</Text>
-            {badgeList ? (
+            {badgeList.length > 0 ? (
               <FlatList
                 data={badgeList}
                 renderItem={(badge) => (
                   <TouchableOpacity
                     style={styles.uniBadge}
                     onPress={() => handleBadgePress(badge.item)}
-                    activeOpacity={0.6}>
+                    activeOpacity={0.6}
+                  >
                     <Badge key={badge.item.id} badge={badge.item} />
                   </TouchableOpacity>
                 )}
@@ -326,9 +324,6 @@ export default function Mypage(): JSX.Element {
                 <Text style={styles.emptyText}>뱃지를 수집중입니다 👊</Text>
               </View>
             )}
-            {isModal ? (
-              <BadgeModal badge={badge} onToggleModal={handleModalClose} />
-            ) : null}
           </View>
           <ModifyButton onPressModifyBtn={onPressModifyBtn} />
         </View>

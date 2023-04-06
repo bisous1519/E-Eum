@@ -316,4 +316,3 @@ export default function Signin(): JSX.Element {
     </ScrollView>
   );
 }
-

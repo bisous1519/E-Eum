@@ -17,18 +17,28 @@ import useNav from '../../hooks/useNav';
 import useDimension from '../../hooks/useDimension';
 import DeleteModal from '../../components/record/DeleteModal';
 import MockupDateGroupType from '../../models/record/mockupDateGroupType';
-import { useRecoilState } from 'recoil';
-import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
-import { getRecords, getTags } from '../../modules/apis/record/recordApis';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+  recordsState,
+  tagsState,
+  recordProfileState,
+} from '../../modules/apis/record/recordAtoms';
+import {
+  getProfileData,
+  getRecords,
+  getTags,
+} from '../../modules/apis/record/recordApis';
+import {
+  RecordProfileStateType,
   RecordsStateType,
   TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
 import TagList from '../../components/record/TagList';
 import AddTagModal from '../../components/record/AddTagModal';
 import UpDelTagModal from '../../components/record/UpDelTagModal';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyMessage from '../../components/common/EmptyMessage';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -134,6 +144,9 @@ const styles = StyleSheet.create({
 export default function Record(): JSX.Element {
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
+  const [profile, setProfile] =
+    useRecoilState<RecordProfileStateType>(recordProfileState);
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
   const navigation = useNav();
   const sheetRef = useRef<BottomSheet>(null);
@@ -193,13 +206,20 @@ export default function Record(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const recordsData: RecordsStateType | undefined = await getRecords(1); // userId 넣어야됨
-    const tagsData: TagStateType[] | undefined = await getTags(1);
+    const recordsData: RecordsStateType | undefined = await getRecords(
+      loginUser.uid
+    ); // userId 넣어야됨
+    const tagsData: TagStateType[] | undefined = await getTags(loginUser.uid);
+    const profileData: RecordProfileStateType | undefined =
+      await getProfileData(loginUser.uid);
     if (recordsData) {
       setRecords(recordsData);
     }
     if (tagsData) {
       setTags(tagsData);
+    }
+    if (profileData) {
+      setProfile(profileData);
     }
   };
 
@@ -211,13 +231,13 @@ export default function Record(): JSX.Element {
     <View style={stylesContainer.container}>
       {/* 프로필 */}
       <View style={stylesProfile.container} onLayout={onLayoutProfile}>
-        <Text style={stylesProfile.nickName}>나싸피임</Text>
+        <Text style={stylesProfile.nickName}>{profile.nickname}</Text>
         <View style={stylesProfile.infoWrapper}>
           <Image
             ref={imageRef}
             onLayout={onLayoutImage}
             style={stylesProfile.infoImg}
-            source={require('../../assets/images/profileImg.png')}
+            source={{ uri: profile.imagePath }}
           />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
@@ -227,19 +247,18 @@ export default function Record(): JSX.Element {
               <Text style={stylesProfile.infoCaption}>꿈피드</Text>
             </View>
             <View style={stylesProfile.infoItem}>
-              <Text style={stylesProfile.infoContent}>+23일</Text>
+              <Text style={stylesProfile.infoContent}>+{profile.dayCnt}일</Text>
               <Text style={stylesProfile.infoCaption}>꿈여정</Text>
             </View>
           </View>
         </View>
-        <Text style={stylesProfile.intro}>
-          #열정 #청춘 나싸피는 열정꾼이다 화이팅임
-        </Text>
+        <Text style={stylesProfile.intro}>{profile.introduction}</Text>
       </View>
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
+      >
         {profileHeight && profileHeight != 0 && tagHeight && tagHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
@@ -249,7 +268,8 @@ export default function Record(): JSX.Element {
               '100%',
             ]}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}>
+            style={{ alignItems: 'center' }}
+          >
             {records ? (
               <BottomSheetFlatList
                 contentContainerStyle={styles.contentContainer}
@@ -285,7 +305,8 @@ export default function Record(): JSX.Element {
               left: imgOffsetXY.x,
             },
           ])}
-          onPress={handleProfilePress}></Pressable>
+          onPress={handleProfilePress}
+        ></Pressable>
       ) : (
         <></>
       )}
@@ -297,7 +318,8 @@ export default function Record(): JSX.Element {
             stylesTag.container,
             { top: profileHeight },
           ])}
-          onLayout={onLayoutTag}>
+          onLayout={onLayoutTag}
+        >
           {tags ? (
             <TagList
               tags={tags}

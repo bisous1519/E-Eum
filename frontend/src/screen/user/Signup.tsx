@@ -361,6 +361,7 @@ export default function Signup(): JSX.Element {
   const handleUserProfileImage = (input: string) => {
     setUserProfileImage(input);
   };
+
   useEffect(() => {
     console.log('바뀐 프사 uri : ' + userProfileImage);
     if (userProfileImage !== '') setProfileImageState(true);

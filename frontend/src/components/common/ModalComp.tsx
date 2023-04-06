@@ -34,7 +34,7 @@ export default function ModalComp({
   onCloseModal,
   transparent = false,
 }: ModalCompProsType): JSX.Element {
-  console.log(transparent);
+  // console.log(transparent);
   return (
     <Pressable style={styles().layer} onPress={onCloseModal}>
       <View style={styles(transparent).modal}>{children}</View>

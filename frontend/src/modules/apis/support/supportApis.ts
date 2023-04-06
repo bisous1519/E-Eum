@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { NewSupportStateType } from './supportAtomTypes';
+import { NewSupportStateType, SupportsStateType } from './supportAtomTypes';
 
 // 꿈후원 목록 조회
 export async function getSupports(sortType: number) {
@@ -19,6 +19,19 @@ export async function searchSupports(keyword: string) {
   try {
     const { data } = await axios.get(
       `http://j8a607.p.ssafy.io/api/dream/support/req/search?keyword=${keyword}`
+    );
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+// 내 후원 목록 조회
+export async function getMySupports(uid: number) {
+  try {
+    const { data } = await axios.get(
+      `http://j8a607.p.ssafy.io/api/dream/support/res/${uid}`
     );
     return data;
   } catch (e) {

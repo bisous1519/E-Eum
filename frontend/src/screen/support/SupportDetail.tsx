@@ -4,9 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
-  Button,
   Dimensions,
   Pressable,
 } from 'react-native';
@@ -26,11 +24,25 @@ import ChargeAlertModal from '../../components/support/ChargeAlertModal';
 import SupportModal from '../../components/support/SupportModal';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { supportDetail } from '../../modules/apis/support/supportApis';
-import { useRecoilState } from 'recoil';
-import { supportDetailState } from '../../modules/apis/support/supportAtoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  flag,
+  sortType,
+  supportDetailState,
+} from '../../modules/apis/support/supportAtoms';
 import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import TextRender from '../../components/common/editor/TextRender';
+import {
+  BadgeStateType,
+  LoginUserStateType,
+} from '../../modules/apis/user/userAtomTypes';
+import {
+  badgeListState,
+  loginUserState,
+} from '../../modules/apis/user/userAtoms';
+import useNav from '../../hooks/useNav';
+import BadgeListModal from '../../components/support/BadgeListModal';
 // ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -161,19 +173,30 @@ const styles = StyleSheet.create({
 
 // 후원 상세
 export default function SupportDetail(): JSX.Element {
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
+
   const route = useRoute<RouteProp<RootStackParamList, 'SupportDetail'>>();
   const sid = route.params?.sid;
 
+  const [badgeList, setBadgeList] =
+    useRecoilState<BadgeStateType[]>(badgeListState);
+
   const [detailData, setDetailData] =
     useRecoilState<SupportDetailStateType>(supportDetailState);
+  const [sort, setSort] = useRecoilState<number>(sortType);
+  const [check, setCheck] = useRecoilState<boolean>(flag);
 
+  const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleSupporterClick = (uid: number) => {
-    nav.navigate('SupportProfile', { uid: uid });
-    console.log('후원자(sponsorId) 프로필로 푸슝~');
+  // const handleSupporterClick = (uid: number) => {
+  const handleSupporterClick = () => {
+    // nav.navigate('SupportProfile', { uid: uid });
+    console.log('후원자 뱃지만 보여줘..');
+    setBadgeModal(true);
   };
 
+  // uid: 작성자 id, tid: 태그 id
   const handleFeedPress = (uid: number, tid: number) => {
     nav.navigate('SupportRecord', { uid: uid, tid: tid });
   };
@@ -181,6 +204,9 @@ export default function SupportDetail(): JSX.Element {
   // ============================================================================
   // 1. writer 정보 중 point 정보를 받아와서 if (point === 0) 충전화면
   // 2. else인 경우 후원금액 입력 bottom sheet
+
+  // 후원자 뱃지 모달
+  const [badgeModal, setBadgeModal] = useState<boolean>(false);
 
   // 후원금액 입력 모달
   const [supportModal, setSupportModal] = useState<boolean>(false);
@@ -192,6 +218,7 @@ export default function SupportDetail(): JSX.Element {
   const onPressSupportBtn = () => {
     // 사용자 포인트 잔고가 있으면 setSupportModal(true);
     // 사용자 포인트 잔고가 없으면 setChargeModal(true);
+    setSort(1);
     setSupportModal(true);
   };
 
@@ -199,6 +226,7 @@ export default function SupportDetail(): JSX.Element {
   const onToggleDelete = () => {
     setSupportModal(false); // 요건 후원화면
     setChargeModal(false); // 요건 충전알람화면
+    setBadgeModal(false);
   };
 
   const link = () => {
@@ -238,7 +266,8 @@ export default function SupportDetail(): JSX.Element {
             <TouchableOpacity
               onPress={() => link()}
               activeOpacity={0.6}
-              style={styles.productLink}>
+              style={styles.productLink}
+            >
               <Text style={styles.linkText}>참고링크</Text>
             </TouchableOpacity>
           </View>
@@ -279,8 +308,10 @@ export default function SupportDetail(): JSX.Element {
                     <Pressable
                       key={idx}
                       onPress={() =>
-                        handleSupporterClick(detailData.sponsorIdList[idx])
-                      }>
+                        // handleSupporterClick(detailData.sponsorIdList[idx])
+                        handleSupporterClick()
+                      }
+                    >
                       {/* 주석 풀어야해 */}
                       <Image
                         // source={{uri: detailData?.sponsorImagePathList[idx]}}
@@ -302,13 +333,14 @@ export default function SupportDetail(): JSX.Element {
 
           {/* 여기는 이제.. 글쓴이 꿈피드로 가는 버튼 */}
           <View style={styles.group}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => handleFeedPress(detailData.uid, detailData.tid)}
-              activeOpacity={0.6}>
+            >
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image
-                    source={require('../../assets/images/sample.png')}
+                    // source={require('../../assets/images/sample.png')}
+                    source={{ uri: detailData?.userImagePath }}
                     style={styles.profilePicture}
                   />
                   <View style={styles.leftText}>
@@ -326,7 +358,7 @@ export default function SupportDetail(): JSX.Element {
                   color={theme.grayColor.darkGray}
                 />
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={styles.group}>
@@ -335,6 +367,7 @@ export default function SupportDetail(): JSX.Element {
         </View>
       </ScrollView>
       <SupportButton onPressSupportBtn={onPressSupportBtn} />
+      {badgeModal && <BadgeListModal uid={1} onToggleModal={onToggleDelete} />}
       {chargeModal && <ChargeAlertModal onToggleDelete={onToggleDelete} />}
       {supportModal && (
         <SupportModal

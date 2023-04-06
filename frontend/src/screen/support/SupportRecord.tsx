@@ -12,13 +12,27 @@ import theme from '../../utils/theme';
 import ItemContainer from '../../components/record/ItemContainer';
 import useDimension from '../../hooks/useDimension';
 import { useRecoilState } from 'recoil';
-import { recordsState } from '../../modules/apis/record/recordAtoms';
-import { getRecordsWithTag } from '../../modules/apis/record/recordApis';
-import { RecordsStateType } from '../../modules/apis/record/recordAtomTypes';
+import {
+  recordProfileState,
+  recordsState,
+} from '../../modules/apis/record/recordAtoms';
+import {
+  getProfileData,
+  getRecordsWithTag,
+} from '../../modules/apis/record/recordApis';
+import {
+  RecordProfileStateType,
+  RecordsStateType,
+} from '../../modules/apis/record/recordAtomTypes';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+// ====
+import DeleteModal from '../../components/record/DeleteModal';
+import MockupDateGroupType from '../../models/record/mockupDateGroupType';
+import { getRecords, getTags } from '../../modules/apis/record/recordApis';
+import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -73,8 +87,6 @@ const stylesProfile = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    // borderWidth: 1,
-    // borderColor: 'red',
     position: 'absolute',
   },
 });
@@ -108,12 +120,14 @@ const styles = StyleSheet.create({
 
 export default function SupportRecord(): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'SupportRecord'>>();
-  const uid = route.params?.uid;
-  const tid = route.params?.tid;
+  const uid = route.params?.uid; // 글 작성자 id
+  const tid = route.params?.tid; // 후원글 태그 id
 
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
+  const [profile, setProfile] =
+    useRecoilState<RecordProfileStateType>(recordProfileState);
 
   const sheetRef = useRef<BottomSheet>(null);
   const imageRef = useRef<Image>(null);
@@ -135,9 +149,9 @@ export default function SupportRecord(): JSX.Element {
   };
 
   const handleSheetChange = (idx: number): void => {
-    console.log('bottomSheet changed', idx);
     setExpandFeed(idx === 1 ? true : false);
   };
+
   const onToggleDelete = (recordId?: number): void => {
     if (recordId || recordId === 0) {
       setDelTargetContentId(recordId);
@@ -146,17 +160,11 @@ export default function SupportRecord(): JSX.Element {
 
   const handleProfilePress = (uid: number) => {
     nav.navigate('SupportProfile', { uid: uid });
-    console.log('supportProfile로 푸슝~');
   };
 
-  const fetchData = async () => {
-    const recordsData: RecordsStateType | undefined = await getRecordsWithTag(
-      uid,
-      tid
-    );
-    if (recordsData) {
-      setRecords(recordsData);
-    }
+  const fetchData = () => {
+    getRecordsWithTag(uid, tid).then((data) => setRecords(data));
+    getProfileData(uid).then((data) => setProfile(data));
   };
 
   useEffect(() => {
@@ -167,16 +175,14 @@ export default function SupportRecord(): JSX.Element {
     <View style={stylesContainer.container}>
       {/* 프로필 */}
       <View style={stylesProfile.container} onLayout={onLayoutProfile}>
-        <Text style={stylesProfile.nickName}>나싸피임</Text>
+        <Text style={stylesProfile.nickName}>{profile.nickname}</Text>
         <View style={stylesProfile.infoWrapper}>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={() => handleProfilePress(1)}>
-            <Image
-              style={stylesProfile.infoImg}
-              source={require('../../assets/images/profileImg.png')}
-            />
-          </TouchableOpacity>
+          <Image
+            ref={imageRef}
+            onLayout={onLayoutImage}
+            style={stylesProfile.infoImg}
+            source={{ uri: profile.imagePath }}
+          />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
               <Text style={stylesProfile.infoContent}>
@@ -186,26 +192,26 @@ export default function SupportRecord(): JSX.Element {
             </View>
 
             <View style={stylesProfile.infoItem}>
-              <Text style={stylesProfile.infoContent}>+23일</Text>
+              <Text style={stylesProfile.infoContent}>+{profile.dayCnt}일</Text>
               <Text style={stylesProfile.infoCaption}>꿈여정</Text>
             </View>
           </View>
         </View>
-        <Text style={stylesProfile.intro}>
-          #열정 #청춘 나싸피는 열정꾼이다 화이팅임
-        </Text>
+        <Text style={stylesProfile.intro}>{profile.introduction}</Text>
       </View>
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
+      >
         {profileHeight && profileHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
             index={0}
             snapPoints={[DEVICE_HEIGHT - (profileHeight + 50), '100%']}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}>
+            style={{ alignItems: 'center' }}
+          >
             {records ? (
               <BottomSheetFlatList
                 contentContainerStyle={styles.contentContainer}
@@ -231,14 +237,15 @@ export default function SupportRecord(): JSX.Element {
       {/* 사용자 이미지 클릭 섹션*/}
       {imgOffsetXY && !expandFeed ? (
         <Pressable
-          onPress={handleProfilePress}
           style={StyleSheet.flatten([
             stylesProfile.imgPressBox,
             {
               top: imgOffsetXY.y,
               left: imgOffsetXY.x,
             },
-          ])}></Pressable>
+          ])}
+          onPress={handleProfilePress}
+        />
       ) : (
         <></>
       )}

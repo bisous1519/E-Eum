@@ -5,6 +5,7 @@ import SupportDetail from '../screen/support/SupportDetail';
 import SupportList from '../screen/support/SupportList';
 import SupportProfile from '../screen/support/SupportProfile';
 import SupportRecord from '../screen/support/SupportRecord';
+import Mypage from '../screen/mypage/Mypage';
 import Nav from '../components/common/nav/Nav';
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +37,11 @@ const SupportStack = () => {
         <Stack.Screen
           name='SupportRecord'
           component={SupportRecord}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='MyPage'
+          component={Mypage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
