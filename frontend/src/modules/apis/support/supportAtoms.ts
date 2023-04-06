@@ -139,3 +139,9 @@ export const flag = atom<boolean>({
   key: 'flag',
   default: false,
 });
+
+// 정기후원 확인
+export const isSupporting = atom<boolean>({
+  key: 'isSupporting',
+  default: false,
+});

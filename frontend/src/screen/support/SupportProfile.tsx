@@ -22,6 +22,7 @@ import {
   supportStatus,
 } from '../../modules/apis/support/supportApis';
 import {
+  isSupporting,
   supportProfileState,
   supportStatusState,
 } from '../../modules/apis/support/supportAtoms';
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
-  // 프로필 스타일 적용 ================
   profileContainer: {
     flex: 3,
     width: DEVICE_WIDTH,
@@ -162,27 +162,24 @@ export default function SupportProfile(): JSX.Element {
     useRecoilState<SupportProfileStateType>(supportProfileState);
 
   // 정기후원 여부 확인을 위한 정보
-  const [supportData, setSupportData] =
-    useRecoilState<SupportStatusStateType>(supportStatusState);
+  // const [supportData, setSupportData] =
+  //   useRecoilState<SupportStatusStateType>(supportStatusState);
 
   // 뱃지 정보
   const [badge, setBadge] = useState<BadgeStateType>();
   const [badgeList, setBadgeList] =
     useRecoilState<BadgeStateType[]>(badgeListState);
 
+  // 후원 여부 확인
+  const [isSupport, setIsSupport] = useRecoilState<boolean>(isSupporting);
+
   // 후원정보 입력 모달
   const [modal, setModal] = useState<boolean>(false);
 
-  const fetchData = () => {
-    checkProfile(uid).then((data) => setUserProfile(data));
-    getBadgeList(uid).then((data) => setBadgeList(data));
-    supportStatus(uid, loginUser.uid).then((data) => setSupportData(data));
-  };
-
   const handleStopSupport = () => {
-    stopSupport(uid, loginUser.uid);
+    // stopSupport(uid, loginUser.uid);
     // setModal(true);
-    console.log('stop응애');
+    setIsSupport(false);
   };
 
   const handleStartSupport = () => {
@@ -192,16 +189,24 @@ export default function SupportProfile(): JSX.Element {
 
   const handleToggleDelete = () => {
     setModal(false);
+    setIsSupport(true);
   };
 
   const handleBadgePress = (badge: BadgeStateType) => {
     setBadge(badge);
-    setModal((prev) => !prev);
+    // setModal((prev) => !prev);
+  };
+
+  const fetchData = () => {
+    checkProfile(uid).then((data) => setUserProfile(data));
+    getBadgeList(uid).then((data) => setBadgeList(data));
+    // supportStatus(uid, loginUser.uid).then((data) => setSupportData(data));
   };
 
   useEffect(() => {
     fetchData();
-  }, [supportData]);
+  }, []);
+  // }, [supportData]);
 
   return (
     <>
@@ -221,11 +226,13 @@ export default function SupportProfile(): JSX.Element {
               />
             )}
             <Text style={styles.nickname}>{userProfile?.nickname}</Text>
-            {supportData.isConnected ? (
+            {/* {supportData.isConnected ? ( */}
+            {isSupport ? (
               <>
                 <View style={styles.supportBox}>
                   <Text style={styles.supportGuide}>
-                    꿈을 응원한 지 {supportData.countFromRegDate}일째 😀
+                    {/* 꿈을 응원한 지 {supportData.countFromRegDate}일째 😀 */}
+                    꿈을 응원한 지 1일째 😀
                   </Text>
                 </View>
                 <Pressable style={styles.support} onPress={handleStopSupport}>
@@ -268,14 +275,8 @@ export default function SupportProfile(): JSX.Element {
             </View>
           )}
         </View>
+        {modal && <RegularSupportModal onToggleDelete={handleToggleDelete} />}
       </View>
-      {modal && (
-        <RegularSupportModal
-          onToggleDelete={handleToggleDelete}
-          uid={uid}
-          sid={loginUser.uid}
-        />
-      )}
     </>
   );
 }
