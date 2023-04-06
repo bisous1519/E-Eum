@@ -11,8 +11,16 @@ const BottleStack = () => {
   return (
     <>
       <Stack.Navigator initialRouteName='BottleBlue'>
-        <Stack.Screen name='BottleBlue' component={BottleBlue} />
-        <Stack.Screen name='BottleGreen' component={BottleGreen} />
+        <Stack.Screen
+          name='BottleBlue'
+          component={BottleBlue}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='BottleGreen'
+          component={BottleGreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name='MyBottle'
           component={MyBottle}
@@ -26,3 +34,4 @@ const BottleStack = () => {
 };
 
 export default BottleStack;
+

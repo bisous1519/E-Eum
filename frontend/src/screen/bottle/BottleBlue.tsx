@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import useDimension from '../../hooks/useDimension';
 import theme from '../../utils/theme';
 // import Video from 'react-native-video';
@@ -19,7 +26,10 @@ import {
 import { useRecoilState } from 'recoil';
 import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
 import { loginUserState } from '../../modules/apis/user/userAtoms';
+import { AntDesign } from '@expo/vector-icons';
+
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
+
 const borders = StyleSheet.create({
   red: {
     // borderWidth: 1,
@@ -37,38 +47,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // backgroundColor: theme.mainColor.main,
     backgroundColor: 'gray',
-    // backgroundColor: theme.background,
-    // flex: 1,
-    // alignItems: 'center',
+    // backgroundColor: '#9ACAC6',
+  },
+  headerButtonRight: {
+    // width: '40%'
   },
   backgroundVideo: {
-    width: '100%',
-    height: '100%',
-    zIndex: 0,
+    width: DEVICE_WIDTH,
+    height: DEVICE_HEIGHT,
+    // borderWidth: 2,
+    // borderColor: 'orange',
+    // zIndex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   popupFromBackground: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    // top: 10,
+    // left: 10,
     zIndex: 1,
     // backgroundColor: 'orange',
+    width: '100%',
     height: '100%',
   },
   leftPageBottlesLocation: {
     position: 'absolute',
     width: 200,
     height: 190,
-    top: 250,
-    left: 160,
+    top: 370,
+    right: 40,
   },
   myBottleBox: {
     position: 'absolute',
     width: 200,
     height: 200,
-    // borderWidth: 1,
-    // borderColor: 'red',
-    right: 0,
-    bottom: 50,
+    right: 10,
+    bottom: 85,
   },
   bluePageRedPressable: {
     position: 'absolute',
@@ -91,21 +105,76 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
   },
-  headerButtonLeft: { width: '55%' },
-  headerButtonRight: { width: '40%' },
-  ackgroundVideo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+  headerWrapper: {
+    // display: 'flex',
+    // flexDirection: 'row',
+    // paddingTop: 20,
+    // width: DEVICE_WIDTH * 0.94,
+    // justifyContent: 'space-between',
   },
-  headerButtons: {
-    display: 'flex',
+  headerBox: {
+    // backgroundColor: theme.mainColor.main,
+    backgroundColor: '#9ED0D0',
+    width: '100%',
+    height: 80,
+  },
+  headerTitle: {
+    position: 'absolute',
+    top: 20,
+    paddingHorizontal: 20,
     flexDirection: 'row',
-    paddingTop: 20,
-    width: DEVICE_WIDTH * 0.94,
+    alignItems: 'center',
     justifyContent: 'space-between',
+    width: DEVICE_WIDTH,
+  },
+  headerText: {
+    fontFamily: theme.fontFamily.title,
+    fontSize: theme.fontSize.bigger,
+    marginRight: 10,
+    color: theme.textColor.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    textShadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerArrow: {
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    textShadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // borderWidth: 1,
+    // borderColor: 'orange',
+  },
+  headerLeft: {
+    width: 45,
+    height: 45,
+    borderRadius: 45,
+    backgroundColor: theme.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'rgba(0, 0, 0, 0.8)',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  headerButtonLeft: {
+    // width: '100%'
   },
 });
 
@@ -207,7 +276,7 @@ export default function BottleBlue(): JSX.Element {
   const videoRef = useRef<Video>(null);
 
   const convertBottle = () => {
-    navigation.push('BottleGreen');
+    navigation.navigate('BottleGreen');
     setPlayable(false);
   };
 
@@ -354,7 +423,11 @@ export default function BottleBlue(): JSX.Element {
           </Modal>
         </View>
       )}
-      <View style={styles.backgroundVideo}>
+      <ImageBackground
+        source={require('../../assets/images/bottleBackgroundImg.png')}
+        resizeMode='stretch'
+        style={styles.backgroundVideo}
+      >
         <Video
           ref={videoRef}
           source={beachVideoBlue}
@@ -365,26 +438,34 @@ export default function BottleBlue(): JSX.Element {
           shouldPlay={playable}
           onPlaybackStatusUpdate={handlePlayable}
           isLooping={false}
-          style={{ width: '100%', height: '100%' }}
+          style={{
+            width: '100%',
+            height: '83%',
+            // borderWidth: 2,
+            // borderColor: 'red',
+          }}
           onError={(error) => {
             console.log('에러');
             console.log(error);
           }}
         />
-      </View>
+      </ImageBackground>
       <View style={styles.popupFromBackground}>
-        <View style={StyleSheet.flatten([styles.headerButtons, borders.red])}>
-          <View style={[styles.headerButtonLeft, borders.blue]}>
-            <ButtonComp
-              text={'고민상담 해류병'}
-              onPressBtn={convertBottle}
-            ></ButtonComp>
-          </View>
-          <View style={[styles.headerButtonRight, borders.blue]}>
-            <ButtonComp
-              text={'고민 보내기'}
-              onPressBtn={moveToWritingPaper}
-            ></ButtonComp>
+        <View style={StyleSheet.flatten([styles.headerWrapper, borders.red])}>
+          <View style={[styles.headerBox, borders.blue]}></View>
+          <View style={styles.headerTitle}>
+            <Pressable style={styles.headerRight} onPress={convertBottle}>
+              <Text style={styles.headerText}>고민 상담 해류병</Text>
+              <AntDesign
+                name='arrowright'
+                size={24}
+                color={theme.textColor.white}
+                style={styles.headerArrow}
+              />
+            </Pressable>
+            <Pressable style={styles.headerLeft} onPress={moveToWritingPaper}>
+              <AntDesign name='form' size={24} color={theme.mainColor.dark} />
+            </Pressable>
           </View>
         </View>
         <Pressable
@@ -392,9 +473,10 @@ export default function BottleBlue(): JSX.Element {
           onPress={handleModalPop}
         />
         <Pressable style={styles.myBottleBox} onPress={navigateToMyBottle}>
-          {resNew && <NewBadge right={20} top={10} />}
+          {resNew && <NewBadge right={30} top={5} />}
         </Pressable>
       </View>
     </View>
   );
 }
+

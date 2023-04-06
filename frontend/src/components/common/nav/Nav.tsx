@@ -108,7 +108,7 @@ type navItemType = {
 const navItem: navItemType[] = [
   {
     icon: <FontAwesome5 name='wine-bottle' size={20} color='white' />,
-    name: '해류병',
+    name: '고민 상담',
     navigateTo: 'BottleStack',
   },
   {
@@ -119,12 +119,12 @@ const navItem: navItemType[] = [
         color='white'
       />
     ),
-    name: '꿈피드',
+    name: '꿈기록',
     navigateTo: 'RecordStack',
   },
   {
     icon: <FontAwesome5 name='hand-holding-heart' size={20} color='white' />,
-    name: '꿈후원 목록',
+    name: '꿈후원',
     navigateTo: 'SupportStack',
   },
   {
@@ -220,3 +220,4 @@ export default function Nav(): JSX.Element {
     </View>
   );
 }
+
