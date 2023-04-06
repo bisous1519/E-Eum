@@ -13,6 +13,9 @@ import {
   ExpertBottlesReturnType,
 } from '../../modules/apis/bottle/bottleAtomTypes';
 import { getExpertBottles } from '../../modules/apis/bottle/bottleApis';
+import { useRecoilState } from 'recoil';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 const { DEVICE_WIDTH } = useDimension();
 const borders = StyleSheet.create({
   red: {
@@ -173,14 +176,20 @@ const modalstyles = StyleSheet.create({
 export default function BottleBlue(): JSX.Element {
   const navigation = useNav();
 
+  const [loginUser, setLoginUser] =
+    useRecoilState<LoginUserStateType>(loginUserState);
+
+  const [userId, setUserId] = useState<number>(loginUser.uid);
+
   const beachVideoBlue = require('../../assets/videos/beachgreen.mp4');
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const videoRef = useRef<Video>(null);
+  const [playable, setPlayable] = useState<boolean>(true);
 
   const convertBottle = () => {
     navigation.push('BottleBlue');
     setPlayable(false);
   };
-
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const handleModalPop = () => {
     setModalVisible(true);
@@ -188,9 +197,6 @@ export default function BottleBlue(): JSX.Element {
   const handleModalClose = () => {
     setModalVisible(false);
   };
-
-  const videoRef = useRef<Video>(null);
-  const [playable, setPlayable] = useState<boolean>(true);
 
   const handlePlayable = async (status: any) => {
     if (status.didJustFinish) {
@@ -204,11 +210,6 @@ export default function BottleBlue(): JSX.Element {
     }
   };
 
-  const [userId, setUserId] = useState<number>(1);
-
-  useEffect(() => {
-    getExpertBottles(userId).then((data) => setReceivedExpertMessages(data));
-  }, []);
   const [receivedExpertMessages, setReceivedExpertMessages] =
     useState<ExpertBottlesReturnType>();
 
@@ -219,6 +220,10 @@ export default function BottleBlue(): JSX.Element {
       userReqBottleId: null,
     });
   };
+
+  useEffect(() => {
+    getExpertBottles(userId).then((data) => setReceivedExpertMessages(data));
+  }, []);
 
   const modalMessageItem = ({ item }: { item: ExpertBottleType }) => {
     let messageBoxBackgroundColor = '';
@@ -279,7 +284,7 @@ export default function BottleBlue(): JSX.Element {
                       borders.red,
                     ])}
                   >
-                    받은 해류병 목록
+                    {loginUser.nickname}의 수신 해류병 목록
                   </Text>
                   <Pressable
                     style={StyleSheet.flatten([modalstyles.closeButton])}
