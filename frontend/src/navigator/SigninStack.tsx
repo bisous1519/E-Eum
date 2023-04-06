@@ -10,7 +10,14 @@ const Stack = createNativeStackNavigator();
 
 const SigninStack = () => {
   return (
-    <Stack.Navigator initialRouteName='Signin'>
+    <Stack.Navigator
+      initialRouteName='Signin'
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+      }}
+    >
       <Stack.Screen
         name='Signin'
         component={Signin}

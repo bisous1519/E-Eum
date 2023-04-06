@@ -6,9 +6,6 @@ import {
 } from '../../modules/apis/bottle/bottleAtomTypes';
 import theme from '../../utils/theme';
 // import dayjs from 'dayjs';
-import { getMyBottleRes } from '../../modules/apis/bottle/bottleApis';
-import { useRecoilState } from 'recoil';
-import { myBottleResState } from '../../modules/apis/bottle/bottleAtoms';
 import useDate from '../../hooks/useDate';
 import ApproveItemType from '../../models/admin/ApproveItemType';
 import { Feather } from '@expo/vector-icons';
@@ -64,7 +61,7 @@ type ApproveItemPropsType = {
   item: ApproveItemType;
   index: number;
   onPressConfirm: (index: number) => void;
-  onToggleDetailModal: () => void;
+  onToggleDetailModal: (index?: number) => void;
 };
 
 export default function ApproveItem({
@@ -74,7 +71,7 @@ export default function ApproveItem({
   onToggleDetailModal,
 }: ApproveItemPropsType): JSX.Element {
   const onPressItem = () => {
-    onToggleDetailModal();
+    onToggleDetailModal(index);
   };
 
   return (
@@ -119,4 +116,3 @@ export default function ApproveItem({
     </>
   );
 }
-
