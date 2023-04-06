@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
 
 export default function SupportRecord(): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'SupportRecord'>>();
-  const uid = route.params?.uid;
-  const tid = route.params?.tid;
+  const uid = route.params?.uid; // 글 작성자 id
+  const tid = route.params?.tid; // 후원글 태그 id
 
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
