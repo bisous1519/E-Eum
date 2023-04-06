@@ -241,11 +241,13 @@ export default function BottleBlue(): JSX.Element {
   const [receivedNormalMessages, setReceivedNormalMessages] =
     useState<NormalBottlesReturnType>();
 
-  const popupPaper = () => {
-    navigation.push('WritingPaper', { messageType: 1, newMessage: false });
-  };
   const moveToWritingPaper = () => {
-    navigation.push('WritingPaper', { messageType: 1, newMessage: true });
+    //새 질문
+    navigation.push('WritingPaper', {
+      messageType: 1,
+      newMessage: true,
+      userReqBottleId: null,
+    });
   };
 
   const modalMessageItem = ({ item }: { item: NormalBottleType }) => {
@@ -259,6 +261,17 @@ export default function BottleBlue(): JSX.Element {
       messageBoxBackgroundColor = theme.mainColor.main;
     }
 
+    const popupPaper = () => {
+      //답장
+      if (modalVisible) {
+        console.log('팝업에서 눌려서 이동');
+        navigation.push('WritingPaper', {
+          messageType: 1,
+          newMessage: false,
+          userReqBottleId: item.userReqBottleId,
+        });
+      }
+    };
     return (
       <Pressable onPress={popupPaper}>
         <View
@@ -284,7 +297,11 @@ export default function BottleBlue(): JSX.Element {
 
   useEffect(() => {
     fetchData();
+    setModalVisible(false);
+    console.log('로딩');
   }, []);
+
+  console.log('modalVisible : ' + modalVisible);
 
   return (
     // <View>

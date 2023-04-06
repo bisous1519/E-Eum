@@ -62,11 +62,11 @@ const navItem: navItemType[] = [
     name: '마이페이지',
     navigateTo: 'MypageStack',
   },
-  {
-    icon: 'a',
-    name: '알림',
-    navigateTo: 'Notice',
-  },
+  // {
+  //   icon: 'a',
+  //   name: '알림',
+  //   navigateTo: 'Notice',
+  // },
 ];
 
 export default function Nav(): JSX.Element {
@@ -85,9 +85,16 @@ export default function Nav(): JSX.Element {
       ? navigation.navigate('RecordStack')
       : to === 'SupportStack'
       ? navigation.navigate('SupportStack')
-      : to === 'MypageStack'
-      ? navigation.navigate('MypageStack')
-      : navigation.navigate('Notice');
+      : navigation.navigate('MypageStack');
+    // to === 'BottleStack'
+    //   ? navigation.navigate('BottleBlue')
+    //   : to === 'RecordStack'
+    //   ? navigation.navigate('RecordStack')
+    //   : to === 'SupportStack'
+    //   ? navigation.navigate('SupportStack')
+    //   : to === 'MypageStack'
+    //   ? navigation.navigate('MypageStack')
+    //   : navigation.navigate('Notice');
   };
 
   return (
@@ -101,7 +108,6 @@ export default function Nav(): JSX.Element {
                 key={index}
                 onPress={() => onPressNavList(item.navigateTo)}
               >
-                <Image />
                 <Text>{item.name}</Text>
               </Pressable>
             )}
@@ -117,4 +123,3 @@ export default function Nav(): JSX.Element {
     </View>
   );
 }
-
