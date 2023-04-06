@@ -113,8 +113,6 @@ const styles = StyleSheet.create({
   },
   uniBadge: {
     backgroundColor: theme.textColor.white,
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
     borderRadius: 5,
     width: DEVICE_WIDTH * 0.12,
     height: DEVICE_WIDTH * 0.12,
@@ -168,12 +166,10 @@ export default function Mypage(): JSX.Element {
   };
 
   const handleChargePoint = () => {
-    console.log('포인트 충전 화면으로 푸슝');
     navigation.push('PointCharge');
   };
 
   const handleBadgePress = (badge: BadgeStateType) => {
-    console.log('뱃지 디테일 모달이 푸슝~');
     setBadge(badge);
     setIsModal((prev) => !prev);
   };
@@ -188,6 +184,7 @@ export default function Mypage(): JSX.Element {
       1,
       loginUser
     );
+
     const profileData: RecordProfileStateType | undefined =
       await getProfileData(loginUser);
     if (badgeData) {
@@ -235,7 +232,8 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}>
+                activeOpacity={0.6}
+              >
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -301,7 +299,8 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}>
+                activeOpacity={0.6}
+              >
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -315,7 +314,8 @@ export default function Mypage(): JSX.Element {
                   <TouchableOpacity
                     style={styles.uniBadge}
                     onPress={() => handleBadgePress(badge.item)}
-                    activeOpacity={0.6}>
+                    activeOpacity={0.6}
+                  >
                     <Badge key={badge.item.id} badge={badge.item} />
                   </TouchableOpacity>
                 )}

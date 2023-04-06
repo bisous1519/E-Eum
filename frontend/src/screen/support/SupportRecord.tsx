@@ -149,7 +149,6 @@ export default function SupportRecord(): JSX.Element {
 
   const handleProfilePress = (uid: number) => {
     nav.navigate('SupportProfile', { uid: uid });
-    console.log('supportProfile로 푸슝~');
   };
 
   const fetchData = () => {
@@ -193,14 +192,16 @@ export default function SupportRecord(): JSX.Element {
 
       {/* 피드 */}
       <View
-        style={StyleSheet.flatten([stylesFeed.container, styles.container])}>
+        style={StyleSheet.flatten([stylesFeed.container, styles.container])}
+      >
         {profileHeight && profileHeight != 0 ? (
           <BottomSheet
             ref={sheetRef}
             index={0}
             snapPoints={[DEVICE_HEIGHT - (profileHeight + 50), '100%']}
             onChange={handleSheetChange}
-            style={{ alignItems: 'center' }}>
+            style={{ alignItems: 'center' }}
+          >
             {records ? (
               <BottomSheetFlatList
                 contentContainerStyle={styles.contentContainer}
@@ -233,7 +234,8 @@ export default function SupportRecord(): JSX.Element {
               left: imgOffsetXY.x,
             },
           ])}
-          onPress={handleProfilePress}></Pressable>
+          onPress={handleProfilePress}
+        ></Pressable>
       ) : (
         <></>
       )}

@@ -92,7 +92,6 @@ export default function CustomHeader(): JSX.Element {
     setKeyword(e.nativeEvent.text);
   };
 
-  // 검색 API를 푸슝
   const handleSearch = () => {
     searchSupports(keyword).then((data) => {
       setSupports(data);

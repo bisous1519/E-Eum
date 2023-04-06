@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import theme from '../../utils/theme';
 import ModalComp from '../common/ModalComp';
 import useDimension from '../../hooks/useDimension';
-// import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
 import Badge from '../common/Badge';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
 
 type BadgeModalPropsType = {
   badge: any;
-  // badge: BadgeStateType;
   onToggleModal: () => void;
 };
 

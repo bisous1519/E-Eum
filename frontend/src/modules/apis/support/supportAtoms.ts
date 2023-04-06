@@ -14,7 +14,7 @@ const supportsInitialState: SupportsStateType = {
   userImagePath: '',
   sid: 0,
   title: '',
-  targetAmount: 1000,
+  targetAmount: 0,
   achievementRate: 0,
 };
 

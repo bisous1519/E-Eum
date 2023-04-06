@@ -179,7 +179,6 @@ export default function SupportProfile(): JSX.Element {
   };
 
   const handleBadgePress = (badge: BadgeStateType) => {
-    console.log('뱃지 디테일 모달이 푸슝~');
     setBadge(badge);
     setModal((prev) => !prev);
   };
@@ -244,7 +243,8 @@ export default function SupportProfile(): JSX.Element {
                 <TouchableOpacity
                   style={styles.uniBadge}
                   onPress={() => handleBadgePress(badge.item)}
-                  activeOpacity={0.6}>
+                  activeOpacity={0.6}
+                >
                   <Badge key={badge.item.id} badge={badge.item} />
                 </TouchableOpacity>
               )}

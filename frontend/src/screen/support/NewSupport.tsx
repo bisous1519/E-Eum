@@ -21,7 +21,7 @@ import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 import { getTags } from '../../modules/apis/record/recordApis';
 import { tagsState } from '../../modules/apis/record/recordAtoms';
 import useNav from '../../hooks/useNav';
-import { flag } from '../../modules/apis/support/supportAtoms';
+import { flag, sortType } from '../../modules/apis/support/supportAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -119,6 +119,7 @@ const dateFormat = (date: any) => {
 
 export default function NewSupport(): JSX.Element {
   const [check, setCheck] = useRecoilState<boolean>(flag);
+  const [sort, setSort] = useRecoilState<number>(sortType);
 
   const navigation = useNav();
 
@@ -212,6 +213,7 @@ export default function NewSupport(): JSX.Element {
       detailAddress: detailAddress,
     });
     setCheck((prev) => !prev);
+    setSort(1);
     navigation.popToTop();
   };
 
@@ -260,7 +262,8 @@ export default function NewSupport(): JSX.Element {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={styles.tagList}>
+              style={styles.tagList}
+            >
               {tags
                 ? tags.map((tag, index) => (
                     <Tag

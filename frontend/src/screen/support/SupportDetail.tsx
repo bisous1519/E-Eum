@@ -4,9 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
-  Button,
   Dimensions,
   Pressable,
 } from 'react-native';
@@ -29,6 +27,7 @@ import { supportDetail } from '../../modules/apis/support/supportApis';
 import { useRecoilState } from 'recoil';
 import {
   flag,
+  sortType,
   supportDetailState,
 } from '../../modules/apis/support/supportAtoms';
 import { SupportDetailStateType } from '../../modules/apis/support/supportAtomTypes';
@@ -37,6 +36,7 @@ import TextRender from '../../components/common/editor/TextRender';
 import { BadgeStateType } from '../../modules/apis/user/userAtomTypes';
 import { badgeListState } from '../../modules/apis/user/userAtoms';
 import useNav from '../../hooks/useNav';
+import BadgeListModal from '../../components/support/BadgeListModal';
 // ===========================================================
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -177,27 +177,30 @@ export default function SupportDetail(): JSX.Element {
 
   const [detailData, setDetailData] =
     useRecoilState<SupportDetailStateType>(supportDetailState);
+  const [sort, setSort] = useRecoilState<number>(sortType);
   const [check, setCheck] = useRecoilState<boolean>(flag);
 
   const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleSupporterClick = (uid: number) => {
+  // const handleSupporterClick = (uid: number) => {
+  const handleSupporterClick = () => {
     // nav.navigate('SupportProfile', { uid: uid });
     console.log('후원자 뱃지만 보여줘..');
+    setBadgeModal(true);
   };
 
+  // uid: 작성자 id, tid: 태그 id
   const handleFeedPress = (uid: number, tid: number) => {
-    if (uid === loginUser) {
-      navigation.navigate('Mypage');
-    } else {
-      nav.navigate('SupportRecord', { uid: uid, tid: tid });
-    }
+    nav.navigate('SupportRecord', { uid: uid, tid: tid });
   };
 
   // ============================================================================
   // 1. writer 정보 중 point 정보를 받아와서 if (point === 0) 충전화면
   // 2. else인 경우 후원금액 입력 bottom sheet
+
+  // 후원자 뱃지 모달
+  const [badgeModal, setBadgeModal] = useState<boolean>(false);
 
   // 후원금액 입력 모달
   const [supportModal, setSupportModal] = useState<boolean>(false);
@@ -209,14 +212,15 @@ export default function SupportDetail(): JSX.Element {
   const onPressSupportBtn = () => {
     // 사용자 포인트 잔고가 있으면 setSupportModal(true);
     // 사용자 포인트 잔고가 없으면 setChargeModal(true);
+    setSort(1);
     setSupportModal(true);
-    setCheck((prev) => !prev);
   };
 
   // 모달 밖의 화면을 눌렀을 때의 작업
   const onToggleDelete = () => {
     setSupportModal(false); // 요건 후원화면
     setChargeModal(false); // 요건 충전알람화면
+    setBadgeModal(false);
   };
 
   const link = () => {
@@ -256,7 +260,8 @@ export default function SupportDetail(): JSX.Element {
             <TouchableOpacity
               onPress={() => link()}
               activeOpacity={0.6}
-              style={styles.productLink}>
+              style={styles.productLink}
+            >
               <Text style={styles.linkText}>참고링크</Text>
             </TouchableOpacity>
           </View>
@@ -297,8 +302,10 @@ export default function SupportDetail(): JSX.Element {
                     <Pressable
                       key={idx}
                       onPress={() =>
-                        handleSupporterClick(detailData.sponsorIdList[idx])
-                      }>
+                        // handleSupporterClick(detailData.sponsorIdList[idx])
+                        handleSupporterClick()
+                      }
+                    >
                       {/* 주석 풀어야해 */}
                       <Image
                         // source={{uri: detailData?.sponsorImagePathList[idx]}}
@@ -322,7 +329,8 @@ export default function SupportDetail(): JSX.Element {
           <View style={styles.group}>
             <TouchableOpacity
               onPress={() => handleFeedPress(detailData.uid, detailData.tid)}
-              activeOpacity={0.6}>
+              activeOpacity={0.6}
+            >
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image
@@ -353,6 +361,7 @@ export default function SupportDetail(): JSX.Element {
         </View>
       </ScrollView>
       <SupportButton onPressSupportBtn={onPressSupportBtn} />
+      {badgeModal && <BadgeListModal uid={1} onToggleModal={onToggleDelete} />}
       {chargeModal && <ChargeAlertModal onToggleDelete={onToggleDelete} />}
       {supportModal && (
         <SupportModal
