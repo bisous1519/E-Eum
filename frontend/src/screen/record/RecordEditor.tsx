@@ -28,6 +28,8 @@ import {
 import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
 import TagList from '../../components/record/TagList';
 import TextEditor from '../../components/common/editor/TextEditor';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigator/RecordStack';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -57,14 +59,15 @@ const styles = StyleSheet.create({
 });
 
 type RecordEditorPropsType = {
-  route: {
-    params: { item: RecordStateType };
-  };
+  // route: {
+  //   params: { item: RecordStateType };
+  // };
 };
 
-export default function RecordEditor({
-  route,
-}: RecordEditorPropsType): JSX.Element {
+export default function RecordEditor({}: // route,
+RecordEditorPropsType): JSX.Element {
+  const route = useRoute<RouteProp<RootStackParamList, 'RecordEditor'>>();
+
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
@@ -104,8 +107,8 @@ export default function RecordEditor({
         console.log('content 가 비어있음');
       } else if (!selectedTag) {
         console.log('tag 선택 안함');
-      } else {
-        putRecord(route.params.item.id, {
+      } else if (route.params?.itemId) {
+        putRecord(route.params.itemId, {
           content,
           writerId: 1,
           tid: selectedTag.id,
@@ -123,7 +126,7 @@ export default function RecordEditor({
   };
 
   useEffect(() => {
-    if (route.params) {
+    if (route.params?.item) {
       // 꿈기록 수정인 경우
       setScreenState('수정');
 

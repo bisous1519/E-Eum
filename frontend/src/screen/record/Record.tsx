@@ -39,6 +39,10 @@ import UpDelTagModal from '../../components/record/UpDelTagModal';
 import EmptyMessage from '../../components/common/EmptyMessage';
 import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
 import { loginUserState } from '../../modules/apis/user/userAtoms';
+import { FlatList } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList as RecordRootStackParamList } from '../../navigator/RecordStack';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -148,7 +152,10 @@ export default function Record(): JSX.Element {
     useRecoilState<RecordProfileStateType>(recordProfileState);
   const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
-  const navigation = useNav();
+  // const navigation = useNav();
+  const recNavigation =
+    useNavigation<NativeStackNavigationProp<RecordRootStackParamList>>();
+
   const sheetRef = useRef<BottomSheet>(null);
   const imageRef = useRef<Image>(null);
   const [deleteModal, setDeleteModal] = useState<boolean>(false);
@@ -182,11 +189,14 @@ export default function Record(): JSX.Element {
   };
 
   const handleProfilePress = () => {
-    navigation.navigate('SupportProfile');
+    // supNavigation.navigate('SupportProfile', {
+    //   uid: 1,
+    // });
+    // navigation.navigate('SupportProfile');
   };
 
   const onPressPlusBtn = (): void => {
-    navigation.push('RecordEditor');
+    recNavigation.push('RecordEditor');
   };
 
   const onToggleDelete = (recordId?: number): void => {
@@ -271,7 +281,7 @@ export default function Record(): JSX.Element {
             style={{ alignItems: 'center' }}
           >
             {records ? (
-              <BottomSheetFlatList
+              <FlatList
                 contentContainerStyle={styles.contentContainer}
                 showsVerticalScrollIndicator={false}
                 data={records.recordList}
@@ -284,6 +294,18 @@ export default function Record(): JSX.Element {
                 )}
               />
             ) : (
+              // <BottomSheetFlatList
+              //   contentContainerStyle={styles.contentContainer}
+              //   showsVerticalScrollIndicator={false}
+              //   data={records.recordList}
+              //   renderItem={({ item, index }) => (
+              //     <ItemContainer
+              //       regTime={records.dateList[index]}
+              //       list={item}
+              //       onToggleDelete={onToggleDelete}
+              //     />
+              //   )}
+              // />
               <EmptyMessage
                 text='작성된 꿈기록이 없습니다'
                 marginBottom={350}
