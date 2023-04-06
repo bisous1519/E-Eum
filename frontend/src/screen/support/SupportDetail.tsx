@@ -51,6 +51,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  innerContainer: {
+    width: DEVICE_WIDTH * 0.9,
+    marginVertical: 15,
+    marginHorizontal: 20,
+    fontSize: theme.fontSize.regular,
+    marginBottom: 70,
+  },
   group: {
     marginVertical: DEVICE_HEIGHT * 0.01,
   },
@@ -329,7 +336,6 @@ export default function SupportDetail(): JSX.Element {
               <View style={styles.writerTag}>
                 <View style={styles.leftProfile}>
                   <Image
-                    // source={require('../../assets/images/sample.png')}
                     source={{ uri: detailData?.userImagePath }}
                     style={styles.profilePicture}
                   />

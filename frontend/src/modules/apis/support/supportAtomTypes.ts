@@ -61,3 +61,16 @@ export type RegularSupportStateType = {
   point: number;
   paymentDate: number;
 };
+
+export type SupportStatusStateType = {
+  uid: number;
+  imagePath: string | undefined;
+  nickname: string;
+  isConnected: boolean | undefined;
+  sponsorId: number | undefined;
+  sponsorshipId: number | undefined;
+  sponsorshipPoint: number | undefined;
+  sponsorshipPaymentDate: number | undefined;
+  countFromRegDate: number | undefined;
+  myPoint: number | undefined;
+};
