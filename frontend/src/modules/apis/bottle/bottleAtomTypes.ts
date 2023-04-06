@@ -130,11 +130,12 @@ export type PostNewBottleReturnType = {
   id: number;
   writerId: number;
   content: string;
-  type: number;
   sentiment: number;
   ttsPath: string;
   regTime: string;
   status: number;
+  read: boolean;
+  resRead: boolean;
 };
 
 // 답변 해류병 작성 리턴 타입
@@ -160,8 +161,7 @@ export type NormalBottleType = {
   ttsPath: string;
   regTime: string;
   status: number;
-  read: boolean;
-  resRead: boolean;
+  receiverRead: boolean;
 };
 
 //수신된 전문 해류병 목록 리턴 타입
@@ -176,6 +176,5 @@ export type ExpertBottleType = {
   ttsPath: string;
   regTime: string;
   status: number;
-  read: boolean;
-  resRead: boolean;
+  receiverRead: boolean;
 };
