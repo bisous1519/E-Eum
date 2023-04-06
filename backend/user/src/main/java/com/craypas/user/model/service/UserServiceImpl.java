@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -209,7 +210,7 @@ public class UserServiceImpl implements UserService {
 		Integer point = requestMap.get("point");
 		System.out.println(requestMap.toString());
 		System.out.println(point);
-		if(user.getPoint() < point){
+		if (user.getPoint() < point) {
 			throw new CustomException(ErrorCode.NOT_ENOUGH_POINT);
 		}
 		user.updatePoint((-1) * point);
@@ -379,8 +380,8 @@ public class UserServiceImpl implements UserService {
 		Map<String, Integer> wordMap = new HashMap<>();
 		for (int idx = 0; idx < categories.size(); idx++) {
 			try {
-				BufferedReader br = new BufferedReader(
-					new FileReader("src/main/resources/keywords/output" + categories.get(idx)));
+				ClassPathResource resource = new ClassPathResource("keywords/output" + categories.get(idx));
+				BufferedReader br = new BufferedReader(new FileReader(resource.getFile()));
 				String line = "";
 				while ((line = br.readLine()) != null) {
 					String[] arr = line.split(pattern);
