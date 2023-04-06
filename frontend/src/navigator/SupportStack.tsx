@@ -5,38 +5,42 @@ import SupportDetail from '../screen/support/SupportDetail';
 import SupportList from '../screen/support/SupportList';
 import SupportProfile from '../screen/support/SupportProfile';
 import SupportRecord from '../screen/support/SupportRecord';
+import Nav from '../components/common/nav/Nav';
 
 const Stack = createNativeStackNavigator();
 
 const SupportStack = () => {
   return (
-    <Stack.Navigator initialRouteName='SupportList'>
-      <Stack.Screen
-        name='SupportList'
-        component={SupportList}
-        options={{ headerTitle: '', header: () => <CustomHeader /> }}
-      />
-      <Stack.Screen
-        name='SupportDetail'
-        component={SupportDetail}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='NewSupport'
-        component={NewSupport}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='SupportProfile'
-        component={SupportProfile}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name='SupportRecord'
-        component={SupportRecord}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
+    <>
+      <Stack.Navigator initialRouteName='SupportList'>
+        <Stack.Screen
+          name='SupportList'
+          component={SupportList}
+          options={{ headerTitle: '', header: () => <CustomHeader /> }}
+        />
+        <Stack.Screen
+          name='SupportDetail'
+          component={SupportDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='NewSupport'
+          component={NewSupport}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='SupportProfile'
+          component={SupportProfile}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name='SupportRecord'
+          component={SupportRecord}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+      <Nav />
+    </>
   );
 };
 

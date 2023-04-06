@@ -65,7 +65,6 @@ export default function App(): JSX.Element {
             <StatusBar style='dark' />
             <NavigationContainer>
               <MainNavigator />
-              <Nav />
             </NavigationContainer>
           </SafeAreaView>
         </ThemeProvider>

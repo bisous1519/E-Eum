@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import {
+  Animated,
   FlatList,
   Image,
   Pressable,
@@ -11,7 +12,10 @@ import {
 import theme from '../../../utils/theme';
 import { shadowStyle } from '../shadowStyle';
 import useNav from '../../../hooks/useNav';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Foundation } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 const styles = StyleSheet.create({
   navWrapper: {
     position: 'absolute',
@@ -31,41 +35,102 @@ const styles = StyleSheet.create({
     color: theme.textColor.white,
   },
   navListWrapper: {
+    width: 160,
+    // borderWidth: 5,
+    // borderColor: theme.mainColor.main,
+    // borderRadius: 15,
+    // paddingLeft: 5,
+    // paddingRight: 5,
+    // paddingTop: 5,
+    // paddingBottom: 5,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignContent: 'space-between',
+  },
+  listItem: {
+    // borderWidth: 3,
+    // borderColor: theme.grayColor.darkGray,
+    // marginBottom: 5,
+    paddingHorizontal: 5,
+    height: 40,
+    // borderRadius: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // backgroundColor: 'rgba(0,0,0,0.15)',
     backgroundColor: theme.mainColor.main,
+  },
+  itemBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginBottom: 5,
+  },
+  itemIcon: {
+    height: 35,
+    width: 35,
+    display: 'flex',
+    borderRadius: 10,
+    padding: 7,
+    justifyContent: 'center',
+    alignContent: 'center',
+    // borderWidth: 1,
+    marginRight: 10,
+    // borderRightWidth: 1,
+    // borderStyle: 'dashed',
+    // borderColor: theme.grayColor.lightGray,
+  },
+  itemText: {
+    fontFamily: theme.fontFamily.mainMedium,
+    fontSize: theme.fontSize.regular,
+    textAlignVertical: 'center',
+    color: theme.textColor.white,
+  },
+  TopBorderRadius: {
+    borderTopStartRadius: 15,
+    borderTopEndRadius: 15,
+    borderBottomColor: theme.grayColor.lightGray,
+    borderBottomWidth: 1,
+  },
+  BottomBorderRadius: {
+    borderBottomEndRadius: 15,
+    borderBottomStartRadius: 15,
   },
 });
 
 type navItemType = {
-  icon: string;
+  icon: any;
   name: string;
   navigateTo: string;
 };
 
 const navItem: navItemType[] = [
   {
-    icon: 'a',
+    icon: <FontAwesome5 name='wine-bottle' size={20} color='white' />,
     name: '해류병',
     navigateTo: 'BottleStack',
   },
   {
-    icon: 'a',
+    icon: (
+      <MaterialCommunityIcons
+        name='clipboard-edit-outline'
+        size={22}
+        color='white'
+      />
+    ),
     name: '꿈피드',
     navigateTo: 'RecordStack',
   },
   {
-    icon: 'a',
+    icon: <FontAwesome5 name='hand-holding-heart' size={20} color='white' />,
     name: '꿈후원 목록',
     navigateTo: 'SupportStack',
   },
   {
-    icon: 'a',
+    icon: <Ionicons name='md-person-sharp' size={22} color='white' />,
     name: '마이페이지',
     navigateTo: 'MypageStack',
-  },
-  {
-    icon: 'a',
-    name: '알림',
-    navigateTo: 'Notice',
   },
 ];
 
@@ -85,28 +150,66 @@ export default function Nav(): JSX.Element {
       ? navigation.navigate('RecordStack')
       : to === 'SupportStack'
       ? navigation.navigate('SupportStack')
-      : to === 'MypageStack'
-      ? navigation.navigate('MypageStack')
-      : navigation.navigate('Notice');
+      : navigation.navigate('MypageStack');
   };
+
+  const navListHeight = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isOpenNav) {
+      console.log('if isOpenNav : ' + isOpenNav);
+      Animated.timing(navListHeight, {
+        toValue: 165,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      console.log('else isOpenNav : ' + isOpenNav);
+      Animated.timing(navListHeight, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [isOpenNav]);
 
   return (
     <View style={styles.navWrapper}>
       {isOpenNav && (
-        <View style={styles.navListWrapper}>
+        <Animated.View
+          style={[styles.navListWrapper, { height: navListHeight }]}
+        >
+          {/* <View style={styles.navListWrapper}> */}
           <FlatList
             data={navItem}
             renderItem={({ item, index }) => (
-              <Pressable
-                key={index}
-                onPress={() => onPressNavList(item.navigateTo)}
+              <View
+                style={StyleSheet.flatten([
+                  styles.listItem,
+                  item.name === '마이페이지'
+                    ? styles.BottomBorderRadius
+                    : item.name === '해류병'
+                    ? styles.TopBorderRadius
+                    : {
+                        borderBottomColor: theme.grayColor.lightGray,
+                        borderBottomWidth: 1,
+                      },
+                ])}
               >
-                <Image />
-                <Text>{item.name}</Text>
-              </Pressable>
+                <Pressable
+                  key={index}
+                  onPress={() => onPressNavList(item.navigateTo)}
+                >
+                  <View style={styles.itemBox}>
+                    <Text style={styles.itemIcon}>{item.icon}</Text>
+                    <Text style={styles.itemText}>{item.name}</Text>
+                  </View>
+                </Pressable>
+              </View>
             )}
           />
-        </View>
+          {/* </View> */}
+        </Animated.View>
       )}
       <Pressable
         style={StyleSheet.flatten([styles.navButton, shadowStyle.shadow])}
@@ -117,4 +220,3 @@ export default function Nav(): JSX.Element {
     </View>
   );
 }
-
