@@ -9,7 +9,6 @@ export type RootStackParamList = {
   MypageStack?: undefined;
   Mypage?: undefined;
   PointCharge?: undefined;
-  Notice?: undefined;
   Record?: undefined;
   RecordEditor?: { item: RecordStateType } | undefined;
   Signup?: undefined;
