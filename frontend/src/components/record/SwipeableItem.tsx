@@ -6,11 +6,17 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
+import {
+  GestureHandlerRootView,
+  Swipeable,
+} from 'react-native-gesture-handler';
 import useNav from '../../hooks/useNav';
 import theme from '../../utils/theme';
 import { RecordStateType } from '../../modules/apis/record/recordAtomTypes';
 import TextRender from '../common/editor/TextRender';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList as SupportRootStackParamList } from '../../navigator/SupportStack';
 
 const stylesRenderLeft = StyleSheet.create({
   rec: {
@@ -56,6 +62,7 @@ export default function SwipeableItem({
   onToggleDelete,
 }: SwipeablePropsType): JSX.Element {
   const navigation = useNav();
+
   const swipeableRef = useRef<Swipeable>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
   const [convertedContent, setConvertedContent] = useState('');
@@ -120,21 +127,23 @@ export default function SwipeableItem({
   };
 
   return (
-    <Swipeable
-      ref={swipeableRef}
-      friction={1}
-      rightThreshold={30}
-      overshootRight={false}
-      overshootLeft={false}
-      renderLeftActions={renderLeftActions}
-      renderRightActions={renderRightActions}
-    >
-      <View onLayout={onLayout} style={stylesFeed.content}>
-        <Text style={stylesFeed.tag}># {item.tagName}</Text>
-        <View style={stylesFeed.contentWrapper}>
-          <TextRender content={item.content} />
+    <GestureHandlerRootView>
+      <Swipeable
+        ref={swipeableRef}
+        friction={1}
+        rightThreshold={30}
+        overshootRight={false}
+        overshootLeft={false}
+        renderLeftActions={renderLeftActions}
+        renderRightActions={renderRightActions}
+      >
+        <View onLayout={onLayout} style={stylesFeed.content}>
+          <Text style={stylesFeed.tag}># {item.tagName}</Text>
+          <View style={stylesFeed.contentWrapper}>
+            <TextRender content={item.content} />
+          </View>
         </View>
-      </View>
-    </Swipeable>
+      </Swipeable>
+    </GestureHandlerRootView>
   );
 }

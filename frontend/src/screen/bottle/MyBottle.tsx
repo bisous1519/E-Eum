@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, Swipeable } from 'react-native-gesture-handler';
 import MyBottleItem from '../../components/bottle/MyBottleItem';
 import MyBottleModal from '../../components/bottle/MyBottleModal';
 import theme from '../../utils/theme';
@@ -11,6 +11,7 @@ import { MyBottleStateType } from '../../modules/apis/bottle/bottleAtomTypes';
 import { useRecoilState } from 'recoil';
 import { myBottlesState } from '../../modules/apis/bottle/bottleAtoms';
 import EmptyMessage from '../../components/common/EmptyMessage';
+import SwipeableItem from '../../components/record/SwipeableItem';
 
 const styles = StyleSheet.create({
   container: {
