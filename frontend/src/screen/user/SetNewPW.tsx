@@ -12,10 +12,11 @@ import {
 import ButtonComp from '../../components/common/button/ButtonComp';
 import InputComp from '../../components/common/input/InputComp';
 import useInputText from '../../hooks/useInputText';
-import useNav from '../../hooks/useNav';
+import useNav, { RootStackParamList } from '../../hooks/useNav';
 import theme from '../../utils/theme';
 import { putEditPW } from '../../modules/apis/user/userApis';
 import { EditPWType } from '../../modules/apis/user/userAtomTypes';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 
@@ -85,6 +86,13 @@ export default function SetNewPW(): JSX.Element {
 
   const [pwState, setPwState] = useState<boolean>(false);
 
+  const route = useRoute<RouteProp<RootStackParamList, 'SetNewPW'>>();
+  const [userEmail, setUserEmail] = useState<string>('');
+  useEffect(() => {
+    if (route.params) setUserEmail(route.params.userEmail);
+    console.log('이메일 : ' + userEmail);
+  }, []);
+
   //비밀번호
   const { text: userPW, onChangeText: onChangeUserText } = useInputText();
   const PWRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d)(?=.*[a-zA-Z]).{8,16}$/;
@@ -124,7 +132,10 @@ export default function SetNewPW(): JSX.Element {
 
   const setNewPW = async () => {
     if (pwState) {
-      await putEditPW(userId, userPW).then((returndata: EditPWType) =>
+      console.log('재설정 가능');
+      console.log('email : ' + userEmail);
+      console.log('PW : ' + userPW);
+      await putEditPW(userEmail, userPW).then((returndata: EditPWType) =>
         console.log(returndata)
       );
       navigation.push('Signin');

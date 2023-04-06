@@ -26,6 +26,7 @@ import { Modal } from 'react-native-paper';
 
 import { Entypo } from '@expo/vector-icons';
 import { SignUpStateType } from '../../modules/apis/user/userAtomTypes';
+import useNav from '../../hooks/useNav';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -194,6 +195,8 @@ const stylesPostCodeModal = StyleSheet.create({
 });
 
 export default function Signup(): JSX.Element {
+  const navigation = useNav();
+
   const [nameState, setNameState] = useState<boolean>(false);
   const [emailState, setEmailState] = useState<boolean>(false);
   const [pwState, setPwState] = useState<boolean>(false);
@@ -422,6 +425,7 @@ export default function Signup(): JSX.Element {
       type: userType,
     };
     postSignUp(postData).then((returndata) => console.log(returndata));
+    navigation.navigate('Signin');
   };
 
   return (

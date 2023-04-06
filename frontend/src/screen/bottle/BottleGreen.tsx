@@ -212,11 +212,12 @@ export default function BottleBlue(): JSX.Element {
   const [receivedExpertMessages, setReceivedExpertMessages] =
     useState<ExpertBottlesReturnType>();
 
-  const popupPaper = () => {
-    navigation.push('WritingPaper', { messageType: 2, newMessage: false });
-  };
   const moveToWritingPaper = () => {
-    navigation.push('WritingPaper', { messageType: 2, newMessage: true });
+    navigation.push('WritingPaper', {
+      messageType: 2,
+      newMessage: true,
+      userReqBottleId: null,
+    });
   };
 
   const modalMessageItem = ({ item }: { item: ExpertBottleType }) => {
@@ -230,6 +231,13 @@ export default function BottleBlue(): JSX.Element {
       messageBoxBackgroundColor = theme.mainColor.main;
     }
 
+    const popupPaper = () => {
+      navigation.push('WritingPaper', {
+        messageType: 2,
+        newMessage: false,
+        userReqBottleId: item.userReqBottleId,
+      });
+    };
     return (
       <Pressable onPress={popupPaper}>
         <View
