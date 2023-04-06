@@ -81,7 +81,7 @@
 
 ------
 
-  <img src="https://user-images.githubusercontent.com/70613905/230283691-6b0ad1c0-72d6-4fd6-99c8-bb0b303bdb79.png" width=80%/>
+  <img src="https://user-images.githubusercontent.com/70613905/230283691-6b0ad1c0-72d6-4fd6-99c8-bb0b303bdb79.png" width=60%/>
 
 ------
 
@@ -89,7 +89,7 @@
 
 ------
 
-  <img src="https://user-images.githubusercontent.com/70613905/230283974-e65abee1-1343-466c-91d3-8f436dedffa6.png" width=80%/>
+  <img src="https://user-images.githubusercontent.com/70613905/230283974-e65abee1-1343-466c-91d3-8f436dedffa6.png" width=60%/>
 
 ------
 
@@ -97,13 +97,13 @@
 
 ## **🎨 Figma**
 
-​	<img src="https://user-images.githubusercontent.com/70613905/230284328-1d75169b-ba33-4ead-b8e2-6009c69c6a75.png" width=70%>
+​	<img src="https://user-images.githubusercontent.com/70613905/230284328-1d75169b-ba33-4ead-b8e2-6009c69c6a75.png" width=50%>
 
 <br />
 
 ## 🗂 ERD
 
-​	<img src="https://user-images.githubusercontent.com/70613905/230284487-c64f40f9-c5c4-4b3c-8f23-2aa62da8221f.png" width="70%"></div>
+​	<img src="https://user-images.githubusercontent.com/70613905/230284487-c64f40f9-c5c4-4b3c-8f23-2aa62da8221f.png" width="50%"></div>
 
 <br />
 
