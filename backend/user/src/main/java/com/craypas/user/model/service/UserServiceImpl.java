@@ -116,8 +116,8 @@ public class UserServiceImpl implements UserService {
 	// 비밀번호 재설정
 	@Override
 	@Transactional
-	public ResponseDto.GetUser updatePassword(final Long uid, final Map<String, String> requestMap) {
-		User user = userRepository.findById(uid).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+	public ResponseDto.GetUser updatePassword(final Map<String, String> requestMap) {
+		User user = userRepository.findByEmail(requestMap.get("email"));
 		user.updatePassword(requestMap.get("password"));
 		return new ResponseDto.GetUser(user);
 	}

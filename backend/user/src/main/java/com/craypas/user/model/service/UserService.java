@@ -25,7 +25,7 @@ public interface UserService {
 	ResponseDto.GetUser updateUser(final Long uid, final RequestDto.UpdateUser requestDto);
 
 	// 비밀번호 재설정
-	ResponseDto.GetUser updatePassword(final Long uid, final Map<String, String> requestMap);
+	ResponseDto.GetUser updatePassword(final Map<String, String> requestMap);
 
 	// 회원 정보 단일 조회(꿈 후원글)
 	ResponseDto.GetDreamSupportUser getDreamSupportUser(final Long uid);
