@@ -51,13 +51,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  innerContainer: {
-    width: DEVICE_WIDTH * 0.9,
-    marginVertical: 15,
-    marginHorizontal: 20,
-    fontSize: theme.fontSize.regular,
-    marginBottom: 70,
-  },
   group: {
     marginVertical: DEVICE_HEIGHT * 0.01,
   },
@@ -189,10 +182,7 @@ export default function SupportDetail(): JSX.Element {
   const navigation = useNav();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // const handleSupporterClick = (uid: number) => {
   const handleSupporterClick = () => {
-    // nav.navigate('SupportProfile', { uid: uid });
-    console.log('후원자 뱃지만 보여줘..');
     setBadgeModal(true);
   };
 
