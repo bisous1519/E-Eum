@@ -8,6 +8,9 @@
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "android": {
+        "buildType": "apk"
       }
     },
     "preview": {
@@ -19,9 +22,20 @@
         "buildType": "apk"
       }
     },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
     "production": {
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "android": {
+        "buildType": "apk"
       }
     }
   },

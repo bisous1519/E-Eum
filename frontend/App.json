@@ -1,11 +1,10 @@
 {
-  "name": "E-Eum",
-  "displayName": "E-Eum",
+  "name": "e-eum",
+  "displayName": "e-eum",
   "expo": {
-    "name": "E-Eum",
+    "name": "e-eum",
     "slug": "my-app",
     "privacy": "unlisted",
-    "sdkVersion": "36.0.0",
     "extra": {
       "eas": {
         "projectId": "7013b88a-152b-43c2-b255-879fc379af74"
