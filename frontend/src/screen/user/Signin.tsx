@@ -129,7 +129,7 @@ const stylesSocialSignin = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    width: 120,
+    width: 130,
     height: 50,
     resizeMode: 'contain',
     borderRadius: 15,
@@ -362,4 +362,3 @@ export default function Signin(): JSX.Element {
     </ScrollView>
   );
 }
-

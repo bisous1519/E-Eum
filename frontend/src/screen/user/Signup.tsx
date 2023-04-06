@@ -424,6 +424,7 @@ export default function Signup(): JSX.Element {
       gender: userGender,
       // image: userProfileImage,
       type: userType,
+      region: myAddress,
     };
     postSignUp(postData).then((returndata) => console.log(returndata));
     navigation.navigate('Signin');

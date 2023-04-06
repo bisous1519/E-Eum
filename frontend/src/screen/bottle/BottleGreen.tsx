@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
   },
   backgroundVideo: {
     width: DEVICE_WIDTH,
-    height: DEVICE_HEIGHT,
+    height: DEVICE_HEIGHT + 100,
+
     // borderWidth: 2,
     // borderColor: 'orange',
     // zIndex: 0,
@@ -284,6 +285,10 @@ export default function BottleBlue(): JSX.Element {
     navigation.push('MyBottle');
   };
 
+  setTimeout(() => {
+    if (!playable) setPlayable(true);
+  }, 200);
+
   const handleModalPop = () => {
     setModalVisible(true);
   };
@@ -471,4 +476,3 @@ export default function BottleBlue(): JSX.Element {
     </View>
   );
 }
-

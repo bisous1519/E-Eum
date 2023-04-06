@@ -32,6 +32,7 @@ export type SignUpStateType = {
   gender: number;
   // image?: string | undefined;
   type: number;
+  region: string;
 };
 
 export type SignUpReturnType = {

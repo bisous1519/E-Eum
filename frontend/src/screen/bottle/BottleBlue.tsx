@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   backgroundVideo: {
     width: DEVICE_WIDTH,
-    height: DEVICE_HEIGHT,
+    height: DEVICE_HEIGHT + 100,
     // borderWidth: 2,
     // borderColor: 'orange',
     // zIndex: 0,
@@ -302,6 +302,9 @@ export default function BottleBlue(): JSX.Element {
       }, 100);
     }
   };
+  setTimeout(() => {
+    if (!playable) setPlayable(true);
+  }, 200);
 
   const moveToWritingPaper = () => {
     //새 질문
@@ -479,4 +482,3 @@ export default function BottleBlue(): JSX.Element {
     </View>
   );
 }
-
