@@ -23,6 +23,7 @@ import com.craypas.bottle.model.dto.request.CreateLikeDto;
 import com.craypas.bottle.model.dto.request.CreateReportDto;
 import com.craypas.bottle.model.dto.request.CreateReqBottleDto;
 import com.craypas.bottle.model.dto.request.CreateResBottleDto;
+import com.craypas.bottle.model.dto.request.ResendUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.AbuseResultDto;
 import com.craypas.bottle.model.dto.response.CheckedResBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
@@ -292,7 +293,7 @@ public class BottleController {
 	}
 
 	@PostMapping("/toss")
-	void tossReqBottles(){
+	void tossAllReqBottles(){
 		List<LateUserReqBottleDto> lateUserReqBottleDtos = bottleService.findLateUserReqBottles();
 		for(LateUserReqBottleDto lateUserReqBottleDto : lateUserReqBottleDtos) {
 			// random user id 요청
@@ -302,10 +303,34 @@ public class BottleController {
 
 			for(int uid : body) {
 				if(uid != lateUserReqBottleDto.getReceiverId()) {
-					bottleService.resendReqBottle(lateUserReqBottleDto.getId(), lateUserReqBottleDto.getReqBottleId(), uid);
+					bottleService.resendAllReqBottle(lateUserReqBottleDto.getId(), lateUserReqBottleDto.getReqBottleId(), uid);
 					break;
 				}
 			}
+		}
+	}
+
+	@PostMapping("/{id}/toss")
+	ResponseEntity<?> tossReqBottles(@PathVariable("id") Long userReqBottleId, @RequestBody ResendUserReqBottleDto userReqBottleDto) {
+		try {
+			// random user id 요청
+			List<Integer> body = apiRequestService.requestGetRandomUserIdAPI(
+				userServerUrl, "/random/"+userReqBottleDto.getReqBottleWriterId()+"/"+ userReqBottleDto.getReqBottleType()
+			).getBody();
+
+			long reReceiverId = userReqBottleDto.getUserId();
+			for(int uid : body) {
+				if(uid != reReceiverId){
+					reReceiverId = uid;
+					break;
+				}
+			}
+			return new ResponseEntity<>(bottleService.resendReqBottle(userReqBottleId, reReceiverId), HttpStatus.OK);
+		} catch (CustomException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getHttpStatus());
+		} catch (Exception e) {
+			log.error("error: ", e);
+			return new ResponseEntity<>(ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus());
 		}
 	}
 }

@@ -21,6 +21,7 @@ import com.craypas.bottle.model.dto.response.CreatedLikeDto;
 import com.craypas.bottle.model.dto.response.CreatedReportDto;
 import com.craypas.bottle.model.dto.response.CreatedReqBottleDto;
 import com.craypas.bottle.model.dto.response.CreatedResBottleDto;
+import com.craypas.bottle.model.dto.response.CreatedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.DetailReqBottleDto;
 import com.craypas.bottle.model.dto.response.LateUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedTypeReqBottleDto;
@@ -176,7 +177,7 @@ public class BottleService {
 	}
 
 	@Transactional
-	public void resendReqBottle(long userReqBottleId, long reqBottleId, long reReceiverId) {
+	public void resendAllReqBottle(long userReqBottleId, long reqBottleId, long reReceiverId) {
 		userReqBottleRepository.deleteById(userReqBottleId);
 
 		UserReqBottle userReqBottle = UserReqBottle.builder()
@@ -186,4 +187,20 @@ public class BottleService {
 		userReqBottleRepository.save(userReqBottle);
 	}
 
+	@Transactional
+	public CreatedUserReqBottleDto resendReqBottle(long userReqBottleId, long reReceiverId) {
+		Optional<UserReqBottle> userReqBottle = userReqBottleRepository.findById(userReqBottleId);
+		if(!userReqBottle.isPresent()) {
+			throw new CustomException(ErrorCode.REQ_BOTTLE_NOT_FOUND);
+		}
+		else if(userReqBottle.get().getResBottles().size() > 0) {
+			throw new CustomException(ErrorCode.RES_BOTTLE_AREADY_SEND);
+		}
+		userReqBottleRepository.deleteById(userReqBottleId);
+
+		return userReqBottleRepository.save(UserReqBottle.builder()
+								.reqBottle(userReqBottle.get().getReqBottle())
+								.receiverId(reReceiverId)
+								.build()).toCreated();
+	}
 }
