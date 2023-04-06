@@ -7,4 +7,4 @@ spark:
   app:
     name: abuseCountingApp
   master:
-    uri: spark://hadoop-ch.asia-northeast3-b.c.ieum-382600.internal:7077
+    uri: sspark://hadoop-choooooo.asia-northeast3-a.c.ieum-382600.internal:7077
