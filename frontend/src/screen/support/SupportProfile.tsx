@@ -146,8 +146,7 @@ export default function SupportProfile(): JSX.Element {
   const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
 
   const route = useRoute<RouteProp<RootStackParamList, 'SupportProfile'>>();
-  const uid = route.params?.uid; // 후원자(프로필 주인) id
-  console.log(uid);
+  const uid = route.params?.uid; // 작성자(자립준비청년) id
 
   // 기본적인 프로필 정보
   const [userProfile, setUserProfile] =
