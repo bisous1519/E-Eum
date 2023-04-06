@@ -6,6 +6,7 @@ import HeaderComp from '../../components/common/HeaderComp';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ApproveItem from '../../components/admin/ApproveItem';
 import ApproveItemType from '../../models/admin/ApproveItemType';
+import ApproveModal from '../../components/admin/ApproveModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -67,12 +68,17 @@ const mockup: ApproveItemType[] = [
 ];
 
 export default function Approve(): JSX.Element {
+  const [detailModal, setDetailModal] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<number>();
   const [confirmArr, setConfirmArr] = useState(
     [...new Array(mockup.length)].map(() => false)
   );
 
-  const onToggleDetailModal = () => {
-    console.log('디테일모달');
+  const onToggleDetailModal = (index?: number) => {
+    if (index || index === 0) {
+      setSelectedItem(index);
+    }
+    setDetailModal((prev) => !prev);
   };
   const onPressConfirm = (index: number) => {
     let tempArr = [...confirmArr];
@@ -100,7 +106,14 @@ export default function Approve(): JSX.Element {
           </>
         )}
       />
+      {detailModal && (selectedItem || selectedItem === 0) ? (
+        <ApproveModal
+          onToggleModal={onToggleDetailModal}
+          item={mockup[selectedItem]}
+        />
+      ) : (
+        <></>
+      )}
     </SafeAreaView>
   );
 }
-
