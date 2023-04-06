@@ -49,7 +49,15 @@ export type EditPWType = {
 // 로그인한 사용자 타입
 export type LoginUserStateType = {
   uid: number;
+  email: string;
+  name: string;
   nickname: string;
-  imagePath: string | null;
+  gender: 1;
+  imagePath: string;
+  type: number;
+  point: number;
+  status: number;
+  introduction: string;
+  groupName: string;
+  region: string;
 };
-

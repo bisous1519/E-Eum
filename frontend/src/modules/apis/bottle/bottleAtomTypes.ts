@@ -178,3 +178,11 @@ export type ExpertBottleType = {
   status: number;
   receiverRead: boolean;
 };
+
+export type TossBottleReturnType = {
+  id: number;
+  reqBottleId: number;
+  receiverId: number;
+  receiverRead: boolean;
+  regTime: string;
+};
