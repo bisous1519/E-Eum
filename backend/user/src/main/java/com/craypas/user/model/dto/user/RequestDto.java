@@ -51,11 +51,8 @@ public class RequestDto {
 
 	@Getter
 	public static class UpdateUser {
-		@NotEmpty
 		private String password;
-		@NotEmpty
 		private String introduction;
-		@NotEmpty
 		private String groupName;
 	}
 
