@@ -7,6 +7,7 @@ import { MyBottleResStateType } from '../../modules/apis/bottle/bottleAtomTypes'
 import theme from '../../utils/theme';
 import ModalComp from '../common/ModalComp';
 import CarouselComp from './CarouselComp';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -36,3 +37,4 @@ export default function MyBottleModal({
     </Pressable>
   );
 }
+

@@ -16,12 +16,14 @@ import Tag from '../../components/record/Tag';
 import SubmitButton from '../../components/support/SubmitButton';
 import TextEditor from '../../components/common/editor/TextEditor';
 import { addSupport } from '../../modules/apis/support/supportApis';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 import { getTags } from '../../modules/apis/record/recordApis';
 import { tagsState } from '../../modules/apis/record/recordAtoms';
 import useNav from '../../hooks/useNav';
 import { flag, sortType } from '../../modules/apis/support/supportAtoms';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -118,6 +120,7 @@ const dateFormat = (date: any) => {
 };
 
 export default function NewSupport(): JSX.Element {
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const [check, setCheck] = useRecoilState<boolean>(flag);
   const [sort, setSort] = useRecoilState<number>(sortType);
 
@@ -201,7 +204,7 @@ export default function NewSupport(): JSX.Element {
 
   const onSubmitBtn = async () => {
     await addSupport({
-      userId: 1,
+      userId: loginUser.uid,
       title: title,
       tid: tag,
       content: context,
@@ -218,7 +221,7 @@ export default function NewSupport(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const tagsData: TagStateType[] | undefined = await getTags(1); // userId를 넣어줘야 함
+    const tagsData: TagStateType[] | undefined = await getTags(loginUser.uid); // userId를 넣어줘야 함
     if (tagsData) {
       setTags(tagsData);
     }
@@ -230,13 +233,15 @@ export default function NewSupport(): JSX.Element {
 
   return (
     <>
-      {isAddress && (
+      {isAddress ? (
         <Postcode
           style={{ width: '100%', height: '100%' }}
           jsOptions={{ animation: true }}
           onSelected={handleSelectedAddress}
           onError={(data: any) => console.log(data)}
         />
+      ) : (
+        <></>
       )}
       <ScrollView style={styles.container}>
         <View style={styles.mainTitleContainer}>
@@ -386,3 +391,4 @@ export default function NewSupport(): JSX.Element {
     </>
   );
 }
+

@@ -19,6 +19,13 @@ import { AppState, Platform } from 'react-native';
 import type { AppStateStatus } from 'react-native';
 import { RecoilRoot } from 'recoil';
 
+import { LogBox } from 'react-native';
+
+// Ignore log notification by message:
+LogBox.ignoreLogs(['Warning: ...']);
+// Ignore all log notifications:
+LogBox.ignoreAllLogs();
+
 // SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
@@ -72,3 +79,4 @@ export default function App(): JSX.Element {
       // </QueryClientProvider>
     );
 }
+

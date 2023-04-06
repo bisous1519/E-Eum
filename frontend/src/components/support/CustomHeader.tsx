@@ -161,7 +161,8 @@ export default function CustomHeader(): JSX.Element {
           )}
         </View>
       </View>
-      {sortPressed && <SortModal onToggleDelete={handleToggleDelete} />}
+      {sortPressed ? <SortModal onToggleDelete={handleToggleDelete} /> : <></>}
     </>
   );
 }
+

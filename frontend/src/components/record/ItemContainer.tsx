@@ -55,16 +55,20 @@ export default function ItemContainer({
           style={StyleSheet.flatten([stylesFeed.dot, stylesFeed.fakedot])}
         ></View>
         <View style={stylesFeed.contents}>
-          {list &&
+          {list ? (
             list.map((item: RecordStateType) => (
               <SwipeableItem
                 key={item.id}
                 item={item}
                 onToggleDelete={onToggleDelete}
               />
-            ))}
+            ))
+          ) : (
+            <></>
+          )}
         </View>
       </View>
     </View>
   );
 }
+

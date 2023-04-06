@@ -127,9 +127,6 @@ export default function SetNewPW(): JSX.Element {
 
   const [reCheck, setReCheck] = useState<boolean>(false);
 
-  const [userId, setUserId] = useState<number>(1);
-  //0406 userId 추가 헉
-
   const setNewPW = async () => {
     if (pwState) {
       console.log('재설정 가능');
@@ -203,3 +200,4 @@ export default function SetNewPW(): JSX.Element {
     </ScrollView>
   );
 }
+

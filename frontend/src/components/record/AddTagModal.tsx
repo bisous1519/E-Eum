@@ -13,8 +13,10 @@ import ModalComp from '../common/ModalComp';
 import useInputText from '../../hooks/useInputText';
 import { getTags, postTag } from '../../modules/apis/record/recordApis';
 import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { tagsState } from '../../modules/apis/record/recordAtoms';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -49,13 +51,14 @@ type DeleteModalPropsType = {
 export default function AddTagModal({
   onToggleModal,
 }: DeleteModalPropsType): JSX.Element {
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
   const { text, onChangeText } = useInputText();
   const onPressCreate = () => {
     onToggleModal();
-    postTag({ uid: 1, name: text })
-      .then(() => getTags(1))
+    postTag({ uid: loginUser.uid, name: text })
+      .then(() => getTags(loginUser.uid))
       .then((data) => setTags(data));
   };
   return (

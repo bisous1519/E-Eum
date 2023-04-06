@@ -24,22 +24,21 @@ const RecordStack = () => {
       >
         <Stack.Screen name='Record' component={Record} />
         <Stack.Screen name='RecordEditor' component={RecordEditor} />
-
         <Stack.Screen
           name='SupportProfile'
           component={SupportProfile}
           options={{ headerShown: false }}
         />
-
         <Stack.Screen
           name='NewSupport'
           component={NewSupport}
           options={{ headerShown: false }}
         />
-      </Stack.Navigator>{' '}
+      </Stack.Navigator>
       <Nav />
     </>
   );
 };
 
 export default RecordStack;
+

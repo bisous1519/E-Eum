@@ -21,6 +21,7 @@ import { postFaq } from '../../modules/apis/user/userApis';
 import { useRecoilState } from 'recoil';
 import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
 import { loginUserState } from '../../modules/apis/user/userAtoms';
+import HeaderComp from '../../components/common/HeaderComp';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -230,7 +231,9 @@ export default function WritingPaper(): JSX.Element {
     // 해류병 전송 api
     //----here----
     // faq api요청
-    postFaq(1, writtenTextValue).then((data: FaqType) => setFaqData(data));
+    postFaq(loginUser.uid, writtenTextValue).then((data: FaqType) =>
+      setFaqData(data)
+    );
   };
 
   const handleRollingPaper = (status: any) => {
@@ -303,7 +306,11 @@ export default function WritingPaper(): JSX.Element {
               onPressBtn={doneWriting}
               small={true}
             />
-            <ButtonComp text='다시 쓰기' onPressBtn={clearText} small={true} />
+            <ButtonComp
+              text={newMessage ? '다시 쓰기' : '토스하기'}
+              onPressBtn={clearText}
+              small={true}
+            />
           </View>
           <View
             style={StyleSheet.flatten([
@@ -371,3 +378,4 @@ export default function WritingPaper(): JSX.Element {
     </View>
   );
 }
+

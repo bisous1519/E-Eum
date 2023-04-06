@@ -22,8 +22,10 @@ import {
   RecordsStateType,
   TagStateType,
 } from '../../modules/apis/record/recordAtomTypes';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { recordsState, tagsState } from '../../modules/apis/record/recordAtoms';
+import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
+import { loginUserState } from '../../modules/apis/user/userAtoms';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -60,6 +62,7 @@ export default function UpDelTagModal({
   onToggleModal,
   tag,
 }: DeleteModalPropsType): JSX.Element {
+  const loginUser = useRecoilValue<LoginUserStateType>(loginUserState);
   const [records, setRecords] = useRecoilState<RecordsStateType>(recordsState);
   const [tags, setTags] = useRecoilState<TagStateType[]>(tagsState);
 
@@ -70,18 +73,18 @@ export default function UpDelTagModal({
     } else {
       onToggleModal();
       putTag(tag.id, { name: text })
-        .then(() => getTags(1))
+        .then(() => getTags(loginUser.uid))
         .then((data: TagStateType[]) => setTags(data))
-        .then(() => getRecords(1))
+        .then(() => getRecords(loginUser.uid))
         .then((data: RecordsStateType) => setRecords(data));
     }
   };
   const onPressDelete = () => {
     onToggleModal();
     deleteTag(tag.id)
-      .then(() => getTags(1))
+      .then(() => getTags(loginUser.uid))
       .then((data: TagStateType[]) => setTags(data))
-      .then(() => getRecords(1))
+      .then(() => getRecords(loginUser.uid))
       .then((data: RecordsStateType) => setRecords(data));
   };
 
