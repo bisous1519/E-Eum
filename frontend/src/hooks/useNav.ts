@@ -9,7 +9,6 @@ export type RootStackParamList = {
   MypageStack?: undefined;
   Mypage?: undefined;
   PointCharge?: undefined;
-  Notice?: undefined;
   Record?: undefined;
   RecordEditor?: { item: RecordStateType } | undefined;
   Signup?: undefined;
@@ -18,12 +17,16 @@ export type RootStackParamList = {
   NewSupport?: undefined;
   SupportRecord?: { uid: number; tid: number };
   JoinPW?: undefined;
-  SetNewPW?: undefined;
+  SetNewPW?: { userEmail: string };
   Signin?: undefined;
   BottleGreen?: undefined;
   BottleBlue?: undefined;
   MyBottle?: undefined;
-  WritingPaper?: { messageType: number; newMessage: boolean }; // 1:일반 상담, 2: 전문가 상담 // true: 새 질문, false: 질문 답장
+  WritingPaper?: {
+    messageType: number;
+    newMessage: boolean;
+    userReqBottleId: number | null;
+  }; // 1:일반 상담, 2: 전문가 상담 // true: 새 질문, false: 질문 답장
   AdminStack?: undefined;
   AdminMain?: undefined;
   Approve?: undefined;
@@ -46,4 +49,3 @@ export default function useNav() {
   //     useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   return useNav;
 }
-

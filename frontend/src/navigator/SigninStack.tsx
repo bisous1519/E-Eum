@@ -4,6 +4,7 @@ import SigninWithPin from '../screen/user/SigninWithPin';
 import Signup from '../screen/user/Signup';
 import JoinPW from '../screen/user/JoinPW';
 import SetNewPW from '../screen/user/SetNewPW';
+import Nav from '../components/common/nav/Nav';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,4 +25,3 @@ const SigninStack = () => {
 };
 
 export default SigninStack;
-

@@ -159,6 +159,7 @@ export default function WritingPaper(): JSX.Element {
   const route = useRoute<RouteProp<RootStackParamList, 'WritingPaper'>>();
   const messageNormal = route.params?.messageType === 1 ? true : false;
   const newMessage = route.params?.newMessage;
+  const userReqBottleId = route.params?.userReqBottleId;
   const inputRef = useRef<TextInput>(null);
 
   const paperVideo = require('../../assets/videos/rollingpaper.mp4');
@@ -179,9 +180,10 @@ export default function WritingPaper(): JSX.Element {
   // const [writerId, setWriterId] = useState<number>(1);  //질문 작성하는 사람Id
   const [gender, setGender] = useState<number>(1);
   const [userId, setUserId] = useState<number>(1); //로그인 ID
-  const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
+  // const [userReqBottleId, setUserReqBottleId] = useState<number>(13);
 
   const doneWriting = () => {
+    console.log('답장의 userReqBottleId : ' + userReqBottleId);
     if (writtenTextLength < 5) return;
     //키보드 넣고, 양피지 빼고 다 숨기고, 양피지 말기 재생
     else {
@@ -194,11 +196,17 @@ export default function WritingPaper(): JSX.Element {
             messageNormal ? 1 : 2,
             gender
           ).then((data) => console.log('메시지 전송 return : ' + data?.id))
-        : postResponseBottle(userReqBottleId, writtenTextValue).then((data) =>
+        : postResponseBottle(
+            //답변 작성
+            gender,
+            43,
+            // userReqBottleId ? userReqBottleId : 1,
+            writtenTextValue
+          ).then((data) =>
             console.log(
               '답변 메시지 전송 return : ' +
                 data.content +
-                ', id : ' +
+                ', 원문 메시지 id : ' +
                 data.userReqBottleId
             )
           );

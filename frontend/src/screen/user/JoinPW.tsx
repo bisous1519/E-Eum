@@ -78,8 +78,12 @@ export default function JoinPW(): JSX.Element {
   const { text: userEmail, onChangeText: onChangeUserEmail } = useInputText();
 
   const checkAndNext = () => {
+    console.log('name : ' + userName);
+    console.log('userEMail : ' + userEmail);
     getNameAndEmail(userName, userEmail).then((returndata) =>
-      returndata ? navigation.push('SetNewPW') : setReCheck(true)
+      returndata
+        ? navigation.push('SetNewPW', { userEmail: userEmail })
+        : setReCheck(true)
     );
   };
   const [reCheck, setReCheck] = useState<boolean>(false);

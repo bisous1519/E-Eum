@@ -109,11 +109,11 @@ export async function getNameAndEmail(name: string, email: string) {
 }
 
 //비밀번호 재설정
-export async function putEditPW(userId: number, password: string) {
+export async function putEditPW(email: string, password: string) {
   try {
     const { data } = await axios.put<EditPWType>(
-      `http://j8a607.p.ssafy.io/api/user/findpw/${userId}`,
-      { password }
+      `http://j8a607.p.ssafy.io/api/user/findpw`,
+      { email, password }
     );
     return data;
   } catch (e) {
