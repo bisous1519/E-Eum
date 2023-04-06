@@ -175,7 +175,7 @@ export default function Nav(): JSX.Element {
 
   return (
     <View style={styles.navWrapper}>
-      {isOpenNav && (
+      {isOpenNav ? (
         <Animated.View
           style={[styles.navListWrapper, { height: navListHeight }]}
         >
@@ -188,7 +188,7 @@ export default function Nav(): JSX.Element {
                   styles.listItem,
                   item.name === '마이페이지'
                     ? styles.BottomBorderRadius
-                    : item.name === '해류병'
+                    : item.name === '고민 상담'
                     ? styles.TopBorderRadius
                     : {
                         borderBottomColor: theme.grayColor.lightGray,
@@ -210,6 +210,8 @@ export default function Nav(): JSX.Element {
           />
           {/* </View> */}
         </Animated.View>
+      ) : (
+        <></>
       )}
       <Pressable
         style={StyleSheet.flatten([styles.navButton, shadowStyle.shadow])}

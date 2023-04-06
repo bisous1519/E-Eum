@@ -230,13 +230,15 @@ export default function NewSupport(): JSX.Element {
 
   return (
     <>
-      {isAddress && (
+      {isAddress ? (
         <Postcode
           style={{ width: '100%', height: '100%' }}
           jsOptions={{ animation: true }}
           onSelected={handleSelectedAddress}
           onError={(data: any) => console.log(data)}
         />
+      ) : (
+        <></>
       )}
       <ScrollView style={styles.container}>
         <View style={styles.mainTitleContainer}>
@@ -386,3 +388,4 @@ export default function NewSupport(): JSX.Element {
     </>
   );
 }
+

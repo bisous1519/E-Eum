@@ -367,9 +367,17 @@ export default function SupportDetail(): JSX.Element {
         </View>
       </ScrollView>
       <SupportButton onPressSupportBtn={onPressSupportBtn} />
-      {badgeModal && <BadgeListModal uid={1} onToggleModal={onToggleDelete} />}
-      {chargeModal && <ChargeAlertModal onToggleDelete={onToggleDelete} />}
-      {supportModal && (
+      {badgeModal ? (
+        <BadgeListModal uid={1} onToggleModal={onToggleDelete} />
+      ) : (
+        <></>
+      )}
+      {chargeModal ? (
+        <ChargeAlertModal onToggleDelete={onToggleDelete} />
+      ) : (
+        <></>
+      )}
+      {supportModal ? (
         <SupportModal
           onToggleDelete={onToggleDelete}
           targetAmount={detailData?.targetAmount}
@@ -377,7 +385,10 @@ export default function SupportDetail(): JSX.Element {
           sid={sid}
           uid={1}
         />
+      ) : (
+        <></>
       )}
     </>
   );
 }
+

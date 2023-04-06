@@ -17,6 +17,7 @@ import { login } from '../../modules/apis/user/userApis';
 import { LoginUserStateType } from '../../modules/apis/user/userAtomTypes';
 import { useRecoilState } from 'recoil';
 import { loginUserState } from '../../modules/apis/user/userAtoms';
+import { shadowStyle } from '../../components/common/shadowStyle';
 
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
@@ -127,9 +128,39 @@ const stylesSocialSignin = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  button: {
+    width: 120,
+    height: 50,
+    resizeMode: 'contain',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+
+    shadowColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  logo: {
+    // borderWidth: 1,
+    // borderColor: 'orange',
+    width: 30,
+    height: 30,
+  },
+  kakao: {
+    backgroundColor: '#FAE64D',
+  },
+  // google: {
+  //   backgroundColor: '#FAE64D',
+  // },
+  text: {
+    fontSize: theme.fontSize.big,
+    flex: 1,
+    textAlign: 'center',
+  },
   dividedLine: {
-    borderWidth: 0.5,
-    borderColor: '#8B8B8B',
+    borderWidth: 0.2,
+    borderColor: '#d2d2d2',
     height: '100%',
   },
 });
@@ -290,10 +321,18 @@ export default function Signin(): JSX.Element {
                 stylesSocialSignin.socialButtonFrame,
               ])}
             >
-              <Pressable style={stylesTempBorder.Red}>
+              <Pressable
+                style={StyleSheet.flatten([
+                  shadowStyle.shadow,
+                  stylesSocialSignin.button,
+                  stylesSocialSignin.kakao,
+                ])}
+              >
                 <Image
-                  source={require('../../assets/images/kakao_login_medium.png')}
+                  style={stylesSocialSignin.logo}
+                  source={require('../../assets/images/kakaoLogo.png')}
                 />
+                <Text style={stylesSocialSignin.text}>Login</Text>
               </Pressable>
             </View>
             <View style={stylesSocialSignin.dividedLine}></View>
@@ -304,10 +343,17 @@ export default function Signin(): JSX.Element {
                 stylesSocialSignin.socialButtonFrame,
               ])}
             >
-              <Pressable style={stylesTempBorder.Red}>
+              <Pressable
+                style={StyleSheet.flatten([
+                  shadowStyle.shadow,
+                  stylesSocialSignin.button,
+                ])}
+              >
                 <Image
-                  source={require('../../assets/images/kakao_login_medium.png')}
+                  style={stylesSocialSignin.logo}
+                  source={require('../../assets/images/googleLogo.png')}
                 />
+                <Text style={stylesSocialSignin.text}>Google</Text>
               </Pressable>
             </View>
           </View>
@@ -316,3 +362,4 @@ export default function Signin(): JSX.Element {
     </ScrollView>
   );
 }
+

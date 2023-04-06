@@ -134,7 +134,7 @@ export default function TagList({
       ) : (
         <></>
       )}
-      {tags &&
+      {tags ? (
         tags.map((tag, index) => (
           <Tag
             key={tag.id}
@@ -143,7 +143,10 @@ export default function TagList({
             onPressTag={() => onPressTag(tag, index)}
             onLongPressTag={onLongPressTag}
           />
-        ))}
+        ))
+      ) : (
+        <></>
+      )}
       {allTag ? (
         <Tag tag={{ id: 0, name: '+' }} onPressTag={onPressAddTag} />
       ) : (
@@ -152,3 +155,4 @@ export default function TagList({
     </ScrollView>
   );
 }
+
