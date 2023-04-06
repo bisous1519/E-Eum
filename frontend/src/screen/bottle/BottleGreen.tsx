@@ -173,7 +173,7 @@ const modalstyles = StyleSheet.create({
   },
 });
 
-export default function BottleBlue(): JSX.Element {
+export default function BottleGreen(): JSX.Element {
   const navigation = useNav();
 
   const [loginUser, setLoginUser] =

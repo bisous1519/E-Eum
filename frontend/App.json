@@ -1,7 +1,11 @@
 {
+  "name": "E-Eum",
+  "displayName": "E-Eum",
   "expo": {
-    "name": "My app",
+    "name": "E-Eum",
     "slug": "my-app",
+    "privacy": "unlisted",
+    "sdkVersion": "36.0.0",
     "extra": {
       "eas": {
         "projectId": "7013b88a-152b-43c2-b255-879fc379af74"
@@ -9,7 +13,11 @@
     },
     "android": {
       "package": "com.wjdgnsxhsl.myapp"
-    }
+    },
+    "icon": "./src/assets/images/apkLogo.png",
+    "version": "1.0.0",
+    "entryPoint": "node_modules/expo/AppEntry.js",
+    "description": ""
   },
   "splash": {
     "image": "./src/assets/images/splash.png",
