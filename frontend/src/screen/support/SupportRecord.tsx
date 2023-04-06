@@ -19,6 +19,11 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigator/SupportStack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+// ====
+import DeleteModal from '../../components/record/DeleteModal';
+import MockupDateGroupType from '../../models/record/mockupDateGroupType';
+import { getRecords, getTags } from '../../modules/apis/record/recordApis';
+import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -73,8 +78,6 @@ const stylesProfile = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    // borderWidth: 1,
-    // borderColor: 'red',
     position: 'absolute',
   },
 });
@@ -135,9 +138,9 @@ export default function SupportRecord(): JSX.Element {
   };
 
   const handleSheetChange = (idx: number): void => {
-    console.log('bottomSheet changed', idx);
     setExpandFeed(idx === 1 ? true : false);
   };
+
   const onToggleDelete = (recordId?: number): void => {
     if (recordId || recordId === 0) {
       setDelTargetContentId(recordId);
@@ -149,14 +152,8 @@ export default function SupportRecord(): JSX.Element {
     console.log('supportProfile로 푸슝~');
   };
 
-  const fetchData = async () => {
-    const recordsData: RecordsStateType | undefined = await getRecordsWithTag(
-      uid,
-      tid
-    );
-    if (recordsData) {
-      setRecords(recordsData);
-    }
+  const fetchData = () => {
+    getRecordsWithTag(uid, tid).then((data) => setRecords(data));
   };
 
   useEffect(() => {
@@ -169,14 +166,12 @@ export default function SupportRecord(): JSX.Element {
       <View style={stylesProfile.container} onLayout={onLayoutProfile}>
         <Text style={stylesProfile.nickName}>나싸피임</Text>
         <View style={stylesProfile.infoWrapper}>
-          <TouchableOpacity
-            activeOpacity={0.6}
-            onPress={() => handleProfilePress(1)}>
-            <Image
-              style={stylesProfile.infoImg}
-              source={require('../../assets/images/profileImg.png')}
-            />
-          </TouchableOpacity>
+          <Image
+            ref={imageRef}
+            onLayout={onLayoutImage}
+            style={stylesProfile.infoImg}
+            source={require('../../assets/images/profileImg.png')}
+          />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
               <Text style={stylesProfile.infoContent}>
@@ -231,14 +226,14 @@ export default function SupportRecord(): JSX.Element {
       {/* 사용자 이미지 클릭 섹션*/}
       {imgOffsetXY && !expandFeed ? (
         <Pressable
-          onPress={handleProfilePress}
           style={StyleSheet.flatten([
             stylesProfile.imgPressBox,
             {
               top: imgOffsetXY.y,
               left: imgOffsetXY.x,
             },
-          ])}></Pressable>
+          ])}
+          onPress={handleProfilePress}></Pressable>
       ) : (
         <></>
       )}

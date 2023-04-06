@@ -183,10 +183,7 @@ export default function Mypage(): JSX.Element {
   };
 
   const fetchData = async () => {
-    const badgeData: any = await getBadgeList(
-      // const badgeData: BadgeStateType[] | undefined = await getBadgeList(
-      loginUser
-    );
+    const badgeData: any = await getBadgeList(loginUser);
     const userData: SponsorStateType | undefined = await getSponsorProfile(
       1,
       loginUser
@@ -238,8 +235,7 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}
-              >
+                activeOpacity={0.6}>
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -305,8 +301,7 @@ export default function Mypage(): JSX.Element {
               <TouchableOpacity
                 style={styles.chargePoint}
                 onPress={handleChargePoint}
-                activeOpacity={0.6}
-              >
+                activeOpacity={0.6}>
                 <Ionicons name='add' size={20} color={theme.mainColor.dark} />
               </TouchableOpacity>
             </View>
@@ -320,8 +315,7 @@ export default function Mypage(): JSX.Element {
                   <TouchableOpacity
                     style={styles.uniBadge}
                     onPress={() => handleBadgePress(badge.item)}
-                    activeOpacity={0.6}
-                  >
+                    activeOpacity={0.6}>
                     <Badge key={badge.item.id} badge={badge.item} />
                   </TouchableOpacity>
                 )}

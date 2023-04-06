@@ -21,6 +21,7 @@ import { TagStateType } from '../../modules/apis/record/recordAtomTypes';
 import { getTags } from '../../modules/apis/record/recordApis';
 import { tagsState } from '../../modules/apis/record/recordAtoms';
 import useNav from '../../hooks/useNav';
+import { flag } from '../../modules/apis/support/supportAtoms';
 
 const { DEVICE_WIDTH, DEVICE_HEIGHT } = useDimension();
 
@@ -117,6 +118,8 @@ const dateFormat = (date: any) => {
 };
 
 export default function NewSupport(): JSX.Element {
+  const [check, setCheck] = useRecoilState<boolean>(flag);
+
   const navigation = useNav();
 
   // 체크된 태그를 표시 =========================================
@@ -208,6 +211,7 @@ export default function NewSupport(): JSX.Element {
       roadAddress: mainAddress,
       detailAddress: detailAddress,
     });
+    setCheck((prev) => !prev);
     navigation.popToTop();
   };
 
@@ -224,117 +228,96 @@ export default function NewSupport(): JSX.Element {
 
   return (
     <>
-      {isAddress ? (
+      {isAddress && (
         <Postcode
           style={{ width: '100%', height: '100%' }}
           jsOptions={{ animation: true }}
           onSelected={handleSelectedAddress}
           onError={(data: any) => console.log(data)}
         />
-      ) : (
-        <ScrollView style={styles.container}>
-          <View style={styles.mainTitleContainer}>
-            <Text style={styles.mainTitle}>작성하기</Text>
+      )}
+      <ScrollView style={styles.container}>
+        <View style={styles.mainTitleContainer}>
+          <Text style={styles.mainTitle}>작성하기</Text>
+        </View>
+        <View style={styles.innerContainer}>
+          {/* 0. 제목 */}
+          <View style={styles.write}>
+            <Text style={styles.title}>제목</Text>
+            <TextInput
+              placeholder='제목을 입력하세요'
+              onChangeText={(e) => setTitle(e)}
+            />
           </View>
-          <View style={styles.innerContainer}>
-            {/* 7. 배송지 입력 */}
-            {/* 카카오 지도 API를 활용해 주소를 입력받는 부분 */}
-            <View style={styles.write}>
-              <View style={styles.guideline}>
-                <Text style={styles.title}>배송지 목록</Text>
-                <Text style={{ fontSize: 8, marginLeft: 5 }}>
-                  * 물품을 배송받을 배송지를 입력해주세요
-                </Text>
-              </View>
+          {/* 1. 후원 태그(분야) 선택 */}
+          <View style={styles.tagBox}>
+            <View style={styles.guideline}>
+              <Text style={styles.title}>태그 선택</Text>
+              <Text style={{ fontSize: 8, marginLeft: 5 }}>
+                * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
+              </Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tagList}>
+              {tags
+                ? tags.map((tag, index) => (
+                    <Tag
+                      key={tag.id}
+                      tag={tag}
+                      isSelected={isSelectedTag[index]}
+                      onPressTag={() => handleSelectTag(tag.id, index)}
+                    />
+                  ))
+                : null}
+            </ScrollView>
+          </View>
+          {/* 2-1. 후원 요청 내용 */}
+          <View style={styles.write}>
+            <View style={styles.guideline}>
+              <Text style={styles.title}>후원 요청 내용</Text>
+              <Text style={{ fontSize: 8, marginLeft: 5 }}>
+                * 어떤 물품을 후원받으려 하는지 설명해주세요
+              </Text>
+            </View>
+            <TextInput
+              placeholder='후원받으려는 물품에 대해 작성해주세요'
+              onChangeText={(e) => setProductName(e)}
+            />
+          </View>
+          {/* 2-2. 구매링크 */}
+          <View style={styles.write}>
+            <View style={styles.guideline}>
+              <Text style={styles.title}>구매링크</Text>
+              <Text style={{ fontSize: 8, marginLeft: 5 }}>
+                * 후원받으려는 물품의 구매 링크를 입력해주세요
+              </Text>
+            </View>
+            <TextInput
+              placeholder='구매링크를 입력하세요'
+              onChangeText={(e) => setLink(e)}
+            />
+          </View>
+          {/* 3. 내용 */}
+          <View style={styles.write}>
+            <Text style={styles.title}>내용</Text>
+            <TextEditor onChangeContext={handleContextChange} />
+          </View>
+          {/* 4. 목표금액 */}
+          <View style={styles.write}>
+            <Text style={styles.title}>목표금액</Text>
+            <View style={styles.goalBox}>
               <TextInput
-                placeholder='배송지를 입력하세요'
-                onPressOut={handleSelectedAddress}
-                value={mainAddress.substring(1, mainAddress.length - 1)}
-                style={styles.addressDetail}
+                keyboardType='numeric'
+                placeholder='목표금액을 입력하세요'
+                onChange={(e) => setGoal(Number(e.nativeEvent.text))}
               />
-              <TextInput
-                placeholder='상세주소를 입력하세요'
-                onChange={handleDetailAddressInput}
-              />
+              <Text>원</Text>
             </View>
-            {/* 0. 제목 */}
-            <View style={styles.write}>
-              <Text style={styles.title}>제목</Text>
-              <TextInput
-                placeholder='제목을 입력하세요'
-                onChangeText={(e) => setTitle(e)}
-              />
-            </View>
-            {/* 1. 후원 태그(분야) 선택 */}
-            <View style={styles.tagBox}>
-              <View style={styles.guideline}>
-                <Text style={styles.title}>태그 선택</Text>
-                <Text style={{ fontSize: 8, marginLeft: 5 }}>
-                  * 어떤 꿈을 후원받고 싶은지 태그를 지정해주세요
-                </Text>
-              </View>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.tagList}
-              >
-                {tags
-                  ? tags.map((tag, index) => (
-                      <Tag
-                        key={tag.id}
-                        tag={tag}
-                        isSelected={isSelectedTag[index]}
-                        onPressTag={() => handleSelectTag(tag.id, index)}
-                      />
-                    ))
-                  : null}
-              </ScrollView>
-            </View>
-            {/* 2-1. 후원 요청 내용 */}
-            <View style={styles.write}>
-              <View style={styles.guideline}>
-                <Text style={styles.title}>후원 요청 내용</Text>
-                <Text style={{ fontSize: 8, marginLeft: 5 }}>
-                  * 어떤 물품을 후원받으려 하는지 설명해주세요
-                </Text>
-              </View>
-              <TextInput
-                placeholder='후원받으려는 물품에 대해 작성해주세요'
-                onChangeText={(e) => setProductName(e)}
-              />
-            </View>
-            {/* 2-2. 구매링크 */}
-            <View style={styles.write}>
-              <View style={styles.guideline}>
-                <Text style={styles.title}>구매링크</Text>
-                <Text style={{ fontSize: 8, marginLeft: 5 }}>
-                  * 후원받으려는 물품의 구매 링크를 입력해주세요
-                </Text>
-              </View>
-              <TextInput
-                placeholder='구매링크를 입력하세요'
-                onChangeText={(e) => setLink(e)}
-              />
-            </View>
-            {/* 3. 내용 */}
-            <View style={styles.write}>
-              <Text style={styles.title}>내용</Text>
-              <TextEditor onChangeContext={handleContextChange} />
-            </View>
-            {/* 4. 목표금액 */}
-            <View style={styles.write}>
-              <Text style={styles.title}>목표금액</Text>
-              <View style={styles.goalBox}>
-                <TextInput
-                  keyboardType='numeric'
-                  placeholder='목표금액을 입력하세요'
-                  onChange={(e) => setGoal(Number(e.nativeEvent.text))}
-                />
-                <Text>원</Text>
-              </View>
-            </View>
-            {/* 5. 사진첨부 */}
-            {/* <View style={styles.write}>
+          </View>
+          {/* 5. 사진첨부 */}
+          {/* <View style={styles.write}>
               <View style={styles.guideline}>
                 <Text style={styles.title}>사진첨부</Text>
                 <Text style={{ fontSize: 8, marginLeft: 5 }}>
@@ -353,30 +336,49 @@ export default function NewSupport(): JSX.Element {
                 )}
               </View>
             </View> */}
-            {/* 6. 마감기한 */}
-            <View style={styles.write}>
-              <Text style={styles.title}>마감기한</Text>
-              <Pressable onPress={showDatePicker} style={styles.dueDate}>
-                <Ionicons
-                  name='calendar'
-                  size={20}
-                  color='black'
-                  style={{ marginRight: 8 }}
-                />
-                <DateTimePickerModal
-                  isVisible={isDatePickerVisible}
-                  mode='date'
-                  confirmTextIOS='날짜 선택'
-                  cancelTextIOS='취소'
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}
-                />
-                <Text>{due}</Text>
-              </Pressable>
-            </View>
+          {/* 6. 마감기한 */}
+          <View style={styles.write}>
+            <Text style={styles.title}>마감기한</Text>
+            <Pressable onPress={showDatePicker} style={styles.dueDate}>
+              <Ionicons
+                name='calendar'
+                size={20}
+                color='black'
+                style={{ marginRight: 8 }}
+              />
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode='date'
+                confirmTextIOS='날짜 선택'
+                cancelTextIOS='취소'
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+              />
+              <Text>{due}</Text>
+            </Pressable>
           </View>
-        </ScrollView>
-      )}
+          {/* 7. 배송지 입력 */}
+          {/* 카카오 지도 API를 활용해 주소를 입력받는 부분 */}
+          <View style={styles.write}>
+            <View style={styles.guideline}>
+              <Text style={styles.title}>배송지 목록</Text>
+              <Text style={{ fontSize: 8, marginLeft: 5 }}>
+                * 물품을 배송받을 배송지를 입력해주세요
+              </Text>
+            </View>
+            <TextInput
+              placeholder='배송지를 입력하세요'
+              onPressOut={handleSelectedAddress}
+              value={mainAddress.substring(1, mainAddress.length - 1)}
+              style={styles.addressDetail}
+            />
+            <TextInput
+              placeholder='상세주소를 입력하세요'
+              onChange={handleDetailAddressInput}
+            />
+          </View>
+        </View>
+      </ScrollView>
       <SubmitButton onPressSubmitBtn={onSubmitBtn} />
     </>
   );
