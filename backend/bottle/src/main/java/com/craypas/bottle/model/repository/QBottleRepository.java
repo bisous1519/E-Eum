@@ -99,7 +99,7 @@ public class QBottleRepository {
 			.from(reqBottle)
 			.leftJoin(reqBottle.userReqBottles, userReqBottle).on(userReqBottle.reqBottle.id.eq(reqBottle.id))
 			.where(userReqBottle.receiverId.eq(id), reqBottle.type.eq(reqBottletype))
-			.fetch();
+			.fetchAll().stream().collect(Collectors.toList());
 	}
 
 	public List<LateUserReqBottleDto> findAllUserResBottleByRegTime() {
