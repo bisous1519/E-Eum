@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     // zIndex: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.mainColor.main,
   },
   popupFromBackground: {
     position: 'absolute',
@@ -423,11 +424,12 @@ export default function BottleBlue(): JSX.Element {
           </Modal>
         </View>
       )}
-      <ImageBackground
+      {/* <ImageBackground
         source={require('../../assets/images/bottleBackgroundImg.png')}
         resizeMode='stretch'
         style={styles.backgroundVideo}
-      >
+      > */}
+      <View style={styles.backgroundVideo}>
         <Video
           ref={videoRef}
           source={beachVideoBlue}
@@ -449,7 +451,8 @@ export default function BottleBlue(): JSX.Element {
             console.log(error);
           }}
         />
-      </ImageBackground>
+      </View>
+      {/* </ImageBackground> */}
       <View style={styles.popupFromBackground}>
         <View style={StyleSheet.flatten([styles.headerWrapper, borders.red])}>
           <View style={[styles.headerBox, borders.blue]}></View>

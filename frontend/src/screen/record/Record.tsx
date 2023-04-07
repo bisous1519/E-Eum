@@ -247,7 +247,11 @@ export default function Record(): JSX.Element {
             ref={imageRef}
             onLayout={onLayoutImage}
             style={stylesProfile.infoImg}
-            source={{ uri: profile.imagePath }}
+            source={
+              profile.imagePath
+                ? { uri: profile.imagePath }
+                : require('../../assets/images/sample.png')
+            }
           />
           <View style={stylesProfile.infoItemsWrapper}>
             <View style={stylesProfile.infoItem}>
