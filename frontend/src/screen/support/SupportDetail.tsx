@@ -247,7 +247,7 @@ export default function SupportDetail(): JSX.Element {
       <ScrollView style={styles.container}>
         <Image
           style={styles.picture}
-          source={require('../../assets/images/sample.png')}
+          source={require('../../assets/images/supportSample.png')}
           resizeMode='cover'
         />
         <View style={styles.innerContainer}>
