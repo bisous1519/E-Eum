@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  url:
+    user: "http://j8a607.p.ssafy.io/api/user"
+    spark: "http://34.22.76.240:1818/api/spark/abuse-counting"
+    python: "http://34.64.220.102/predict"
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ieum?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ssafy
+    password: a607607607
+
+firebase:
+  configuration-file: firebase-key/serviceAccountKey.json
+  bucket-name: ardent-bulwark-380505.appspot.com
