@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "My app",
+    "slug": "my-app",
+    "extra": {
+      "eas": {
+        "projectId": "7013b88a-152b-43c2-b255-879fc379af74"
+      }
+    },
+    "android": {
+      "package": "com.wjdgnsxhsl.myapp"
+    }
+  },
+  "splash": {
+    "image": "./src/assets/images/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#a3d2d5"
+  }
+}
