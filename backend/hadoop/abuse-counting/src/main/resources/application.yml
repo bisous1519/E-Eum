@@ -1,0 +1,10 @@
+
+server:
+  port:
+    1818
+
+spark:
+  app:
+    name: abuseCountingApp
+  master:
+    uri: spark://hadoop-choooooo.asia-northeast3-a.c.ieum-382600.internal:7077
