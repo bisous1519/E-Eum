@@ -124,7 +124,7 @@
 
 ### II. 후원 요청 게시물 등록
 
-![https://user-images.githubusercontent.com/109454527/219333470-deaa121d-b401-4fc8-85e7-1a8d97b0117e.gif](https://user-images.githubusercontent.com/109454527/219333470-deaa121d-b401-4fc8-85e7-1a8d97b0117e.gif)
+![https://user-images.githubusercontent.com/82074636/231800954-e2d5324a-d9cd-4cfa-a675-bf6ec94ab6b4.gif](https://user-images.githubusercontent.com/82074636/231800954-e2d5324a-d9cd-4cfa-a675-bf6ec94ab6b4.gif)
 
 ---
 
@@ -137,7 +137,7 @@
 
 ### III. 후원 상세 및 후원하기
 
-![https://user-images.githubusercontent.com/109454527/219396316-90d3d947-de50-41cf-8779-b2be675fa06e.gif](https://user-images.githubusercontent.com/109454527/219396316-90d3d947-de50-41cf-8779-b2be675fa06e.gif)
+![https://user-images.githubusercontent.com/82074636/231800806-ba0835ff-b4cc-4968-a578-eb29c2a2dd16.gif](https://user-images.githubusercontent.com/82074636/231800806-ba0835ff-b4cc-4968-a578-eb29c2a2dd16.gif)
 
 ---
 
@@ -149,7 +149,7 @@
 
 ### IV. 후원 목록 화면 상단 기능
 
-![https://user-images.githubusercontent.com/109454527/219396356-ba640bee-9c88-4f0f-ba9a-9f78f8a933fa.gif](https://user-images.githubusercontent.com/109454527/219396356-ba640bee-9c88-4f0f-ba9a-9f78f8a933fa.gif)
+![https://user-images.githubusercontent.com/82074636/231799802-dcd8e5b7-12e2-48a8-8f15-e52faf246143.gif](https://user-images.githubusercontent.com/82074636/231799802-dcd8e5b7-12e2-48a8-8f15-e52faf246143.gif)
 
 ---
 
