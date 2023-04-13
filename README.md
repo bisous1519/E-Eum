@@ -111,9 +111,9 @@
 
 ### I. 유저 CRUD
 
-![KakaoTalk_20230413_130150692](https://user-images.githubusercontent.com/107928377/231905689-ea9ad552-9fbe-4894-8c19-92419173a42d.png)
+![KakaoTalk_20230413_130150692](https://user-images.githubusercontent.com/107928377/231906936-53326d2c-df9e-47b6-90f2-a160365d58a6.png)
 
-![KakaoTalk_20230413_130150692_01](https://user-images.githubusercontent.com/107928377/231905610-dd4914f3-084d-40a8-9f88-eb334e190246.png)
+![KakaoTalk_20230413_130150692_01](https://user-images.githubusercontent.com/107928377/231906955-9d641538-0b3b-455c-9a5c-d158a33beb21.png)
 
 ---
 
