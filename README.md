@@ -124,7 +124,7 @@
 
 ### II. 후원 요청 게시물 등록
 
-![https://user-images.githubusercontent.com/82074636/231800954-e2d5324a-d9cd-4cfa-a675-bf6ec94ab6b4.gif](https://user-images.githubusercontent.com/82074636/231800954-e2d5324a-d9cd-4cfa-a675-bf6ec94ab6b4.gif)
+![https://user-images.githubusercontent.com/82074636/231802841-09783a57-3536-47f4-b890-c103503993a2.gif](https://user-images.githubusercontent.com/82074636/231802841-09783a57-3536-47f4-b890-c103503993a2.gif)
 
 ---
 
