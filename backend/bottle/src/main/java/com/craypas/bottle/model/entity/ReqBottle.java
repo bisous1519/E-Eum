@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
@@ -59,6 +60,9 @@ public class ReqBottle {
 	@Column(name = "status")
 	private int status;
 
+	@Column(name = "is_res_read")
+	private boolean resRead;
+
 	@OneToMany(mappedBy = "reqBottle", cascade = CascadeType.ALL)
 	private List<UserReqBottle> userReqBottles = new ArrayList<>();
 
@@ -71,6 +75,7 @@ public class ReqBottle {
 			.sentiment(sentiment)
 			.regTime(stringConverter(regTime))
 			.status(status)
+			.resRead(resRead)
 			.build();
 	}
 
@@ -86,6 +91,9 @@ public class ReqBottle {
 
 	public void updateUserReqBottles(List<UserReqBottle> userReqBottles) {
 		this.userReqBottles = userReqBottles;
+	}
+	public void updateResRead(boolean resRead) {
+		this.resRead = resRead;
 	}
 
 	public String stringConverter(Date input){

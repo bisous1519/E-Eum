@@ -1,13 +1,12 @@
 package com.craypas.bottle.model.dto.response;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
-public class UserBadgeDto {
-	private String userNickname;
-	private List<BadgeDto> badgeList;
+public class AbuseResultDto {
+	private Boolean prediction;
 }

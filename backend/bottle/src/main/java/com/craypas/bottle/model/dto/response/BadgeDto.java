@@ -1,13 +1,13 @@
 package com.craypas.bottle.model.dto.response;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserBadgeDto {
-	private String userNickname;
-	private List<BadgeDto> badgeList;
+public class BadgeDto {
+	private Long id;
+	private String name;
+	private String description;
+	private String imagePath;
 }

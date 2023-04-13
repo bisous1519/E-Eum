@@ -1,5 +1,7 @@
 package com.craypas.bottle.model.entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,26 +16,32 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.craypas.bottle.model.dto.response.CreatedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserReqBottleDto;
 import com.craypas.bottle.model.dto.response.ReceivedUserResBottleDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "user_req_bottle")
+@ToString
 public class UserReqBottle {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "req_bottle_id")
 	private ReqBottle reqBottle;
 
@@ -44,13 +52,33 @@ public class UserReqBottle {
 	@JoinColumn(name = "user_req_bottle_id")
 	private List<ResBottle> resBottles;
 
+	@Column(name="is_read")
+	private boolean receiverRead;
+
+	@Column(name="reg_time")
+	@CreationTimestamp
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date regTime;
+
+	public CreatedUserReqBottleDto toCreated() {
+		System.out.println(regTime);
+		return CreatedUserReqBottleDto.builder()
+			.id(id)
+			.reqBottleId(reqBottle.getId())
+			.receiverId(receiverId)
+			.regTime(stringConverter(regTime))
+			.build();
+	}
 	public ReceivedUserReqBottleDto toCreatedReqDto() {
-		return ReceivedUserReqBottleDto.builder().user_req_bottle_id(id).reqBottle(reqBottle.toCreatedDto()).build();
+		return ReceivedUserReqBottleDto.builder().userReqBottleId(id).reqBottle(reqBottle.toCreatedDto()).build();
 	}
 
-	public ReceivedUserResBottleDto toCreatedResDto() {
-		return ReceivedUserResBottleDto.builder().user_req_bottle_id(id).resBottles(
-			resBottles.stream().map(ResBottle::toCreatedDto).collect(Collectors.toList())
-		).build();
+	public void updateReceiverRead(boolean receiverRead) {
+		this.receiverRead = receiverRead;
+	}
+
+	public String stringConverter(Date input){
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return formatter.format(input);
 	}
 }

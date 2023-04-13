@@ -1,7 +1,5 @@
 package com.craypas.bottle.model.dto.response;
 
-import org.checkerframework.checker.units.qual.A;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

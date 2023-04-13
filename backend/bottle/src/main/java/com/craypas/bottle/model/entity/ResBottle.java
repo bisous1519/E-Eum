@@ -38,9 +38,6 @@ public class ResBottle {
 	@Column(name = "tts_path")
 	private String ttsPath;
 
-	@Column(name = "sentiment")
-	private int sentiment;
-
 	@Column(name = "reg_time")
 	@CreationTimestamp
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -49,12 +46,12 @@ public class ResBottle {
 	@Column(name = "status")
 	private int status;
 
+
 	public CreatedResBottleDto toCreatedDto() {
 		return CreatedResBottleDto.builder()
 			.id(id)
 			.userReqBottleId(userReqBottleId)
 			.content(content)
-			.sentiment(sentiment)
 			.ttsPath(ttsPath)
 			.regTime(stringConverter(regTime))
 			.status(status)

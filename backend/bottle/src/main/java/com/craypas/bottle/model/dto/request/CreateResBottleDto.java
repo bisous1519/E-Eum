@@ -16,20 +16,15 @@ import lombok.ToString;
 public class CreateResBottleDto {
 
 	private Long userReqBottleId;
-
 	@NotEmpty
 	private String content;
-
 	private String ttsPath;
-
-	private Integer sentiment;
 
 	public ResBottle toEntity() {
 		return ResBottle.builder()
 			.userReqBottleId(userReqBottleId)
 			.content(content)
 			.ttsPath(ttsPath)
-			.sentiment(sentiment)
 			.build();
 	}
 }

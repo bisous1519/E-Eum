@@ -17,15 +17,11 @@ public class CreateReqBottleDto {
 
 	@NotNull
 	private Long writerId;
-
 	@NotNull
 	private String content;
-
 	private String ttsPath;
-
 	@NotNull
 	private Integer type;
-
 	private Integer sentiment;
 
 	public ReqBottle toEntity() {
@@ -35,6 +31,7 @@ public class CreateReqBottleDto {
 			.ttsPath(ttsPath)
 			.type(type)
 			.sentiment(sentiment)
+			.resRead(false)
 			.build();
 	}
 }
