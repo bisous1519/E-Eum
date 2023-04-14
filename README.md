@@ -241,3 +241,149 @@
 <br />
 
 ## 📋 빌드/배포
+ngnix 설정 파일
+```
+user  nginx;
+worker_processes  auto;
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+
+    upstream bottle {
+        server bottle_old:8080;
+        server bottle_new:8080;
+    }
+    upstream user {
+        server user_old:8080;
+        server user_new:8080;
+    }
+    upstream dream {
+        server dream_old:8080;
+        server dream_new:8080;
+    }
+
+    server {
+
+        listen 80;
+
+        location /api/bottle {
+            proxy_pass http://bottle;
+        }
+
+        location /api/user {
+            proxy_pass http://user;
+        }
+
+        location /api/dream {
+            proxy_pass http://dream;
+        }
+    }
+}
+```
+
+API 서버 Dockerfile
+```
+FROM openjdk:8-jdk-alpine
+
+# 변수 선언
+ARG JAR_FILE=dream.jar
+
+#실행할 jar파일을 도커 컨테이너 내부에 myboot.jar라는 이름으로 복사
+COPY ${JAR_FILE} myboot.jar
+
+# 컨테이너가 시작될 때  실행할 스크립트 혹은 명령
+ENTRYPOINT ["java", "-jar", "/myboot.jar"]
+```
+
+API 서버 모니터링 스크립트
+```
+import requests
+import subprocess
+import json
+import time
+import datetime
+import pytz
+import logging
+
+# 로그 파일 설정
+logging.basicConfig(filename='bottle.log', level=logging.DEBUG)
+
+# 웹훅 URL
+url = "https://meeting.ssafy.com/hooks/dogefjnqrjf9zy1apf5b64ckxw"
+
+# 에러 로그 패턴을 정의
+error_pattern = "ERROR"
+
+# 로그를 스트리밍하는 커맨드 정의 (Docker 컨테이너를 사용하는 경우)
+stream_logs_cmd = f"sudo docker logs bottle_old"
+
+before = 1
+
+num = 0
+while True:
+    time.sleep(3)
+    process = subprocess.run(stream_logs_cmd, capture_output=True, text=True, shell=True)
+    logs = process.stdout.splitlines()
+    
+    num += 1  
+    if len(logs) <= before:
+        before = len(logs)
+        continue
+    
+    
+    log_text = ""
+    
+    line = before
+
+    for log_line in logs[before-1:]:
+
+        #로그 패턴 발견되면
+        if error_pattern in log_line:
+            for post_line in logs[line:]:
+                log_text  = log_text + "\n" + post_line
+                if "2023-" in post_line:
+                    break
+
+            # 한국 시간 존 이름
+            KST = pytz.timezone('Asia/Seoul')
+
+            # 현재 시간 구하기
+            now = datetime.datetime.now(tz=KST)
+
+            # 년, 월, 일, 시간, 분 출력하기
+            time_str = now.strftime('%Y-%m-%d %H:%M')
+            #헤더, 데이터 설정
+            headers = {'Content-Type': 'application/json'}
+
+            data = {'text': f'__Bottle Server__ : @angly97\n```{time_str}```\n```\n{log_text}\n```'}
+
+            curl_command = ['curl', '-i', '-X', 'POST', '-H']
+
+            for k, v in headers.items():
+                #발송
+                curl_command.extend([f"{k}: {v}"])
+                curl_command.extend(['-d', json.dumps(data), url])
+                result = subprocess.run(curl_command, capture_output=True, text=True)
+                logging.debug(time_str)
+                logging.debug(result.stdout)
+            
+            break
+        line += 1
+    before = len(logs)
+
+```
