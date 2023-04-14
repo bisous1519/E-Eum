@@ -211,45 +211,8 @@
 
 <br />
 
-### IX. 도움 요청
 
-![https://user-images.githubusercontent.com/109454527/219334299-59d59736-c789-4f67-972c-aa81232173f5.gif](https://user-images.githubusercontent.com/109454527/219334299-59d59736-c789-4f67-972c-aa81232173f5.gif)
-
----
-
-- 강의를 진행하는 과정에서 강사나 다른 사람의 도움이 필요한 경우 도움 버튼을 눌러 도움을 요청할 수 있습니다.
-- 버튼을 누르게 되면 캠 화면 테두리에 효과가 적용되고, 그 이후 강의를 진행하는 사람들과 소통을 진행할 수 있습니다.
-- 도움 버튼을 다시 누르면 효과를 제거할 수 있습니다.
-
-<br />
-
-### X. 강사 평가
-
-![https://user-images.githubusercontent.com/109454527/219334471-86ce3b06-30c0-4cef-a4e7-76ce3eb9d166.gif](https://user-images.githubusercontent.com/109454527/219334471-86ce3b06-30c0-4cef-a4e7-76ce3eb9d166.gif)
-
----
-
-- 강의가 종료된 후 <b>[ 나가기 ]</b>버튼을 누르면 모달에서 강사를 평가할 수 있습니다.
-- 강사 평가는 나쁨, 보통, 좋음 3 단계로 선택할 수 있습니다.
-  - `나쁨` : 강사 포인트 10점 차감
-  - `보통` : 강사 포인트 변화 없음
-  - `좋음` : 강사 포인트 10점 증가
-- 평가를 마치게 되면 실시간 강의에서 나가게 됩니다.
-
-<br />
-
-### XV. 강사 프로필
-
-![https://user-images.githubusercontent.com/109454527/219334755-60b91e26-2716-4087-aad9-5fccd4dbadc1.gif](https://user-images.githubusercontent.com/109454527/219334755-60b91e26-2716-4087-aad9-5fccd4dbadc1.gif)
-
----
-
-- 강사들이 강의를 진행한 후 평가에 따라 지급받은 마일리지를 기준으로 정렬하여 강사들의 프로필을 메인페이지에 게시합니다.
-- 강사의 프로필을 볼 수 있으며, 강사의 `블로그`, `유튜브`, `인스타그램`, `페이스북` 계정 링크가 연결되어 있고, 클릭시 각각의 링크로 이동합니다.
-
-<br/>
-
-## 🎥 [UCC 보러가기](https://www.youtube.com/watch?v=rpZk7addmjQ)
+## 🎥 [UCC 보러가기](https://youtu.be/qio2-_MUES4)
 
 <br />
 
