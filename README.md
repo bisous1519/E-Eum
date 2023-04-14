@@ -212,7 +212,7 @@
 <br />
 
 
-## 🎥 [UCC 보러가기](https://youtu.be/qio2-_MUES4)
+## 🎥 [UCC 보러가기](https://youtu.be/LxDlqr280do)
 
 <br />
 
