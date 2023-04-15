@@ -8,7 +8,7 @@
 
 ## 👪 개발 멤버 소개
 
-<table> <tr> <td height="140px" align="center"> <a href="https://github.com/dolpongg"> <img src="https://avatars.githubusercontent.com/u/96533697?v=4" width="140px" /> <br><br> 👑 이수련 <br>(Back-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/xswaqz"> <img src="https://avatars.githubusercontent.com/u/64126100?v=4" width="140px" /> <br><br> 😶 김동현 <br>(Back-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/angly97"> <img src="https://avatars.githubusercontent.com/u/70613905?v=4" width="140px" /> <br><br> 😆 민초현 <br>(Back-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/bisous1519"> <img src="https://avatars.githubusercontent.com/u/71482583?v=4" width="140px" /> <br><br> 🙄 장엄지 <br>(Front-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/moxnox63"> <img src="https://avatars.githubusercontent.com/u/82074636?v=4" width="140px" /> <br><br> 😁 정소영 <br>(Front-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/Hoony-JSG"> <img src="https://avatars.githubusercontent.com/u/107928377?v=4" width="140px" /> <br><br> 🙂 정훈 <br>(Front-End) </a> <br></td> </tr> <tr> <td align="center">Infra<br/>CICD<br/>DeepLearning<br/>Crawling<br/>Presentation<br/>UCC</td> <td align="center">REST API<br/>DataBase<br/>Hadoop<br/>DreamRecord<br/>DreamSupport<br/>User</td> <td align="center">REST API<br/>DataBase<br/>Hadoop<br/>Spark<br/>TTS<br/>FireBase<br/>Bottle</td> <td align="center">UI/UX<br/>ReactNative<br/>Recoil<br/>DreamRecord<br/>Admin<br/>Login</td> <td align="center">UI/UX<br/>ReactNative<br/>Recoil<br/>DreamSupport<br/>MyPage<br/>시연</td> <td align="center">UI/UX<br/>ReactNative<br/>Recoil<br/>Blender<br/>Bottle<br/>LogoDesign</td> </tr> </table>
+<table> <tr> <td height="140px" align="center"> <a href="https://github.com/dolpongg"> <img src="https://avatars.githubusercontent.com/u/96533697?v=4" width="140px" /> <br><br> 👑 이수련 <br>(Back-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/xswaqz"> <img src="https://avatars.githubusercontent.com/u/64126100?v=4" width="140px" /> <br><br> 😶 김동현 <br>(Back-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/angly97"> <img src="https://avatars.githubusercontent.com/u/70613905?v=4" width="140px" /> <br><br> 😆 민초현 <br>(Back-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/bisous1519"> <img src="https://avatars.githubusercontent.com/u/71482583?v=4" width="140px" /> <br><br> 🙄 장엄지 <br>(Front-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/moxnox63"> <img src="https://avatars.githubusercontent.com/u/82074636?v=4" width="140px" /> <br><br> 😁 정소영 <br>(Front-End) </a> <br></td> <td height="140px" align="center"> <a href="https://github.com/Hoony-JSG"> <img src="https://avatars.githubusercontent.com/u/107928377?v=4" width="140px" /> <br><br> 🙂 정훈 <br>(Front-End) </a> <br></td> </tr> <tr> <td align="center">Infra<br/>CICD<br/>DeepLearning<br/>Crawling<br/>Presentation<br/>UCC</td> <td align="center">REST API<br/>DataBase<br/>Hadoop<br/>DreamRecord<br/>DreamSupport<br/>User</td> <td align="center">REST API<br/>DataBase<br/>Hadoop<br/>Spark<br/>TTS<br/>FireBase<br/>Bottle</td> <td align="center">UI/UX<br/>ReactNative<br/>Typescript<br/>Recoil<br/>DreamRecord<br/>Admin<br/>Login</td> <td align="center">UI/UX<br/>ReactNative<br/>Typescript<br/>Recoil<br/>DreamSupport<br/>MyPage<br/>시연</td> <td align="center">UI/UX<br/>ReactNative<br/>Typescript<br/>Recoil<br/>Blender<br/>Bottle<br/>LogoDesign</td> </tr> </table>
 
 <br />
 
@@ -208,6 +208,29 @@
 - 누군가가 내게 보내온 메시지에 대해 답변을 작성할 수 있습니다.
 - 메시지의 색상을 토대로 작성자의 감정 상태를 한 눈에 확인할 수 있습니다.
 - 답변 메시지를 작성하면 작성자에게 익명으로 답변이 전달됩니다.
+
+<br />
+
+### IX. 꿈기록
+
+![](https://velog.velcdn.com/images/bisous1519/post/80aef058-5980-4485-aa28-9eeb9f90d6af/image.gif)
+
+---
+
+- 꿈을 이루기 위한 여러가지 목표들을 태그로 설정할 수 있습니다.
+- 각 태그는 수정 / 삭제가 가능합니다.
+- 태그별로 각 목표를 이루기 위한 과정을 기록할 수 있습니다.
+- 전체 꿈기록과 태그별 기록을 확인할 수 있습니다.
+- 목표를 이루기 위해 후원이 필요한 경우, 기록을 왼쪽으로 스와이프하여 해당 태그로 후원글을 작성할 수 있습니다.
+
+<br />
+
+### X. 관리자
+
+![](https://velog.velcdn.com/images/bisous1519/post/686f4386-ff2a-4cac-a11d-c33f674d9067/image.gif)
+---
+
+- 관리자는 자립준비청년 인증서와 자문단 신청서를 확인하고 승인하거나 반려할 수 있습니다.
 
 <br />
 
